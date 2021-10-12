@@ -1,0 +1,21 @@
+@startuml
+entity ticker {
+  * ティッカー
+  --
+  数量
+} 
+entity dividend {
+  * ティッカー
+  --
+  確定日
+  支払日
+  配当額
+  配当率
+} 
+ticker --|{ dividend
+
+'コメント
+'ユースケース図
+'アクティビティ図
+'シーケンス図 or コミュニケーション図
+@enduml
