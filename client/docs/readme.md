@@ -57,3 +57,31 @@ repeat while (more data?)
 :配当情報表示;
 @enduml
 ```
+
+```plantuml
+@startuml
+|メイン|
+start
+:GUI呼出;
+|GUI|
+:ファイル指定;
+|メイン|
+:パーサー呼出;
+|パーサー|
+:パーサー処理;
+|メイン|
+repeat
+:APIリクエスト;
+| |
+|django|
+:配当情報登録;
+|メイン|
+:銘柄チェック;
+repeat while (more data?)
+:GUI呼出;
+|GUI|
+:配当情報表示;
+|メイン|
+stop
+@enduml
+```
