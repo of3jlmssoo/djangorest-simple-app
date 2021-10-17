@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.filedialog
+from input_files import Input_files
 
 INITIAL_DIR = "/home/hiroshisakuma/Downloads/"
 INITIAL_FILE1 = "/home/hiroshisakuma/Downloads/Dividend Calendar - Investing.com.html"
@@ -8,7 +9,7 @@ GEOMETRY1 = "700x600"
 
 
 class windowclass():
-    def __init__(self, master):
+    def __init__(self, master, input_class):
         self.master = master
 
         frame_1 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
@@ -38,6 +39,7 @@ class windowclass():
         # self.file_name.set('未選択です')
         self.file_name.set(INITIAL_FILE1)
         label = tk.Label(frame_1, textvariable=self.file_name, font=('', 12))
+        input_class.div_info = self.file_name.get()
         # label.pack(pady=10)
         frame_1.propagate(0)
         # label.pack(anchor=tk.W)
@@ -73,6 +75,7 @@ class windowclass():
         self.file_name2.set(INITIAL_FILE2)
         # label = tk.Label(textvariable=self.file_name2, font=('', 12))
         label = tk.Label(frame_2, textvariable=self.file_name2, font=('', 12))
+        input_class.port_info = self.file_name2.get()
         # label.pack(pady=40)
         frame_2.propagate(0)
         label.pack(fill=tk.X)
@@ -89,7 +92,7 @@ class windowclass():
         toplevel = tk.Toplevel(self.master)
         # toplevel.geometry("350x350")
         toplevel.geometry(GEOMETRY1)
-        print(self.file_name, self.file_name2)
+        # print(self.file_name, self.file_name2)
         app = Demo2(toplevel)
 
     def file_dialog(self, event):
@@ -136,9 +139,13 @@ root = tk.Tk()
 root.title("window")
 # root.geometry("700x1000")
 root.geometry(GEOMETRY1)
-cls = windowclass(root)
+
+i = Input_files()
+
+cls = windowclass(root, i)
 root.mainloop()
 
+print(f'{i.div_info=} {i.port_info=}')
 # def main():
 #     root = tk.Tk()
 #     app = Demo1(root)
