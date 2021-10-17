@@ -30,7 +30,11 @@ class windowclass():
             height=1,
             bg='#999999',
             activebackground="#aaaaaa")
-        button.bind('<ButtonPress>', self.file_dialog)
+        # button.bind('<ButtonPress>', self.file_dialog)
+        button.bind(
+            '<ButtonPress>',
+            lambda event: self.file_dialog1(event, input_class))
+
         frame_1.grid(row=0, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
 
         self.file_name = tk.StringVar()
@@ -54,19 +58,18 @@ class windowclass():
             height=1,
             bg='#999999',
             activebackground="#aaaaaa")
-        button.bind('<ButtonPress>', self.file_dialog2)
-        # button.bind(
-        #     '<ButtonPress>',
-        #     # self.file_dialogX(
-        #     #     INITIAL_DIR,
-        #     #     INITIAL_FILE2))
-        # lambda event: self.file_dialogX(event, INITIAL_DIR, INITIAL_FILE2))
+
+        # button.bind('<ButtonPress>', self.file_dialog2)
+        button.bind(
+            '<ButtonPress>',
+            lambda event: self.file_dialog2(event, input_class))
         frame_2.grid(row=2, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
 
         self.file_name2 = tk.StringVar()
         self.file_name2.set(INITIAL_FILE2)
         label = tk.Label(frame_2, textvariable=self.file_name2, font=('', 12))
-        input_class.port_info = self.file_name2.get()
+        """ ここではデフォルトファイル名がセットされてしまう """
+        # input_class.port_info = self.file_name2.get()
         frame_2.propagate(0)
         label.pack(fill=tk.X)
         button.pack()
@@ -82,7 +85,7 @@ class windowclass():
         toplevel.geometry(GEOMETRY1)
         app = Secondwindow(toplevel)
 
-    def file_dialog(self, event):
+    def file_dialog1(self, event, input_class):
         fTyp = [("", "*")]
         file_name = tk.filedialog.askopenfilename(
             filetypes=fTyp, initialdir=INITIAL_DIR, initialfile=INITIAL_FILE1)
@@ -90,8 +93,10 @@ class windowclass():
             self.file_name.set('選択をキャンセルしました')
         else:
             self.file_name.set(file_name)
+        i.div_info = file_name
 
-    def file_dialog2(self, event):
+    def file_dialog2(self, event, input_class):
+
         fTyp = [("", "*")]
         file_name2 = tk.filedialog.askopenfilename(
             filetypes=fTyp, initialdir=INITIAL_DIR, initialfile=INITIAL_FILE2)
@@ -99,6 +104,16 @@ class windowclass():
             self.file_name2.set('選択をキャンセルしました')
         else:
             self.file_name2.set(file_name2)
+        i.port_info = file_name2
+
+    # def file_dialog2(self, event):
+    #     fTyp = [("", "*")]
+    #     file_name2 = tk.filedialog.askopenfilename(
+    #         filetypes=fTyp, initialdir=INITIAL_DIR, initialfile=INITIAL_FILE2)
+    #     if len(file_name2) == 0:
+    #         self.file_name2.set('選択をキャンセルしました')
+    #     else:
+    #         self.file_name2.set(file_name2)
 
 
 class Secondwindow:
