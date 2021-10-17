@@ -13,7 +13,7 @@ class windowclass():
 
     def __init__(
             self,
-            master: tkinter.Tk,
+            master: tk.Tk,
             input_class: Input_files) -> None:
         self.master = master
 
@@ -82,13 +82,15 @@ class windowclass():
         frame_3.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E)
         self.btn.pack()
 
-    def command(self):
+    def command(self) -> None:
         self.master.withdraw()
         toplevel = tk.Toplevel(self.master)
         toplevel.geometry(GEOMETRY1)
         app = Secondwindow(toplevel)
 
-    def file_dialog1(self, event, input_class):
+    def file_dialog1(self, event: tk.Event, input_class: Input_files) -> None:
+        # print(f'{type(event)=}')
+
         fTyp = [("", "*")]
         file_name = tk.filedialog.askopenfilename(
             filetypes=fTyp, initialdir=INITIAL_DIR, initialfile=INITIAL_FILE1)
@@ -98,7 +100,7 @@ class windowclass():
             self.file_name.set(file_name)
         i.div_info = file_name
 
-    def file_dialog2(self, event, input_class):
+    def file_dialog2(self, event: tk.Event, input_class: Input_files) -> None:
 
         fTyp = [("", "*")]
         file_name2 = tk.filedialog.askopenfilename(
@@ -109,18 +111,9 @@ class windowclass():
             self.file_name2.set(file_name2)
         i.port_info = file_name2
 
-    # def file_dialog2(self, event):
-    #     fTyp = [("", "*")]
-    #     file_name2 = tk.filedialog.askopenfilename(
-    #         filetypes=fTyp, initialdir=INITIAL_DIR, initialfile=INITIAL_FILE2)
-    #     if len(file_name2) == 0:
-    #         self.file_name2.set('選択をキャンセルしました')
-    #     else:
-    #         self.file_name2.set(file_name2)
-
 
 class Secondwindow:
-    def __init__(self, master):
+    def __init__(self, master: tk.Tk) -> None:
 
         self.master = master
         self.frame = tk.Frame(self.master)
@@ -132,7 +125,7 @@ class Secondwindow:
         self.quitButton.pack()
         self.frame.pack()
 
-    def close_windows(self):
+    def close_windows(self) -> None:
         self.master.destroy()
         root.quit()
         root.destroy()
@@ -145,7 +138,6 @@ root.geometry(GEOMETRY1)
 
 i = Input_files()
 
-print(f'{root=} {i=}')
 
 cls = windowclass(root, i)
 root.mainloop()
