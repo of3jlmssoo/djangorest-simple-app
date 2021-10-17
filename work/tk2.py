@@ -1,9 +1,9 @@
 import tkinter as tk
 import tkinter.filedialog
 
-INITIAL_DIR = "/home/hiroshisakuma/ダウンロード/"
-INITIAL_FILE1 = "/home/hiroshisakuma/ダウンロード/Dividend Calendar - Investing.com.html"
-INITIAL_FILE2 = "/home/hiroshisakuma/ダウンロード/portf.txt"
+INITIAL_DIR = "/home/hiroshisakuma/Downloads/"
+INITIAL_FILE1 = "/home/hiroshisakuma/Downloads/Dividend Calendar - Investing.com.html"
+INITIAL_FILE2 = "/home/hiroshisakuma/Downloads/portf.txt"
 GEOMETRY1 = "700x600"
 
 
@@ -11,8 +11,13 @@ class windowclass():
     def __init__(self, master):
         self.master = master
 
+        frame_1 = tk.Frame(root, bd=4, relief=tk.GROOVE)
+        frame_2 = tk.Frame(root, bd=4, relief=tk.GROOVE)
+        frame_3 = tk.Frame(root, bd=4, relief=tk.GROOVE)
+
         button = tk.Button(
-            root,
+            # root,
+            frame_1,
             text='ファイルダイアログを開く',
             font=(
                 '',
@@ -22,16 +27,22 @@ class windowclass():
             bg='#999999',
             activebackground="#aaaaaa")
         button.bind('<ButtonPress>', self.file_dialog)
-        button.pack(pady=0)
+        # button.pack(pady=0)
+        frame_1.grid(row=0, column=0, columnspan=2, sticky=tk.W + tk.E)
+        # frame_2.grid(row=1, column=0)
+        # frame_3.grid(row=1, column=1, sticky=N + S)
+        button.pack()
 
         self.file_name = tk.StringVar()
         # self.file_name.set('未選択です')
         self.file_name.set(INITIAL_FILE1)
-        label = tk.Label(textvariable=self.file_name, font=('', 12))
-        label.pack(pady=10)
+        label = tk.Label(frame_1, textvariable=self.file_name, font=('', 12))
+        # label.pack(pady=10)
+        label.pack(fill=tk.X)
 
         button = tk.Button(
-            root,
+            # root,
+            frame_2,
             text='ファイルダイアログを開く',
             font=(
                 '',
@@ -46,18 +57,23 @@ class windowclass():
         #     # self.file_dialogX(
         #     #     INITIAL_DIR,
         #     #     INITIAL_FILE2))
-
         # lambda event: self.file_dialogX(event, INITIAL_DIR, INITIAL_FILE2))
-
-        button.pack(pady=0)
+        # button.pack(pady=0)
+        frame_2.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E)
+        button.pack()
 
         self.file_name2 = tk.StringVar()
         # self.file_name2.set('未選択です')
         self.file_name2.set(INITIAL_FILE2)
-        label = tk.Label(textvariable=self.file_name2, font=('', 12))
-        label.pack(pady=40)
+        # label = tk.Label(textvariable=self.file_name2, font=('', 12))
+        label = tk.Label(frame_2, textvariable=self.file_name2, font=('', 12))
+        # label.pack(pady=40)
+        label.pack(fill=tk.X)
 
-        self.btn = tk.Button(master, text="Button", command=self.command)
+        # self.btn = tk.Button(master, text="Button", command=self.command)
+        self.btn = tk.Button(frame_3, text="Button", command=self.command)
+        # self.btn.pack()
+        frame_3.grid(row=5, column=0, columnspan=2, sticky=tk.W + tk.E)
         self.btn.pack()
 
     def command(self):
