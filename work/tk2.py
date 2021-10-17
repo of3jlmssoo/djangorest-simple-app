@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.filedialog
 from input_files import Input_files
 
+""" config.pyに移す """
 INITIAL_DIR = "/home/hiroshisakuma/Downloads/"
 INITIAL_FILE1 = "/home/hiroshisakuma/Downloads/Dividend Calendar - Investing.com.html"
 INITIAL_FILE2 = "/home/hiroshisakuma/Downloads/portf.txt"
@@ -9,6 +10,7 @@ GEOMETRY1 = "700x600"
 
 
 class windowclass():
+
     def __init__(self, master, input_class):
         self.master = master
 
@@ -20,30 +22,23 @@ class windowclass():
         button = tk.Button(
             # root,
             frame_1,
-            text='ファイルダイアログを開く',
+            text='対象ファイルを変更',
             font=(
                 '',
-                10),
+                8),
             width=24,
             height=1,
             bg='#999999',
             activebackground="#aaaaaa")
         button.bind('<ButtonPress>', self.file_dialog)
-        # button.pack(pady=0)
         frame_1.grid(row=0, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
-        # frame_2.grid(row=1, column=0)
-        # frame_3.grid(row=1, column=1, sticky=N + S)
-        # button.pack(anchor=tk.W)
 
         self.file_name = tk.StringVar()
-        # self.file_name.set('未選択です')
         self.file_name.set(INITIAL_FILE1)
         label = tk.Label(frame_1, textvariable=self.file_name, font=('', 12))
-        input_class.div_info = self.file_name.get()
-        # label.pack(pady=10)
+        """ ここではデフォルトファイル名がセットされてしまう """
+        # input_class.div_info = self.file_name.get()
         frame_1.propagate(0)
-        # label.pack(anchor=tk.W)
-        # button.pack(anchor=tk.W)
         label.pack(fill=tk.X)
         button.pack()
 
@@ -51,10 +46,10 @@ class windowclass():
         button = tk.Button(
             # root,
             frame_2,
-            text='ファイルダイアログを開く',
+            text='対象ファイルを変更',
             font=(
                 '',
-                10),
+                8),
             width=24,
             height=1,
             bg='#999999',
@@ -66,38 +61,29 @@ class windowclass():
         #     #     INITIAL_DIR,
         #     #     INITIAL_FILE2))
         # lambda event: self.file_dialogX(event, INITIAL_DIR, INITIAL_FILE2))
-        # button.pack(pady=0)
         frame_2.grid(row=2, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
-        # button.pack()
 
         self.file_name2 = tk.StringVar()
-        # self.file_name2.set('未選択です')
         self.file_name2.set(INITIAL_FILE2)
-        # label = tk.Label(textvariable=self.file_name2, font=('', 12))
         label = tk.Label(frame_2, textvariable=self.file_name2, font=('', 12))
         input_class.port_info = self.file_name2.get()
-        # label.pack(pady=40)
         frame_2.propagate(0)
         label.pack(fill=tk.X)
         button.pack()
 
-        # self.btn = tk.Button(master, text="Button", command=self.command)
+        """ frame_3 """
         self.btn = tk.Button(frame_3, text="Button", command=self.command)
-        # self.btn.pack()
         frame_3.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E)
         self.btn.pack()
 
     def command(self):
         self.master.withdraw()
         toplevel = tk.Toplevel(self.master)
-        # toplevel.geometry("350x350")
         toplevel.geometry(GEOMETRY1)
-        # print(self.file_name, self.file_name2)
-        app = Demo2(toplevel)
+        app = Secondwindow(toplevel)
 
     def file_dialog(self, event):
         fTyp = [("", "*")]
-        # iDir = os.path.abspath(os.path.dirname(__file__))
         file_name = tk.filedialog.askopenfilename(
             filetypes=fTyp, initialdir=INITIAL_DIR, initialfile=INITIAL_FILE1)
         if len(file_name) == 0:
@@ -107,7 +93,6 @@ class windowclass():
 
     def file_dialog2(self, event):
         fTyp = [("", "*")]
-        # iDir = os.path.abspath(os.path.dirname(__file__))
         file_name2 = tk.filedialog.askopenfilename(
             filetypes=fTyp, initialdir=INITIAL_DIR, initialfile=INITIAL_FILE2)
         if len(file_name2) == 0:
@@ -116,7 +101,7 @@ class windowclass():
             self.file_name2.set(file_name2)
 
 
-class Demo2:
+class Secondwindow:
     def __init__(self, master):
 
         self.master = master
