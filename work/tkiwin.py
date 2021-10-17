@@ -96,15 +96,27 @@ class windowclass():
         button.pack()
 
         """ frame_3 """
-        self.btn = tk.Button(frame_3, text="Button", command=self.command)
+        self.btn = tk.Button(
+            frame_3,
+            text="Button",
+            # command=self.command)
+            command=lambda: self.command(input_class))
+        # self.btn = tk.Button(
+        #     frame_3,
+        #     text="Button")
+        # self.btn.bind(
+        #     '<ButtonPress>',
+        #     self.command(input_class)
+        # )
+
         frame_3.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E)
         self.btn.pack()
 
-    def command(self) -> None:
+    def command(self, input_class: Input_files) -> None:
         self.master.withdraw()
         toplevel = tk.Toplevel(self.master)
         toplevel.geometry(GEOMETRY1)
-        app = Secondwindow(toplevel)
+        app = Secondwindow(toplevel, input_class)
 
     def file_dialog1(self, event: tk.Event, input_class: Input_files) -> None:
         # print(f'{type(event)=}')
@@ -131,7 +143,7 @@ class windowclass():
 
 
 class Secondwindow:
-    def __init__(self, master: tk.Tk) -> None:
+    def __init__(self, master: tk.Tk, input_class: Input_files) -> None:
 
         self.master = master
         self.frame = tk.Frame(self.master)
@@ -142,6 +154,9 @@ class Secondwindow:
             command=self.close_windows)
         self.quitButton.pack()
         self.frame.pack()
+
+        for i in range(10):
+            print(f'{i=} {input_class.div_info=}')
 
     def close_windows(self) -> None:
         self.master.destroy()
