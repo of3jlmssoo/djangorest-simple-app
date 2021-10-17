@@ -2,11 +2,12 @@ import tkinter as tk
 import tkinter.filedialog
 from input_files import Input_files
 
-""" config.pyに移す """
+# """ config.pyに移す """
 INITIAL_DIR = "/home/hiroshisakuma/Downloads/"
 INITIAL_FILE1 = "/home/hiroshisakuma/Downloads/Dividend Calendar - Investing.com.html"
 INITIAL_FILE2 = "/home/hiroshisakuma/Downloads/portf.txt"
 GEOMETRY1 = "700x600"
+WINDOW_TITLE = "配当情報"
 
 
 class windowclass():
@@ -16,10 +17,27 @@ class windowclass():
             master: tk.Tk,
             input_class: Input_files) -> None:
         self.master = master
+        self.master.title(WINDOW_TITLE)
+        self.master.geometry(GEOMETRY1)
 
-        frame_1 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
-        frame_2 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
-        frame_3 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
+        frame_1 = tk.Frame(
+            master,
+            width=700,
+            height=80,
+            bd=4,
+            relief=tk.GROOVE)
+        frame_2 = tk.Frame(
+            master,
+            width=700,
+            height=80,
+            bd=4,
+            relief=tk.GROOVE)
+        frame_3 = tk.Frame(
+            master,
+            width=700,
+            height=80,
+            bd=4,
+            relief=tk.GROOVE)
 
         """ frame_1 """
         button = tk.Button(
@@ -98,7 +116,7 @@ class windowclass():
             self.file_name.set('選択をキャンセルしました')
         else:
             self.file_name.set(file_name)
-        i.div_info = file_name
+        input_class.div_info = file_name
 
     def file_dialog2(self, event: tk.Event, input_class: Input_files) -> None:
 
@@ -109,7 +127,7 @@ class windowclass():
             self.file_name2.set('選択をキャンセルしました')
         else:
             self.file_name2.set(file_name2)
-        i.port_info = file_name2
+        input_class.port_info = file_name2
 
 
 class Secondwindow:
@@ -127,27 +145,5 @@ class Secondwindow:
 
     def close_windows(self) -> None:
         self.master.destroy()
-        root.quit()
-        root.destroy()
-
-
-root = tk.Tk()
-root.title("window")
-# root.geometry("700x1000")
-root.geometry(GEOMETRY1)
-
-i = Input_files()
-
-
-cls = windowclass(root, i)
-root.mainloop()
-
-print(f'{i.div_info=} {i.port_info=}')
-# def main():
-#     root = tk.Tk()
-#     app = Demo1(root)
-#     root.mainloop()
-
-
-# if __name__ == '__main__':
-#     main()
+        self.master.quit()
+        self.master.destroy()
