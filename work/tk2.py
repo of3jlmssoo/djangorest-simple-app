@@ -11,42 +11,48 @@ class windowclass():
     def __init__(self, master):
         self.master = master
 
-        frame_1 = tk.Frame(root, bd=4, relief=tk.GROOVE)
-        frame_2 = tk.Frame(root, bd=4, relief=tk.GROOVE)
-        frame_3 = tk.Frame(root, bd=4, relief=tk.GROOVE)
+        frame_1 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
+        frame_2 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
+        frame_3 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
 
+        """ frame_1 """
         button = tk.Button(
             # root,
             frame_1,
             text='ファイルダイアログを開く',
             font=(
                 '',
-                20),
+                10),
             width=24,
             height=1,
             bg='#999999',
             activebackground="#aaaaaa")
         button.bind('<ButtonPress>', self.file_dialog)
         # button.pack(pady=0)
-        frame_1.grid(row=0, column=0, columnspan=2, sticky=tk.W + tk.E)
+        frame_1.grid(row=0, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
         # frame_2.grid(row=1, column=0)
         # frame_3.grid(row=1, column=1, sticky=N + S)
-        button.pack()
+        # button.pack(anchor=tk.W)
 
         self.file_name = tk.StringVar()
         # self.file_name.set('未選択です')
         self.file_name.set(INITIAL_FILE1)
         label = tk.Label(frame_1, textvariable=self.file_name, font=('', 12))
         # label.pack(pady=10)
+        frame_1.propagate(0)
+        # label.pack(anchor=tk.W)
+        # button.pack(anchor=tk.W)
         label.pack(fill=tk.X)
+        button.pack()
 
+        """ frame_2 """
         button = tk.Button(
             # root,
             frame_2,
             text='ファイルダイアログを開く',
             font=(
                 '',
-                20),
+                10),
             width=24,
             height=1,
             bg='#999999',
@@ -59,8 +65,8 @@ class windowclass():
         #     #     INITIAL_FILE2))
         # lambda event: self.file_dialogX(event, INITIAL_DIR, INITIAL_FILE2))
         # button.pack(pady=0)
-        frame_2.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E)
-        button.pack()
+        frame_2.grid(row=2, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
+        # button.pack()
 
         self.file_name2 = tk.StringVar()
         # self.file_name2.set('未選択です')
@@ -68,12 +74,14 @@ class windowclass():
         # label = tk.Label(textvariable=self.file_name2, font=('', 12))
         label = tk.Label(frame_2, textvariable=self.file_name2, font=('', 12))
         # label.pack(pady=40)
+        frame_2.propagate(0)
         label.pack(fill=tk.X)
+        button.pack()
 
         # self.btn = tk.Button(master, text="Button", command=self.command)
         self.btn = tk.Button(frame_3, text="Button", command=self.command)
         # self.btn.pack()
-        frame_3.grid(row=5, column=0, columnspan=2, sticky=tk.W + tk.E)
+        frame_3.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E)
         self.btn.pack()
 
     def command(self):
