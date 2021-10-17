@@ -11,7 +11,10 @@ GEOMETRY1 = "700x600"
 
 class windowclass():
 
-    def __init__(self, master, input_class):
+    def __init__(
+            self,
+            master: tkinter.Tk,
+            input_class: Input_files) -> None:
         self.master = master
 
         frame_1 = tk.Frame(root, width=700, height=80, bd=4, relief=tk.GROOVE)
@@ -40,8 +43,8 @@ class windowclass():
         self.file_name = tk.StringVar()
         self.file_name.set(INITIAL_FILE1)
         label = tk.Label(frame_1, textvariable=self.file_name, font=('', 12))
-        """ ここではデフォルトファイル名がセットされてしまう """
-        # input_class.div_info = self.file_name.get()
+        """ デフォルトファイル名をセット """
+        input_class.div_info = self.file_name.get()
         frame_1.propagate(0)
         label.pack(fill=tk.X)
         button.pack()
@@ -68,8 +71,8 @@ class windowclass():
         self.file_name2 = tk.StringVar()
         self.file_name2.set(INITIAL_FILE2)
         label = tk.Label(frame_2, textvariable=self.file_name2, font=('', 12))
-        """ ここではデフォルトファイル名がセットされてしまう """
-        # input_class.port_info = self.file_name2.get()
+        """ デフォルトファイル名をセット """
+        input_class.port_info = self.file_name2.get()
         frame_2.propagate(0)
         label.pack(fill=tk.X)
         button.pack()
@@ -141,6 +144,8 @@ root.title("window")
 root.geometry(GEOMETRY1)
 
 i = Input_files()
+
+print(f'{root=} {i=}')
 
 cls = windowclass(root, i)
 root.mainloop()
