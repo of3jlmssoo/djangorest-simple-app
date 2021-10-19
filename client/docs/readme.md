@@ -1,5 +1,13 @@
 # 配当管理
 
+## 流れ
+1. 使用する機能を単体でコーディング
+   - Beautiful Soup
+   - tkinter
+   - rest
+2. ドキュメント作成
+3. インテグレーション
+
 ## データベース
 ```plantuml
 @startuml
