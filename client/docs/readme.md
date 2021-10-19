@@ -1,7 +1,6 @@
 # 配当管理
 
 ## データベース
-
 ```plantuml
 @startuml
 entity "ティッカー" as ticker {
@@ -42,6 +41,57 @@ user --> UC3
 @enduml
 ```
 
+### クラス
+- ウィンドウ
+- 配当管理
+- パーサー
+- レストクライアント
+
+
+```plantuml
+@startuml 
+class Window  {
+   -field1 
+   #field2 
+   ~vmethod1() 
+   +method2() 
+} 
+class DivMgmt {
+   -field1 
+   #field2 
+   ~vmethod1() 
+   +method2() 
+} 
+class Parser {
+   -field1 
+   #field2 
+   ~vmethod1() 
+   +method2() 
+}
+class RestClient {
+   -field1 
+   #field2 
+   ~vmethod1() 
+   +method2() 
+} 
+
+Window - DivMgmt
+DivMgmt -- Parser
+DivMgmt -- RestClient
+@enduml
+```
+
+- [ ] ウィンドウインスタンスを呼び出す際、配当管理インスタンスを引数として渡す
+- [ ] ウィンドウインスタンスは、配当ファイルセット、銘柄ファイルセット、配当処理の3メソッドを利用
+- [ ] 配当管理はパーサーに配当ファイル名を渡して配当情報を受取る(get_div_info)
+- [ ] 配当管理はレストクライアントのrecord_div_infoを利用する
+
+## エラー処理
+配当ファイルが存在しない
+銘柄ファイルが存在しない
+レストでエラー
+
+
 ### 結果確認
 
 1. 結果確認イメージ@1st ステージ
@@ -59,7 +109,8 @@ MC  2021-10-20 3.0%   |  昨年実績 2.0%
 ```
 
 ## 処理の流れ
-
+<img width="3000" src="./activity.drawio.svg">
+<!-- 
 ```plantuml
 @startuml
 :htmlファイル指定 & 銘柄ファイル指定;
@@ -74,8 +125,8 @@ repeat
 repeat while (more data?)
 :結果表示;
 @enduml
-```
-
+``` -->
+<!-- 
 ```plantuml
 @startuml
 |メイン|
@@ -131,4 +182,4 @@ endwhile
 :結果準備;
 stop
 @enduml
-```
+``` -->
