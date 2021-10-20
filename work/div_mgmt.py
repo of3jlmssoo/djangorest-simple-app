@@ -1,4 +1,4 @@
-class Input_files():
+class Div_Mgmt():
     def __init__(self) -> None:
         self._div_info = ''
         self._port_info = ''
@@ -9,6 +9,7 @@ class Input_files():
 
     @div_info.setter
     def div_info(self, file_name):
+        """ TODO: file_name確認。存在するか？ """
         self._div_info = file_name
 
     @property
@@ -17,6 +18,7 @@ class Input_files():
 
     @port_info.setter
     def port_info(self, file_name):
+        """ TODO: file_name確認。存在するか？ """
         self._port_info = file_name
 
 

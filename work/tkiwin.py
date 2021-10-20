@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.filedialog
-from input_files import Input_files
+
+from div_mgmt import Div_Mgmt
 
 # """ config.pyに移す """
 INITIAL_DIR = "/home/hiroshisakuma/Downloads/"
@@ -15,7 +16,7 @@ class windowclass():
     def __init__(
             self,
             master: tk.Tk,
-            input_class: Input_files) -> None:
+            div_mgmt: Div_Mgmt):
         self.master = master
         self.master.title(WINDOW_TITLE)
         self.master.geometry(GEOMETRY1)
@@ -54,7 +55,7 @@ class windowclass():
         # button.bind('<ButtonPress>', self.file_dialog)
         button.bind(
             '<ButtonPress>',
-            lambda event: self.file_dialog1(event, input_class))
+            lambda event: self.file_dialog1(event, div_mgmt))
 
         frame_1.grid(row=0, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
 
@@ -62,7 +63,7 @@ class windowclass():
         self.file_name.set(INITIAL_FILE1)
         label = tk.Label(frame_1, textvariable=self.file_name, font=('', 12))
         """ デフォルトファイル名をセット """
-        input_class.div_info = self.file_name.get()
+        div_mgmt.div_info = self.file_name.get()
         frame_1.propagate(0)
         label.pack(fill=tk.X)
         button.pack()
@@ -83,14 +84,14 @@ class windowclass():
         # button.bind('<ButtonPress>', self.file_dialog2)
         button.bind(
             '<ButtonPress>',
-            lambda event: self.file_dialog2(event, input_class))
+            lambda event: self.file_dialog2(event, div_mgmt))
         frame_2.grid(row=2, column=0, columnspan=2, sticky=tk.W)  # + tk.E)
 
         self.file_name2 = tk.StringVar()
         self.file_name2.set(INITIAL_FILE2)
         label = tk.Label(frame_2, textvariable=self.file_name2, font=('', 12))
         """ デフォルトファイル名をセット """
-        input_class.port_info = self.file_name2.get()
+        div_mgmt.port_info = self.file_name2.get()
         frame_2.propagate(0)
         label.pack(fill=tk.X)
         button.pack()
@@ -100,25 +101,25 @@ class windowclass():
             frame_3,
             text="Button",
             # command=self.command)
-            command=lambda: self.command(input_class))
+            command=lambda: self.command(div_mgmt))
         # self.btn = tk.Button(
         #     frame_3,
         #     text="Button")
         # self.btn.bind(
         #     '<ButtonPress>',
-        #     self.command(input_class)
+        #     self.command(div_mgmt)
         # )
 
         frame_3.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E)
         self.btn.pack()
 
-    def command(self, input_class: Input_files) -> None:
+    def command(self, div_mgmt: Div_Mgmt):
         self.master.withdraw()
         toplevel = tk.Toplevel(self.master)
         toplevel.geometry(GEOMETRY1)
-        app = Secondwindow(toplevel, input_class)
+        app = Secondwindow(toplevel, div_mgmt)
 
-    def file_dialog1(self, event: tk.Event, input_class: Input_files) -> None:
+    def file_dialog1(self, event: tk.Event, div_mgmt: Div_Mgmt):
         # print(f'{type(event)=}')
 
         fTyp = [("", "*")]
@@ -128,9 +129,9 @@ class windowclass():
             self.file_name.set('選択をキャンセルしました')
         else:
             self.file_name.set(file_name)
-        input_class.div_info = file_name
+        div_mgmt.div_info = file_name
 
-    def file_dialog2(self, event: tk.Event, input_class: Input_files) -> None:
+    def file_dialog2(self, event: tk.Event, div_mgmt: Div_Mgmt):
 
         fTyp = [("", "*")]
         file_name2 = tk.filedialog.askopenfilename(
@@ -139,11 +140,11 @@ class windowclass():
             self.file_name2.set('選択をキャンセルしました')
         else:
             self.file_name2.set(file_name2)
-        input_class.port_info = file_name2
+        div_mgmt.port_info = file_name2
 
 
 class Secondwindow:
-    def __init__(self, master: tk.Tk, input_class: Input_files) -> None:
+    def __init__(self, master: tk.Tk, div_mgmt: Div_Mgmt):
 
         self.master = master
         self.frame = tk.Frame(self.master)
@@ -156,7 +157,7 @@ class Secondwindow:
         self.frame.pack()
 
         for i in range(10):
-            print(f'{i=} {input_class.div_info=}')
+            print(f'{i=} {div_mgmt.div_info=}')
 
     def close_windows(self) -> None:
         self.master.destroy()

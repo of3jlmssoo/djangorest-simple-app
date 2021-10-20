@@ -1,7 +1,8 @@
 import tkinter as tk
 import tkinter.filedialog
-from input_files import Input_files
-from tkiwin import windowclass, Secondwindow
+
+from div_mgmt import Div_Mgmt
+from tkiwin import Secondwindow, windowclass
 
 # """ config.pyに移す """
 # INITIAL_DIR = "/home/hiroshisakuma/Downloads/"
@@ -135,10 +136,11 @@ from tkiwin import windowclass, Secondwindow
 
 root = tk.Tk()
 # root.title("window")
-i = Input_files()
-
+i = Div_Mgmt()
 
 cls = windowclass(root, i)
+
+
 root.mainloop()
 
 print(f'{i.div_info=} {i.port_info=}')
