@@ -167,15 +167,19 @@ stop
 ```` -->
 
 ## 1
+
 ### rest
+
 - [ ] コピー
 - [ ] 名称変更
 - [ ]既存修整
 - [ ] authentication
 - [ ] 追加
 - [ ] select
+
 ### bs
-- [ ] 
+
+- [ ]
 
 <!-- ```plantuml
 @startuml
@@ -216,7 +220,9 @@ stop
 ## todo
 
 ### rest
-- [ ] ticker model作成
+
+- [ ] ticker model 作成
+
 ```text
 django-admin startproject divmanagement
 cd divmanagement
@@ -233,7 +239,7 @@ INSTALLED_APPS = [
 edit models.py in tickers
 edit serializers.py in tickers
 
-python manage.py makemigrations tickers 
+python manage.py makemigrations tickers
 python manage.py migrate
 
 
@@ -273,13 +279,16 @@ serializer.save()
 # <Snippet: Snippet object>
 
 ```
-tutorial 1のリファクタリング。tickers/serializers.py
+
+tutorial 1 のリファクタリング。tickers/serializers.py
+
 ```
-class SnippetSerializer(serializers.ModelSerializer):
+class tickers(serializers.ModelSerializer):
     class Meta:
         model = Snippet
         fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
 ```
+
 ```text
 from tickers.serializers import TickerSerializer
 serializer = TickerSerializer()
@@ -292,23 +301,38 @@ TickerSerializer():
     accum = IntegerField(min_value=0)
 
 ```
-tickers/views.py編集
-tickers/urls.py編集
-divmanagement/tutorial/urls.py編集
+
+tickers/views.py 編集
+tickers/urls.py 編集
+divmanagement/tutorial/urls.py 編集
 
 ```
 (stop shell) quit()
 python manage.py runserver
 
 http http://127.0.0.1:8000/tickers/
+http http://127.0.0.1:8000/tickers/ Accept:application/json
+http http://127.0.0.1:8000/tickers/ Accept:text/html
+
+
 ```
 
+tutorial 2
+views.py の実質置き換え
+tickers/urls.py 更新
+http http://127.0.0.1:8000/tickers/
+
+http --form POST http://127.0.0.1:8000/tickers/ ticker="cfg" vol1="5" vol2="0" accum="30"
+http --json POST http://127.0.0.1:8000/tickers/ ticker="hcsg" vol1="0" vol2="10" accum="30"
+
+http --debug http://127.0.0.1:8000/tickers/
+
 - [ ] 名称変更
-- [ ] 既存model/serializer修整
+- [ ] 既存 model/serializer 修整
 - [ ] authentication
-- [ ] model/serializer追加(dividends)
+- [ ] model/serializer 追加(dividends)
 - [ ] select
+
 ### bs
+
 - [ ] 組み込み
-
-
