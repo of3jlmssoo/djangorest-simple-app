@@ -13,7 +13,11 @@ STYLE_CHOICES = sorted([(item, item) for item in get_all_styles()])
 
 class Ticker(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    ticker = models.CharField(max_length=10, blank=False, null=False)
+    ticker = models.CharField(
+        max_length=10,
+        blank=False,
+        null=False,
+        unique=True)
     vol1 = models.IntegerField(validators=[MinValueValidator(0)])
     vol2 = models.IntegerField(validators=[MinValueValidator(0)])
     accum = models.IntegerField(validators=[MinValueValidator(0)])
