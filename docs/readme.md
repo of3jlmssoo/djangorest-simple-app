@@ -86,7 +86,6 @@ entity "ティッカー" as ticker {
   --
   数量1
   数量2
-  数量(1+2)
   前年実績
 }
 entity "配当" as dividend {
@@ -167,6 +166,17 @@ stop
 
 ```` -->
 
+## 1
+### rest
+- [ ] コピー
+- [ ] 名称変更
+- [ ]既存修整
+- [ ] authentication
+- [ ] 追加
+- [ ] select
+### bs
+- [ ] 
+
 <!-- ```plantuml
 @startuml
 |メイン|
@@ -205,9 +215,100 @@ stop
 
 ## todo
 
-- 銘柄情報
-  1. モデル更新
-  2. シリアライズ
-  3. 実際に登録
-  4. 検索
-     - ティッカーコードを指定して昨年の実績(配当額)を取得
+### rest
+- [ ] ticker model作成
+```text
+django-admin startproject divmanagement
+cd divmanagement
+python manage.py startapp dividends
+python manage.py startapp tickers
+
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+    'dividends.apps.DividendsConfig',
+    'dividends.apps.TickersConfig',
+]
+
+edit models.py in tickers
+edit serializers.py in tickers
+
+python manage.py makemigrations tickers 
+python manage.py migrate
+
+
+python manage.py shell
+```
+
+```
+from tickers.models import Ticker
+from tickers.serializers import TickerSerializer
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+
+ticker = Ticker(ticker='mc', vol1=10, vol2=0, accum=1)
+ticker.save()
+
+ticker = Ticker(ticker='mss', vol1=5, vol2=2, accum=2)
+ticker.save()
+
+serializer = TickerSerializer(ticker)
+serializer.data
+
+content = JSONRenderer().render(serializer.data)
+content
+
+import io
+stream = io.BytesIO(content)
+data = JSONParser().parse(stream)
+data
+
+
+serializer = TickerSerializer(data=data)
+serializer.is_valid()
+# True
+serializer.validated_data
+OrderedDict([('ticker', 'mss'), ('vol1', 5), ('vol2', 2), ('accum', 2)])
+serializer.save()
+# <Snippet: Snippet object>
+
+```
+tutorial 1のリファクタリング。tickers/serializers.py
+```
+class SnippetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Snippet
+        fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
+```
+```text
+from tickers.serializers import TickerSerializer
+serializer = TickerSerializer()
+print(repr(serializer))
+TickerSerializer():
+    id = IntegerField(read_only=True)
+    ticker = CharField(allow_blank=False, max_length=10, required=True)
+    vol1 = IntegerField(min_value=0)
+    vol2 = IntegerField(min_value=0)
+    accum = IntegerField(min_value=0)
+
+```
+tickers/views.py編集
+tickers/urls.py編集
+divmanagement/tutorial/urls.py編集
+
+```
+(stop shell) quit()
+python manage.py runserver
+
+http http://127.0.0.1:8000/tickers/
+```
+
+- [ ] 名称変更
+- [ ] 既存model/serializer修整
+- [ ] authentication
+- [ ] model/serializer追加(dividends)
+- [ ] select
+### bs
+- [ ] 組み込み
+
+
