@@ -320,12 +320,20 @@ http http://127.0.0.1:8000/tickers/ Accept:text/html
 tutorial 2
 views.py の実質置き換え
 tickers/urls.py 更新
+
 http http://127.0.0.1:8000/tickers/
 
 http --form POST http://127.0.0.1:8000/tickers/ ticker="cfg" vol1="5" vol2="0" accum="30"
 http --json POST http://127.0.0.1:8000/tickers/ ticker="hcsg" vol1="0" vol2="10" accum="30"
 
 http --debug http://127.0.0.1:8000/tickers/
+
+tutorial 3
+views.py の class 化
+tickers/urls.py 更新
+mixins を使って class ベース views の generic 化
+
+http --json POST http://127.0.0.1:8000/tickers/ ticker="psec" vol1="30" vol2="20" accum="100"
 
 - [ ] 名称変更
 - [ ] 既存 model/serializer 修整
