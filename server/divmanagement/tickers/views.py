@@ -5,6 +5,9 @@ from tickers.models import Ticker
 from tickers.serializers import TickerSerializer, UserSerializer
 
 
+from tickers.permissions import IsOwnerOrReadOnly
+
+
 class TickerList(generics.ListCreateAPIView):
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
@@ -19,7 +22,9 @@ class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
 
 
 class UserList(generics.ListAPIView):

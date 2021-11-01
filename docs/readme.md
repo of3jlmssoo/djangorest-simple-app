@@ -389,6 +389,12 @@ http://127.0.0.1:8000/tickers/1/?Accept:application/json
 http://127.0.0.1:8000/tickers/?Accept:application/json
 http://127.0.0.1:8000/tickers/1/?Accept:text/html
 
+
+object level permissionsのためpermissions.pyを作成
+views.py更新
+権限があればdelete、putが使えるようになる
+
+
 - [ ] 名称変更
 - [ ] 既存 model/serializer 修整
 - [ ] authentication
