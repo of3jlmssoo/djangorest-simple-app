@@ -1,6 +1,7 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from tickers.models import Ticker, LANGUAGE_CHOICES, STYLE_CHOICES
 
+from tickers.models import LANGUAGE_CHOICES, STYLE_CHOICES, Ticker
 
 # class TickerSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
@@ -39,6 +40,17 @@ from tickers.models import Ticker, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 class TickerSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Ticker
+        fields = ['ticker', 'vol1', 'vol2', 'accum', 'owner']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    tickers = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Ticker.objects.all())
+
+    class Meta:
+        model = User
         fields = ['ticker', 'vol1', 'vol2', 'accum']

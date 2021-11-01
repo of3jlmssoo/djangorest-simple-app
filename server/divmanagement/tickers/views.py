@@ -1,18 +1,35 @@
-from rest_framework import generics
+from django.contrib.auth.models import User
+from rest_framework import generics, permissions
 
 from tickers.models import Ticker
-from tickers.serializers import TickerSerializer
+from tickers.serializers import TickerSerializer, UserSerializer
 
 
 class TickerList(generics.ListCreateAPIView):
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
 
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
 
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 # from django.http import Http404, HttpResponse, JsonResponse
 # from django.shortcuts import render

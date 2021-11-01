@@ -335,6 +335,60 @@ mixins を使って class ベース views の generic 化
 
 http --json POST http://127.0.0.1:8000/tickers/ ticker="psec" vol1="30" vol2="20" accum="100"
 
+(git commit --amend -m "tutorial 3 completed")
+
+tutorial 4
+ticker の models.py 修正
+
+rm -f db.sqlite3
+rm -r tickers/migrations
+python manage.py makemigrations tickers
+python manage.py migrate
+
+python manage.py createsuperuser
+admin
+amincs8000
+
+serializers.py 更新
+views.py にユーザー関連のビューを追加
+更に views.py の TickerList で perform_create を上書き
+
+serializers.py にユーザー関連付のためのステートメントを追加
+
+views.py で permissions を from test_framework で imports
+view.py の TickerList と TickerDetail に permission_classes=を追加
+
+プロジェクトレベル ulrs.py 編集
+
+browser で 127.0.0.1:8000/tickers/
+以下のデータを画面で入力
+ticker = Ticker(ticker='mc', vol1=10, vol2=0, accum=1)
+
+browser で 127.0.0.1:8000/tickers/1/
+で vol2 更新
+
+http://127.0.0.1:8000/api-auth/logout/
+http://127.0.0.1:8000/api-auth/login/
+
+```
+Using the URLconf defined in divmanagement.urls, Django tried these URL patterns, in this order:
+
+admin/
+tickers/
+tickers<drf_format_suffix:format>
+tickers/<int:pk>/
+tickers/<int:pk><drf_format_suffix:format>
+api-auth/
+The empty path didn’t match any of these.
+```
+
+http http://127.0.0.1:8000/tickers/ Accept:application/json
+http http://127.0.0.1:8000/tickers/1/ Accept:application/json
+http://127.0.0.1:8000/tickers/?Accept:application/json
+http://127.0.0.1:8000/tickers/1/?Accept:application/json
+http://127.0.0.1:8000/tickers/?Accept:application/json
+http://127.0.0.1:8000/tickers/1/?Accept:text/html
+
 - [ ] 名称変更
 - [ ] 既存 model/serializer 修整
 - [ ] authentication
