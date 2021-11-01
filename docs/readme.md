@@ -394,6 +394,16 @@ object level permissionsのためpermissions.pyを作成
 views.py更新
 権限があればdelete、putが使えるようになる
 
+tutorial 5
+APIへのシングルポイントviews.pyで@api_view
+highlight関連は省略
+ulrs.py編集
+
+serializers.py更新は保留
+
+urls.py更新
+
+pagenationは省略
 
 - [ ] 名称変更
 - [ ] 既存 model/serializer 修整
