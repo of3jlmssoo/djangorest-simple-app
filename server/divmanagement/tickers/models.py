@@ -17,7 +17,8 @@ class Ticker(models.Model):
         max_length=10,
         blank=False,
         null=False,
-        unique=True)
+        unique=True,
+        default='someerror')
     vol1 = models.IntegerField(validators=[MinValueValidator(0)])
     vol2 = models.IntegerField(validators=[MinValueValidator(0)])
     total_vol = models.IntegerField(validators=[MinValueValidator(0)])
@@ -68,6 +69,10 @@ class Ticker(models.Model):
 class Dividend(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
+    ticker = models.ForeignKey(
+        Ticker,
+        to_field='ticker',
+        on_delete=models.PROTECT)
     ex_date = models.DateField()
     pay_date = models.DateField()
     div_val = models.DecimalField(max_digits=8, decimal_places=6)
