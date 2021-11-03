@@ -1,15 +1,12 @@
+from rest_framework.reverse import reverse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from tickers.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 
 from tickers.models import Ticker, Dividend
 from tickers.serializers import TickerSerializer, UserSerializer, DividendSerializer
-
-
-from tickers.permissions import IsOwnerOrReadOnly
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
 
 
 @api_view(['GET'])

@@ -46,6 +46,9 @@ class Dividend(models.Model):
     class Meta:
         ordering = ['created']
 
+    def save(self, *args, **kwargs):
+        super(Dividend, self).save(*args, **kwargs)
+
 
 """
 div_val
