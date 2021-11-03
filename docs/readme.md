@@ -408,6 +408,8 @@ stop
     pagenationは省略
 
 - [ ] model/serializer 追加(dividends)
+  - models.py, views.py, serializers.py
+  - urls.py
 - [ ] select
 - [ ] authentication
 

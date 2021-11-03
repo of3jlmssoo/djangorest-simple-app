@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from tickers.models import LANGUAGE_CHOICES, STYLE_CHOICES, Ticker
+from tickers.models import LANGUAGE_CHOICES, STYLE_CHOICES, Ticker, Dividend
 
 # class TickerSerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
@@ -37,6 +37,14 @@ from tickers.models import LANGUAGE_CHOICES, STYLE_CHOICES, Ticker
 #         # instance.style = validated_data.get('style', instance.style)
 #         instance.save()
 #         return instance
+
+
+class DividendSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Dividend
+        fields = ['ex_date', 'pay_date', 'div_val', 'div_rat', 'owner']
 
 
 class TickerSerializer(serializers.ModelSerializer):

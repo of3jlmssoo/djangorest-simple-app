@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 
-from tickers.models import Ticker
-from tickers.serializers import TickerSerializer, UserSerializer
+from tickers.models import Ticker, Dividend
+from tickers.serializers import TickerSerializer, UserSerializer, DividendSerializer
 
 
 from tickers.permissions import IsOwnerOrReadOnly
@@ -18,6 +18,27 @@ def api_root(request, format=None):
         'users': reverse('user-list', request=request, format=format),
         'tickers': reverse('ticker-list', request=request, format=format)
     })
+
+
+class DividendList(generics.ListCreateAPIView):
+    queryset = Dividend.objects.all()
+    serializer_class = DividendSerializer
+
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class DividendDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Dividend.objects.all()
+    serializer_class = DividendSerializer
+
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
+
+# 3
 
 
 class TickerList(generics.ListCreateAPIView):

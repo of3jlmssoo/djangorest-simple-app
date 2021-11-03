@@ -19,7 +19,15 @@ urlpatterns = format_suffix_patterns([
          name='user-list'),
     path('users/<int:pk>/',
          views.UserDetail.as_view(),
-         name='user-detail')
+         name='user-detail'),
+
+
+    path('dividends/',
+         views.DividendList.as_view(),
+         name='dividend-list'),
+    path('dividends/<int:pk>/',
+         views.DividendDetail.as_view(),
+         name='dividend-detail'),
 ])
 
 

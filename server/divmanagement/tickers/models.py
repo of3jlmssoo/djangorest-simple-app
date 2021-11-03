@@ -10,6 +10,54 @@ LEXERS = [item for item in get_all_lexers() if item[1]]
 LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
 STYLE_CHOICES = sorted([(item, item) for item in get_all_styles()])
 
+"""
+確定日 : ex_date : 日付
+支払日 : pay_date : 日付
+配当額 : div_val : float
+配当率 : div_rat : float
+"""
+
+
+class Dividend(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+
+    ex_date = models.DateField()
+    pay_date = models.DateField()
+    div_val = models.DecimalField(max_digits=8, decimal_places=6)
+    div_rat = models.DecimalField(max_digits=4, decimal_places=2)
+
+    owner = models.ForeignKey(
+        'auth.User',
+        related_name='dividends',
+        on_delete=models.CASCADE)
+    # highlighted = models.TextField()
+
+    # code = models.TextField()
+    # linenos = models.BooleanField(default=False)
+    # language = models.CharField(
+    #     choices=LANGUAGE_CHOICES,
+    #     default='python',
+    #     max_length=100)
+    # style = models.CharField(
+    #     choices=STYLE_CHOICES,
+    #     default='friendly',
+    #     max_length=100)
+
+    class Meta:
+        ordering = ['created']
+
+
+"""
+div_val
+max_digits 12.123456 => 8
+decimal_places => 6
+
+div_rat
+max_digits 12.12=> 4
+decimal_places => 2
+
+"""
+
 
 class Ticker(models.Model):
     created = models.DateTimeField(auto_now_add=True)
