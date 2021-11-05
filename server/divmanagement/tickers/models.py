@@ -57,6 +57,9 @@ class Ticker(models.Model):
         self.total_vol = self.vol1 + self.vol2
         super(Ticker, self).save(*args, **kwargs)
 
+    def _str__(self):
+        return self.ticker
+
 
 """
 確定日 : ex_date : 日付

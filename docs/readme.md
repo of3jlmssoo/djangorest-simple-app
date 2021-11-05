@@ -14,11 +14,13 @@
 
 ## 機能要件
 
-- html ファイルに保管されたある期間の配当情報を抽出
+- html ファイルに保管された、ある期間の配当情報を抽出
 - 保有銘柄だった場合画面に表示
 - 画面表示をコピーできる
 
 ## 非機能要件
+
+今の所無し
 
 ## epic
 
@@ -113,58 +115,33 @@ MC  2021-10-20 3.0%
 2. 結果確認イメージ@2nd ステージ
 
 ```
-MSS 2021-10-18 3.1%   |  昨年実績 3.5%
-MC  2021-10-20 3.0%   |  昨年実績 2.0%
+MSS 2021-10-18 3.1%   |  昨年実績 10.2
+MC  2021-10-20 3.0%   |  昨年実績 3.5
 ```
 
 ## 処理の流れ
 
 <img width="3000" src="./activity.drawio.svg">
-<!-- 
-```plantuml
-@startuml
-:htmlファイル指定 & 銘柄ファイル指定;
-:フォーマットチェック;
-note right
-日付
-配当額
-end note
-repeat
-:配当情報登録;
-:銘柄チェック;
-repeat while (more data?)
-:結果表示;
-@enduml
-``` -->
-<!-- 
-```plantuml
-@startuml
-|メイン|
-start
-:GUI呼出;
-|GUI|
-:ウィンドウ1
-(ファイル指定);
-:ウィンドウ2
-(パーサー呼出);
-|パーサー|
 
-<!-- :配当情報取得;
-if (保有銘柄？) then (yes)
-|django|
-:配当情報登録;
-|パーサー|
-:結果準備;
-' repeat while (more data?)
-|GUI|
-:ウィンドウ 2
-(結果表示);
+#### GUI 呼出
 
-|メイン|
-stop
-@enduml
+#### ウィンドウ 1(ファイル指定)
 
-```` -->
+#### ウィンドウ 2(パーサー呼出)
+
+#### パーサー呼出
+
+#### ファイル読込
+
+#### 配当情報
+
+#### 配当情報登録
+
+#### 銘柄情報取得
+
+#### 結果準備
+
+#### ウィンドウ 2(結果表示)
 
 ## 1
 
@@ -224,7 +201,9 @@ stop
 - [ ] ticker model 作成
 - [ ] 名称変更
 - [ ] 既存 model/serializer 修整
+
   - tutorial 1
+
     ```text
     django-admin startproject divmanagement
     cd divmanagement
@@ -391,21 +370,20 @@ stop
     http://127.0.0.1:8000/tickers/?Accept:application/json
     http://127.0.0.1:8000/tickers/1/?Accept:text/html
 
-
-    object level permissionsのためpermissions.pyを作成
-    views.py更新
-    権限があればdelete、putが使えるようになる
+    object level permissions のため permissions.py を作成
+    views.py 更新
+    権限があれば delete、put が使えるようになる
 
   - tutorial 5
-    APIへのシングルポイントviews.pyで@api_view
-    highlight関連は省略
-    ulrs.py編集
+    API へのシングルポイント views.py で@api_view
+    highlight 関連は省略
+    ulrs.py 編集
 
-    serializers.py更新は保留
+    serializers.py 更新は保留
 
-    urls.py更新
+    urls.py 更新
 
-    pagenationは省略
+    pagenation は省略
 
 - [ ] model/serializer 追加(dividends)
   - models.py, views.py, serializers.py
@@ -416,3 +394,9 @@ stop
 ### bs
 
 - [ ] 組み込み
+
+```mermaid
+sequenceDiagram
+    Alice->>John: Hello John, how are you?
+    John-->>Alice: Great!
+```
