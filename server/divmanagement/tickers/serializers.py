@@ -42,14 +42,28 @@ from tickers.models import LANGUAGE_CHOICES, STYLE_CHOICES, Dividend, Ticker
 class TickerSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
+    # dividend_set = DividendSerializer(many=True)
+
     class Meta:
         model = Ticker
         fields = ['ticker', 'vol1', 'vol2', 'accum', 'owner']
+
+    # def create(self, validated_data):
+    #     dividend_validated_data = validated_data.pop('dividend_set')
+    #     question = Question.objects.create(**validated_data)
+    #     dividend_set_serializer = self.fields['dividend_set']
+    #     for each in dividend_validated_data:
+    #         each['ticker'] = ticker
+    #     dividends = dividend_set_serializer.create(dividend_validated_data)
+    #     return question
 
 
 class DividendSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     # ticker = TickerSerializer()
+    # ticker = serializers.StringRelatedField()
+    # ticker = serializers.CharField(source='ticker.ticker')
+    # print(f'{ticker=}')
 
     class Meta:
         model = Dividend
@@ -64,6 +78,23 @@ class DividendSerializer(serializers.ModelSerializer):
         # def craete(self, data):
         #     ticker, __ = Ticker.objects.get_or_create(ticke=data['ticker'])
         #     return Dividend()
+    # def create(self, validated_data):
+    #     return Dividend.objects.create(**validated_data)
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['ticker'] = Ticker(instance.ticker).ticker
+        return rep
+    # def to_representation(self, instance):
+    #     rep = super(DividendSerializer, self).to_representation(instance)
+    #     print(f'{instance.ticker.ticker=}')
+    #     rep['ticker'] = instance.ticker.ticker
+    #     return rep
+
+    # def to_representation(self, instance):
+    #     rep = super(UserSerializer, self).to_representation(instance)
+    #     rep['company_name'] = instance.company_name.name
+    #     return rep
 
 
 class UserSerializer(serializers.ModelSerializer):
