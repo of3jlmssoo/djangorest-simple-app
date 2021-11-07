@@ -18,7 +18,8 @@ class Ticker(models.Model):
         blank=False,
         null=False,
         unique=True,
-        default='someerror')
+    )
+    # default='someerror')
     vol1 = models.IntegerField(validators=[MinValueValidator(0)])
     vol2 = models.IntegerField(validators=[MinValueValidator(0)])
     total_vol = models.IntegerField(validators=[MinValueValidator(0)])
