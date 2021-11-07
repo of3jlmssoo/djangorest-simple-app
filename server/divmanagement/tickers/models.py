@@ -20,10 +20,25 @@ class Ticker(models.Model):
         unique=True,
     )
     # default='someerror')
-    vol1 = models.IntegerField(validators=[MinValueValidator(0)])
-    vol2 = models.IntegerField(validators=[MinValueValidator(0)])
-    total_vol = models.IntegerField(validators=[MinValueValidator(0)])
-    accum = models.IntegerField(validators=[MinValueValidator(0)])
+    vol1 = models.IntegerField(
+        validators=[
+            MinValueValidator(0)],
+        blank=False,
+        null=False,
+        default=0
+    )
+    vol2 = models.IntegerField(validators=[MinValueValidator(0)],
+                               blank=False,
+                               null=False,
+                               default=0)
+    total_vol = models.IntegerField(validators=[MinValueValidator(0)],
+                                    blank=False,
+                                    null=False,
+                                    default=0)
+    accum = models.IntegerField(validators=[MinValueValidator(0)],
+                                blank=False,
+                                null=False,
+                                default=0)
 
     owner = models.ForeignKey(
         'auth.User',
@@ -77,10 +92,18 @@ class Dividend(models.Model):
         Ticker,
         to_field='ticker',
         on_delete=models.PROTECT)
-    ex_date = models.DateField()
-    pay_date = models.DateField()
-    div_val = models.DecimalField(max_digits=8, decimal_places=6)
-    div_rat = models.DecimalField(max_digits=4, decimal_places=2)
+    ex_date = models.DateField(blank=False, null=False)
+    pay_date = models.DateField(blank=True, null=True, default='2020/1/1')
+    div_val = models.DecimalField(
+        max_digits=8,
+        decimal_places=6,
+        blank=False,
+        null=False)
+    div_rat = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        blank=True,
+        null=True, default=0.0)
 
     owner = models.ForeignKey(
         'auth.User',

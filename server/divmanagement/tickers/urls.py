@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework.urlpatterns import format_suffix_patterns
 from tickers import views
 
@@ -11,6 +11,10 @@ urlpatterns = format_suffix_patterns([
     path('tickers/<int:pk>/',
          views.TickerDetail.as_view(),
          name='ticker-detail'),
+
+    re_path(r'^tickers/(?P<ticker>\w+)/$', views.TickerListAPIView.as_view()),
+
+
     # path('snippets/<int:pk>/highlight/',
     #     views.SnippetHighlight.as_view(),
     #     name='snippet-highlight'),

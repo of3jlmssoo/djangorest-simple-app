@@ -5,7 +5,7 @@ from tickers.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework import filters
 from tickers.models import Ticker, Dividend
 from tickers.serializers import TickerSerializer, UserSerializer, DividendSerializer
 
@@ -58,11 +58,14 @@ class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
                           IsOwnerOrReadOnly]
 
 
-class TickerList(generics.ListAPIView):
+class TickerListAPIView(generics.ListAPIView):
     queryset = Ticker.objects.all()
+    print(f'==> TickerListAPIView called')
     serializer_class = TickerSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['ticker']
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['ticker']
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['ticker']
 
 
 class UserList(generics.ListAPIView):
