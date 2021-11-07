@@ -85,6 +85,7 @@ class DividendSerializer(serializers.ModelSerializer):
         rep = super().to_representation(instance)
         rep['ticker'] = Ticker(instance.ticker).ticker
         return rep
+
     # def to_representation(self, instance):
     #     rep = super(DividendSerializer, self).to_representation(instance)
     #     print(f'{instance.ticker.ticker=}')
@@ -95,6 +96,20 @@ class DividendSerializer(serializers.ModelSerializer):
     #     rep = super(UserSerializer, self).to_representation(instance)
     #     rep['company_name'] = instance.company_name.name
     #     return rep
+
+    # preparation for create()
+    # def create(self, data):
+    #     ticker, __ = Ticker.objects.get_or_create(ticker=data["ticker"])
+    #     dividend = Dividend(
+    #         ticker=ticker,
+    #         ex_date=data['ex_date'],
+    #         pay_date=data['pay_date'],
+    #         div_val=data['div_val'],
+    #         div_rat=data['div_rat'],
+    #         owner=data['owner']
+    #     )
+    #     dividend.save()
+    #     return dividend
 
 
 class UserSerializer(serializers.ModelSerializer):
