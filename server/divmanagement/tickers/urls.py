@@ -12,8 +12,8 @@ urlpatterns = format_suffix_patterns([
          views.TickerDetail.as_view(),
          name='ticker-detail'),
 
-    re_path(r'^tickers/(?P<ticker>\w+)/$', views.TickerListAPIView.as_view()),
-
+    #     re_path(r'^tickers/(?P<ticker>\w+)/$', views.TickerListAPIView.as_view()),
+    #     path('ticker/', views.TickerListAPIView.as_view()),
 
     # path('snippets/<int:pk>/highlight/',
     #     views.SnippetHighlight.as_view(),

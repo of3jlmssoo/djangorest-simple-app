@@ -8,6 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from tickers.models import Ticker, Dividend
 from tickers.serializers import TickerSerializer, UserSerializer, DividendSerializer
+from django_filters import rest_framework as filters
 
 
 @api_view(['GET'])
@@ -39,14 +40,14 @@ class DividendDetail(generics.RetrieveUpdateDestroyAPIView):
 # 3
 
 
-class TickerList(generics.ListCreateAPIView):
-    queryset = Ticker.objects.all()
-    serializer_class = TickerSerializer
+# class TickerList(generics.ListCreateAPIView):
+#     queryset = Ticker.objects.all()
+#     serializer_class = TickerSerializer
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
 
 
 class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -58,14 +59,37 @@ class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
                           IsOwnerOrReadOnly]
 
 
-class TickerListAPIView(generics.ListAPIView):
+class TickerFilter(filters.FilterSet):
+    # min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
+    # max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
+    # ticker = django_filters.CharFilter(lookup_expr='iexact')
+    ticker = filters.CharFilter(lookup_expr='iexact')
+
+    class Meta:
+        model = Ticker
+        fields = ['ticker']
+
+
+class TickerList(generics.ListAPIView):
+    print(f'=== TickerListAPIView called ===')
     queryset = Ticker.objects.all()
-    print(f'==> TickerListAPIView called')
     serializer_class = TickerSerializer
-    # filter_backends = [DjangoFilterBackend]
-    # filterset_fields = ['ticker']
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['ticker']
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TickerFilter
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+# class TickerListAPIView(generics.ListAPIView):
+#     queryset = Ticker.objects.all()
+#     print(f'==> TickerListAPIView called')
+#     serializer_class = TickerSerializer
+#     # filter_backends = [DjangoFilterBackend]
+#     # filterset_fields = ['ticker']
+#     filter_backends = [filters.SearchFilter]
+#     search_fields = ['ticker']
 
 
 class UserList(generics.ListAPIView):
