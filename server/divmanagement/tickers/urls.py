@@ -5,6 +5,7 @@ from tickers import views
 # API endpoints
 urlpatterns = format_suffix_patterns([
     path('', views.api_root),
+    re_path(r'^tickers/(?P<ticker>\w+)/$', views.TickerListAPIView.as_view()),
     path('tickers/',
          views.TickerList.as_view(),
          name='ticker-list'),

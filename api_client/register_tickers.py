@@ -39,7 +39,11 @@ print(f'{r.text=}')
 print(f'{type(r.text)=}')
 jtext = json.loads(r.text)
 
-r = s.delete(DJA_URL + 'tickers/' + str(jtext['id']) + '/', headers=headers)
+r = s.get(DJA_URL + 'tickers/?ticker=mc', headers=headers)
+print(r.text)
+jtext = json.loads(r.text)
+
+r = s.delete(DJA_URL + 'tickers/' + str(jtext[0]['id']) + '/', headers=headers)
 print(f'{r.status_code=}')
 print(f'{r.text=}')
 

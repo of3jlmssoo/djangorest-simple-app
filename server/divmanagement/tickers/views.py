@@ -40,14 +40,14 @@ class DividendDetail(generics.RetrieveUpdateDestroyAPIView):
 # 3
 
 
-# class TickerList(generics.ListCreateAPIView):
-#     queryset = Ticker.objects.all()
-#     serializer_class = TickerSerializer
+class TickerList(generics.ListCreateAPIView):
+    queryset = Ticker.objects.all()
+    serializer_class = TickerSerializer
 
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-#     def perform_create(self, serializer):
-#         serializer.save(owner=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -70,7 +70,7 @@ class TickerFilter(filters.FilterSet):
         fields = ['ticker']
 
 
-class TickerList(generics.ListAPIView):
+class TickerListAPIView(generics.ListAPIView):
     print(f'=== TickerListAPIView called ===')
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
