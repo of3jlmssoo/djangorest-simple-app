@@ -32,5 +32,18 @@ r = s.get(DJA_URL)
 headers = {'content-type': 'application/json'}
 params = {'ticker': 'mc'}
 r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
-print(r.status_code)
-print(r.json)
+print(f'{r.status_code=}')
+print(f'{r.json=}')
+print(f'{type(r.json)=}')
+print(f'{r.text=}')
+print(f'{type(r.text)=}')
+jtext = json.loads(r.text)
+
+r = s.delete(DJA_URL + 'tickers/' + str(jtext['id']) + '/', headers=headers)
+print(f'{r.status_code=}')
+print(f'{r.text=}')
+
+
+# class RestReq:
+#     def __init__(self) -> None:
+#         pass
