@@ -46,7 +46,7 @@ class TickerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticker
-        fields = ['ticker', 'vol1', 'vol2', 'accum', 'owner']
+        fields = ['id', 'ticker', 'vol1', 'vol2', 'accum', 'owner']
 
     # def create(self, validated_data):
     #     dividend_validated_data = validated_data.pop('dividend_set')

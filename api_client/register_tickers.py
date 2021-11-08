@@ -1,24 +1,36 @@
 """
+POST
+GET
+PATCH (update)
+DELETE
+PUT(???)
+
+
 export DJA_UI='admin'
 export DJA_PW='amincs8000'
+export DJA_URL='http://127.0.0.1:8000/'
 
+print(r.url)
+print(r.text)
+print(r.status_code)
 """
 
+import json
 import os
 import subprocess
-import coreapi
 
-# print(os.environ['DJA_UI'])
-# print(os.environ['DJA_PW'])
+import requests
 
-auth = coreapi.auth.BasicAuthentication(
+DJA_UI = os.environ['DJA_UI']
+DJA_PW = os.environ['DJA_PW']
+DJA_URL = os.environ['DJA_URL']
 
-    username=os.environ['DJA_UI'],
-    password=os.environ['DJA_PW']
-)
-client = coreapi.Client(auth=auth)
+s = requests.Session()
+s.auth = (DJA_UI, DJA_PW)
+r = s.get(DJA_URL)
 
-print(f'{client=}')
-
-schema = client.get('http://127.0.0.1:8000/')
-print(f'{schema=}')
+headers = {'content-type': 'application/json'}
+params = {'ticker': 'mc'}
+r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
+print(r.status_code)
+print(r.json)

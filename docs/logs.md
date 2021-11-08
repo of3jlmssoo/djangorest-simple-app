@@ -209,3 +209,6 @@ sequenceDiagram
   urls.py 更新
 
   pagenation は省略
+
+source ./djangorest/bin/activate; cd pro*/dj*app
+cd server/divmanagement/
