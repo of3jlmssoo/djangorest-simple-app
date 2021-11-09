@@ -32,6 +32,8 @@ r = s.get(DJA_URL)
 headers = {'content-type': 'application/json'}
 params = {'ticker': 'mc'}
 r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
+params = {'ticker': 'mss'}
+r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
 print(f'{r.status_code=}')
 print(f'{r.json=}')
 print(f'{type(r.json)=}')
@@ -39,9 +41,22 @@ print(f'{r.text=}')
 print(f'{type(r.text)=}')
 jtext = json.loads(r.text)
 
-r = s.get(DJA_URL + 'tickers/?ticker=mc', headers=headers)
+
+r = s.get(DJA_URL + 'tickers/', headers=headers)
 print(r.text)
 jtext = json.loads(r.text)
+jtext
+
+
+r = s.get(DJA_URL + 'tickersname/?ticker=mc', headers=headers)
+print(r.text)
+jtext = json.loads(r.text)
+jtext
+
+r = s.get(DJA_URL + 'tickersname/?ticker=mss', headers=headers)
+print(r.text)
+jtext = json.loads(r.text)
+jtext
 
 r = s.delete(DJA_URL + 'tickers/' + str(jtext[0]['id']) + '/', headers=headers)
 print(f'{r.status_code=}')
