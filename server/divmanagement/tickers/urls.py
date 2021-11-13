@@ -15,19 +15,12 @@ urlpatterns = format_suffix_patterns([
          views.TickerDetail.as_view(),
          name='ticker-detail'),
 
-    #     re_path(r'^tickers/(?P<ticker>\w+)/$', views.TickerListAPIView.as_view()),
-    #     path('ticker/', views.TickerListAPIView.as_view()),
-
-    # path('snippets/<int:pk>/highlight/',
-    #     views.SnippetHighlight.as_view(),
-    #     name='snippet-highlight'),
     path('users/',
          views.UserList.as_view(),
          name='user-list'),
     path('users/<int:pk>/',
          views.UserDetail.as_view(),
          name='user-detail'),
-
 
     path('dividends/',
          views.DividendList.as_view(),
@@ -36,20 +29,3 @@ urlpatterns = format_suffix_patterns([
          views.DividendDetail.as_view(),
          name='dividend-detail'),
 ])
-
-
-# from django.urls import path
-# from rest_framework.urlpatterns import format_suffix_patterns
-
-# from tickers import views
-
-# urlpatterns = [
-#     # path('tickers/', views.ticker_list),
-#     # path('tickers/<int:pk>/', views.ticker_detail),
-#     path('tickers/', views.TickerList.as_view()),
-#     path('tickers/<int:pk>/', views.TickerDetail.as_view()),
-#     path('', views.api_root),
-
-
-# ]
-# urlpatterns = format_suffix_patterns(urlpatterns)

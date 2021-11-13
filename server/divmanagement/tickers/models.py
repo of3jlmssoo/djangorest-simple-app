@@ -44,32 +44,11 @@ class Ticker(models.Model):
         'auth.User',
         related_name='tickers',
         on_delete=models.CASCADE)
-    # highlighted = models.TextField()
-
-    # code = models.TextField()
-    # linenos = models.BooleanField(default=False)
-    # language = models.CharField(
-    #     choices=LANGUAGE_CHOICES,
-    #     default='python',
-    #     max_length=100)
-    # style = models.CharField(
-    #     choices=STYLE_CHOICES,
-    #     default='friendly',
-    #     max_length=100)
 
     class Meta:
         ordering = ['created']
 
     def save(self, *args, **kwargs):
-        # """
-        # Use the `pygments` library to create a highlighted HTML
-        # representation of the code snippet.
-        # """
-        # lexer = get_lexer_by_name('Markdown')
-        # # linenos = 'table' if self.linenos else False
-        # # options = {'title': self.title} if self.title else {}
-        # formatter = HtmlFormatter(full=True)
-        # self.highlighted = highlight(self.ticker, lexer, formatter)
         self.total_vol = self.vol1 + self.vol2
         super(Ticker, self).save(*args, **kwargs)
 
