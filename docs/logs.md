@@ -154,6 +154,7 @@ sequenceDiagram
   python manage.py createsuperuser
   admin
   amincs8000
+  user1 / user1ppwwdd
 
   serializers.py 更新
   views.py にユーザー関連のビューを追加
