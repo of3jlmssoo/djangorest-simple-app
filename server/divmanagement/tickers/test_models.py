@@ -1,6 +1,14 @@
+import json
+import os
+import subprocess
+import sys
+from typing import Type
+
+# import django
+import requests
 from django.contrib.auth.models import User
 from django.test import TestCase
-import django
+
 from tickers.models import Dividend, Ticker
 
 
@@ -8,100 +16,63 @@ class TickerTest(TestCase):
     """ Test module for Ticker model """
 
     def __init__(self, *args, **kwargs):
-        print(f'--> TickerTest')
+        print(f'--> TickerTest() __init__()')
         super().__init__(*args, **kwargs)
-        self.user = ''
+
+        self.dja_url = None
+        self.username = 'testuser'
+        self.password = 'ppaasssswwoorrdd'
+        self.user = None
+        self.session = requests.Session()
+        self.session.auth = (self.username, self.password)
+        self.headers = {'content-type': 'application/json'}
+
+    def env_check(self):
+        try:
+            # DJA_UI = os.environ['DJA_UI']
+            # DJA_PW = os.environ['DJA_PW']
+            self.dja_url = os.environ['DJA_URL']
+            print(f'{self.dja_url=}')
+        except KeyError as e:
+            print(f'環境変数が必要')
+            # print(f"export DJA_UI='admin'")
+            # print(f"export DJA_PW='amincs8000'")
+            print(f"export DJA_URL='http://127.0.0.1:8000/'")
+            sys.exit()
 
     def setUp(self):
-        print(f'--> setUp called')
-        user = User(username='testusr')
-        user.set_password('ppaasssswwoorrdd')
+        print(f'--> setUp()')
+        self.env_check()
+        user = User(username=self.username)
+        user.set_password(self.password)
         user.save()
-        # data0 = {
-        #     'ticker': 'mc',
-        #     'vol1': 3,
-        #     'vol2': 2,
-        #     'accum': 50,
-        #     'owner': 'user'}
         self.user = user
-        # Ticker.objects.create(
-        #     ticker=self.data0['ticker'],
-        #     vol1=self.data0['vol1'],
-        #     vol2=self.data0['vol2'],
-        #     accum=self.data0['accum'],
-        #     owner=self.data0['owner'])
-
-        # Ticker.objects.create(
-        #     ticker='mc',
-        #     vol1=3,
-        #     vol2=2,
-        #     accum=50,
-        #     owner=user)
-        # Ticker.objects.create(
-        #     ticker='mss', vol1=5, vol2=3, accum=70, owner='user1')
 
     def test_ticker(self):
-        print(f'--> Ticker_breed called')
-        # Ticker_mc = Ticker.objects.get(ticker='mc')
-        # Ticker_mss = Ticker.objects.get(ticker='mss')
-        # dataR = {
-        #     'ticker': Ticker_mc.ticker,
-        #     'vol1': Ticker_mc.vol1,
-        #     'vol2': Ticker_mc.vol2,
-        #     'accum': Ticker_mc.accum,
-        #     'owner': Ticker_mc.owner}
+        print(f'--> test_ticker()')
 
-        # print(f'{type(self.data0)=}')
-        # print(f'{type(dataR)=}')
-        # print(f'{Ticker_mc=}')
-        # print(f'{type(Ticker_mc)=}')
-        # print(f'{Ticker_mc.ticker=}')
-        # print(f'{Ticker_mc.vol1=}')
-        data = {
+        print(f'--> 銘柄登録x1 tickerのみ')
+        ref_code = 201
+        params = {'ticker': 'mc'}
+        print(f'{self.dja_url=}')
+        r = self.session.post(
+            self.dja_url + 'tickers/',
+            data=json.dumps(params),
+            headers=self.headers)
+        ret_data = json.loads(r.text)
+        print(f'{ret_data=}')
+        id = ret_data.pop('id')
+        ref_ticker = {
             'ticker': 'mc',
-            'vol1': 3,
-            'vol2': 2,
-            'accum': 50,
-            'owner': self.user}
-        self.assertEqual(self.create_return(data), data)
+            'vol1': 0,
+            'vol2': 0,
+            'accum': 0,
+            'owner': 'admin'}
+        ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
+        ret_data = {'status_code': r.status_code, 'ticker': ret_data}
+        self.assertEqual(ref_data, ret_data)
 
-        data = {
-            'ticker': None,
-            'vol1': 3,
-            'vol2': 2,
-            'accum': 50,
-            'owner': self.user}
         # self.assertEqual(self.create_return(data), data)
-
-        self.assertRaises(
-            django.db.utils.IntegrityError,
-            self.create_return,
-            data)
-
-        # self.assertEqual(
-        #     Ticker_muffin.get_breed(), "Muffin belongs to Gradane breed.")
-
-    def create_return(self, data):
-        # print(f'--> create_return() {data=}')
-        Ticker_mc = Ticker.objects.create(
-            ticker=data['ticker'],
-            vol1=data['vol1'],
-            vol2=data['vol2'],
-            accum=data['accum'],
-            owner=data['owner'])
-
-        print(f'--> create_return() {Ticker_mc=} {Ticker_mc.ticker=}')
-        if Ticker_mc:
-            print(f'--> True')
-        else:
-            print(f'--> Else')
-
-        return {
-            'ticker': Ticker_mc.ticker,
-            'vol1': Ticker_mc.vol1,
-            'vol2': Ticker_mc.vol2,
-            'accum': Ticker_mc.accum,
-            'owner': Ticker_mc.owner}
 
         # @csrf_exempt
         # def ticker_list(request):

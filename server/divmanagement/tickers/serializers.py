@@ -9,7 +9,14 @@ class TickerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticker
-        fields = ['id', 'ticker', 'vol1', 'vol2', 'accum', 'owner']
+        fields = [
+            'id',
+            'ticker',
+            'vol1',
+            'vol2',
+            # 'total_vol',
+            'accum',
+            'owner']
 
 
 class DividendSerializer(serializers.ModelSerializer):
