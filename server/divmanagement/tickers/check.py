@@ -265,7 +265,58 @@ class ApiTest4Ticker(TestCase):
         logger.debug(f'     delete.  {r.status_code=} {id=}.')
 
         logger.debug(f'3) 銘柄登録x1 ticker, vol1, vol2, accum')
-        # - 銘柄登録x1 type(ticker) == int
+
+        logger.debug(f'4) 銘柄登録x1 type(ticker) == int (int2str)')
+        ticker_code = 123
+        ref_code = 201
+        params = {'ticker': ticker_code}
+        # POST
+        r = self.session.post(
+            DJA_URL + 'tickers/',
+            data=json.dumps(params),
+            headers=self.headers)
+        logger.debug(f'     post. {r.status_code=} {r.text=}')
+        ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
+        id = ret_ticker.pop('id')
+        ref_ticker = {
+            'ticker': str(ticker_code),  # 自動でstr化される
+            'vol1': 0,
+            'vol2': 0,
+            'accum': 0,
+            'owner': 'admin'}
+        ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
+        ret_data = {'status_code': r.status_code, 'ticker': ret_ticker}
+        self.assertEqual(ref_data, ret_data)
+
+        # GET(query)
+        ref_code = 200
+        r = self.session.get(
+            DJA_URL +
+            'tickersname/?ticker=' +
+            str(ticker_code),
+            headers=self.headers)
+        ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
+        ret_ticker = json.loads(r.text)
+        id = ret_ticker[0].pop('id')
+        ret_data.clear()
+        ret_data = {'status_code': r.status_code, 'ticker': ret_ticker[0]}
+        logger.debug(f'     {ret_data=} {type(ret_data)=}')
+        logger.debug(f'     {ref_data=} {type(ref_data)=}')
+        self.assertEqual(ref_data, ret_data)
+        logger.debug(f'     get(query).  {r.status_code=} {ticker_code=}.')
+        ret_ticker = json.loads(r.text)
+        id = ret_ticker[0].pop('id')
+
+        # DELETE
+        ref_code = 204
+        r = self.session.delete(DJA_URL +
+                                'tickers/' +
+                                str(id) +
+                                '/', headers=self.headers)
+        self.assertEqual(ref_code, r.status_code)
+        logger.debug(f'     delete.  {r.status_code=} {id=}.')
+
+        logger.debug(f'4) 銘柄登録x1 type(ticker) == int')
         # - 銘柄登録x1 vol1 = -1
         # - 銘柄登録x1 vol2 = -1
         # - 銘柄登録x1 accum = -1
