@@ -10,18 +10,20 @@ export DJA_URL='http://127.0.0.1:8000/'
 
 """
 import json
+import logging
 import os
 import subprocess
+import unittest
 
 import requests
 from django.test import TestCase
 
-import unittest
-import logging
+import client_requests
+from resultenum import expected_result
 
-DJA_UI = os.environ['DJA_UI']
-DJA_PW = os.environ['DJA_PW']
-DJA_URL = os.environ['DJA_URL']
+# DJA_UI = os.environ['DJA_UI']
+# DJA_PW = os.environ['DJA_PW']
+# DJA_URL = os.environ['DJA_URL']
 
 
 logger = logging.getLogger(__name__)
@@ -42,41 +44,52 @@ class ApiTest4Ticker(TestCase):
     def __init__(self, *args, **kwargs):
         print(f'ApiTest')
         super().__init__(*args, **kwargs)
-        self.session = requests.Session()
-        self.session.auth = (DJA_UI, DJA_PW)
-        self.headers = {'content-type': 'application/json'}
+        self.DJA_UI = os.environ['DJA_UI']
+        self.DJA_PW = os.environ['DJA_PW']
+        self.DJA_URL = os.environ['DJA_URL']
+        self.content_type = {'content-type': 'application/json'}
+        self.app = 'tickers'
+        # self.session = requests.Session()
+        # self.session.auth = (DJA_UI, DJA_PW)
+        # self.headers = {'content-type': 'application/json'}
 
+        self.client_requests = client_requests.client_requests(
+            self.DJA_UI,
+            self.DJA_PW,
+            self.DJA_URL,
+            self.content_type,
+            self.app)
         # r = s.get(DJA_URL)
-        r = self.session.get(DJA_URL + 'tickers/', headers=self.headers)
-        if r.text != '[]':
-            # print(r.text)
-            # jtext = json.loads(r.text)
-            # jtext
-            print('---------------------------------------')
-            print('--- please delete the existing data ---')
-            print('---------------------------------------')
-            self.delete_all_data()
+        # r = self.session.get(DJA_URL + 'tickers/', headers=self.headers)
+        # if r.text != '[]':
+        #     # print(r.text)
+        #     # jtext = json.loads(r.text)
+        #     # jtext
+        #     print('---------------------------------------')
+        #     print('--- please delete the existing data ---')
+        #     print('---------------------------------------')
+        #     self.delete_all_data()
 
-    def delete_all_data(self):
+    # def delete_all_data(self):
 
-        r = self.session.get(DJA_URL + 'tickers/', headers=self.headers)
-        while r.text != '[]':
-            # ret_ticker = json.loads(r.text)
-            # id = ret_ticker[0].pop('id')
-            # ret_ticker = json.loads(r.text)
-            id = json.loads(r.text)[0].pop('id')
-            logger.debug(f'{r.text} and {id=} will be deleted')
-            self.delete_data(id)
-            r = self.session.get(DJA_URL + 'tickers/', headers=self.headers)
-        # print(f'{r.status_code=}')
-        # print(f'{r.text=}')
+    #     r = self.session.get(DJA_URL + 'tickers/', headers=self.headers)
+    #     while r.text != '[]':
+    #         # ret_ticker = json.loads(r.text)
+    #         # id = ret_ticker[0].pop('id')
+    #         # ret_ticker = json.loads(r.text)
+    #         id = json.loads(r.text)[0].pop('id')
+    #         logger.debug(f'{r.text} and {id=} will be deleted')
+    #         self.delete_data(id)
+    #         r = self.session.get(DJA_URL + 'tickers/', headers=self.headers)
+    #     # print(f'{r.status_code=}')
+    #     # print(f'{r.text=}')
 
-    def delete_data(self, id):
-        logger.debug(f'delete_data called.  {id=}')
-        r = self.session.delete(DJA_URL +
-                                'tickers/' +
-                                str(id) +
-                                '/', headers=self.headers)
+    # def delete_data(self, id):
+    #     logger.debug(f'delete_data called.  {id=}')
+    #     r = self.session.delete(DJA_URL +
+    #                             'tickers/' +
+    #                             str(id) +
+    #                             '/', headers=self.headers)
 
     def test_ticker(self):
         """
@@ -98,13 +111,18 @@ class ApiTest4Ticker(TestCase):
         # - 銘柄登録x1 tickerのみ
         logger.debug(f'1) 銘柄登録x1 tickerのみ ---')
         ticker_code = 'mc'
-        ref_code = 201
+        # ref_code = 201
         params = {'ticker': ticker_code}
         # POST
-        r = self.session.post(
-            DJA_URL + 'tickers/',
-            data=json.dumps(params),
-            headers=self.headers)
+        # r = self.session.post(
+        #     DJA_URL + 'tickers/',
+        #     data=json.dumps(params),
+        #     headers=self.headers)
+        result, r = self.client_requests.post_data(ticker_code, params)
+        if result != expected_result.as_expected:
+            logger.debug(f'     when post, unexpected status:{result=}')
+            return
+
         logger.debug(f'     post. {r.status_code=} {r.text=}')
         ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
         id = ret_ticker.pop('id')
@@ -114,9 +132,10 @@ class ApiTest4Ticker(TestCase):
             'vol2': 0,
             'accum': 0,
             'owner': 'admin'}
-        ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
-        ret_data = {'status_code': r.status_code, 'ticker': ret_ticker}
-        self.assertEqual(ref_data, ret_data)
+        # ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
+        # ret_data = {'status_code': r.status_code, 'ticker': ret_ticker}
+        # self.assertEqual(ref_data, ret_data)
+        self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query)
         ref_code = 200
