@@ -18,7 +18,7 @@ import unittest
 import requests
 from django.test import TestCase
 
-from resultenum import expected_result
+from resultenum import expected_result, http_result
 
 logger = logging.getLogger(__name__)
 ch = logging.StreamHandler()
@@ -69,18 +69,34 @@ class client_requests(object):
                 headers=self.headers)
 
     def delete_data(self, id):
+        # ref_code = 204  # No Content => deleted
+        ref_code = http_result.NoContentDeleted.value  # No Content => deleted
         logger.debug(f'     delete_data called.  {id=}')
         r = self.session.delete(self.DJA_URL + self.app +
                                 '/' +
                                 str(id) +
                                 '/', headers=self.headers)
+        result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+        return result, r
 
-    def post_data(self, ticker_code, params):
+    # def post_data(self, ticker_code, params):
+    def post_data(self, params):
         pass
-        ref_code = 201  # created
+        ref_code = http_result.Created.value  # created
         r = self.session.post(
             self.DJA_URL + self.app + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+        return result, r
+
+    def get_data(self, ticker_code):
+        ref_code = http_result.OK.value
+        r = self.session.get(
+            self.DJA_URL +
+            self.app + 'name/?ticker=' +
+            ticker_code,
+            headers=self.headers)
+        result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+
         return result, r

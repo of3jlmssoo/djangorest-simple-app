@@ -19,7 +19,7 @@ import requests
 from django.test import TestCase
 
 import client_requests
-from resultenum import expected_result
+from resultenum import expected_result, http_result
 
 # DJA_UI = os.environ['DJA_UI']
 # DJA_PW = os.environ['DJA_PW']
@@ -109,19 +109,15 @@ class ApiTest4Ticker(TestCase):
         """
         # - status_codeとデータ内容確認
         # - 銘柄登録x1 tickerのみ
+        #####################################################################
         logger.debug(f'1) 銘柄登録x1 tickerのみ ---')
         ticker_code = 'mc'
-        # ref_code = 201
         params = {'ticker': ticker_code}
-        # POST
-        # r = self.session.post(
-        #     DJA_URL + 'tickers/',
-        #     data=json.dumps(params),
-        #     headers=self.headers)
-        result, r = self.client_requests.post_data(ticker_code, params)
+        # result, r = self.client_requests.post_data(ticker_code, params)
+        result, r = self.client_requests.post_data(params)
         if result != expected_result.as_expected:
-            logger.debug(f'     when post, unexpected status:{result=}')
-            return
+            logger.debug(f'     when post, unexpected status:{r.status_code=}')
+            # return
 
         logger.debug(f'     post. {r.status_code=} {r.text=}')
         ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
@@ -132,41 +128,35 @@ class ApiTest4Ticker(TestCase):
             'vol2': 0,
             'accum': 0,
             'owner': 'admin'}
-        # ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
-        # ret_data = {'status_code': r.status_code, 'ticker': ret_ticker}
-        # self.assertEqual(ref_data, ret_data)
         self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query)
-        ref_code = 200
-        r = self.session.get(
-            DJA_URL +
-            'tickersname/?ticker=' +
-            ticker_code,
-            headers=self.headers)
-        ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
+        result, r = self.client_requests.get_data(ticker_code)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
+            # return
         ret_ticker = json.loads(r.text)
-        id = ret_ticker[0].pop('id')
-        ret_data.clear()
-        ret_data = {'status_code': r.status_code, 'ticker': ret_ticker[0]}
-        logger.debug(f'     {ret_data=} {type(ret_data)=}')
-        logger.debug(f'     {ref_data=} {type(ref_data)=}')
-        self.assertEqual(ref_data, ret_data)
-        logger.debug(f'     get(query).  {r.status_code=} {ticker_code=}.')
-        ret_ticker = json.loads(r.text)
-        id = ret_ticker[0].pop('id')
+        ret_ticker = ret_ticker[0]
+        id = ret_ticker.pop('id')
+
+        self.assertEqual(ref_ticker, ret_ticker)
+        logger.debug(
+            f'     get(query).  {r.status_code=} {id=} {ticker_code=}.')
 
         # DELETE
-        ref_code = 204
-        r = self.session.delete(DJA_URL +
-                                'tickers/' +
-                                str(id) +
-                                '/', headers=self.headers)
+        result, r = self.client_requests.delete_data(id)
+        if result != expected_result.as_expected:
+            logger.debug(f'     when get, unexpected status:{r.status_code=}')
+            return
+
+        # ref_code = 204
+        ref_code = http_result.NoContentDeleted.value
         self.assertEqual(ref_code, r.status_code)
         logger.debug(f'     delete.  {r.status_code=} {id=}.')
         logger.debug(f'1) 銘柄登録x1 tickerのみ ---')
 
-        # - 銘柄登録x1 vol1, vol2, accum
+        #####################################################################
         logger.debug(f'2) 銘柄登録x1 vol1, vol2, accum')
         # ticker_code = 'mc'
         ticker_vol1 = 12
@@ -178,70 +168,44 @@ class ApiTest4Ticker(TestCase):
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
-        # POST
-        r = self.session.post(
-            DJA_URL + 'tickers/',
-            data=json.dumps(params),
-            headers=self.headers)
+
+        # result, r = self.client_requests.post_data(ticker_code, params)
+        result, r = self.client_requests.post_data(params)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when post, unexpected status:{r.status_code=} {r.text}')
+            # return
+
         logger.debug(f'     post. {r.status_code=} {r.text=}')
-        # ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
-        # id = ret_ticker.pop('id')
-        # ref_ticker = {
-        #     'ticker': ticker_code,
-        #     'vol1': ticker_vol1,
-        #     'vol2': ticker_vol2,
-        #     'accum': ticker_accum,
-        #     'owner': 'admin'}
-        # ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
-        # ret_data = {'status_code': r.status_code, 'ticker': ret_ticker}
-        self.assertEqual(ref_code, r.status_code)
-
-        # GET(query)
-        # ref_code = 200
-        # r = self.session.get(
-        #     DJA_URL +
-        #     'tickersname/?ticker=' +
-        #     ticker_code,
-        #     headers=self.headers)
-        # ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
-        # ret_ticker = json.loads(r.text)
-        # id = ret_ticker[0].pop('id')
-        # ret_data.clear()
-        # ret_data = {'status_code': r.status_code, 'ticker': ret_ticker[0]}
-        # logger.debug(f'     {ret_data=} {type(ret_data)=}')
-        # logger.debug(f'     {ref_data=} {type(ref_data)=}')
-        # self.assertEqual(ref_data, ret_data)
-        # logger.debug(f'     get(query).  {r.status_code=} {ticker_code=}.')
-        # ret_ticker = json.loads(r.text)
-        # id = ret_ticker[0].pop('id')
-
-        # # DELETE
-        # ref_code = 204
-        # r = self.session.delete(DJA_URL +
-        #                         'tickers/' +
-        #                         str(id) +
-        #                         '/', headers=self.headers)
-        # self.assertEqual(ref_code, r.status_code)
-        # logger.debug(f'     delete.  {r.status_code=} {id=}.')
+        self.assertEqual(http_result.BadRequest.value, r.status_code)
 
         logger.debug(f'2) 銘柄登録x1 vol1, vol2, accum')
 
+        #####################################################################
         logger.debug(f'3) 銘柄登録x1 ticker, vol1, vol2, accum')
         ticker_code = 'mc'
         ticker_vol1 = 12
         ticker_vol2 = 3
         ticker_accum = 100
-        ref_code = 201
+        # ref_code = 201
+        ref_code = http_result.Created.value
         params = {
             'ticker': ticker_code,
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
         # POST
-        r = self.session.post(
-            DJA_URL + 'tickers/',
-            data=json.dumps(params),
-            headers=self.headers)
+        # r = self.session.post(
+        #     DJA_URL + 'tickers/',
+        #     data=json.dumps(params),
+        #     headers=self.headers)
+        # result, r = self.client_requests.post_data(ticker_code, params)
+        result, r = self.client_requests.post_data(params)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when post, unexpected status:{r.status_code=} {r.text}')
+            # return
+
         logger.debug(f'     post. {r.status_code=} {r.text=}')
         ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
         id = ret_ticker.pop('id')
@@ -251,29 +215,30 @@ class ApiTest4Ticker(TestCase):
             'vol2': ticker_vol2,
             'accum': ticker_accum,
             'owner': 'admin'}
-        ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
-        ret_data = {'status_code': r.status_code, 'ticker': ret_ticker}
-        self.assertEqual(ref_data, ret_data)
+        self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query)
-        ref_code = 200
-        r = self.session.get(
-            DJA_URL +
-            'tickersname/?ticker=' +
-            ticker_code,
-            headers=self.headers)
-        ref_data = {'status_code': ref_code, 'ticker': ref_ticker}
+        # ref_code = 200
+        ref_code = http_result.OK.value
+        # r = self.session.get(
+        #     DJA_URL +
+        #     'tickersname/?ticker=' +
+        #     ticker_code,
+        #     headers=self.headers)
+        result, r = self.client_requests.get_data(ticker_code)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
+            # return
         ret_ticker = json.loads(r.text)
-        id = ret_ticker[0].pop('id')
-        ret_data.clear()
-        ret_data = {'status_code': r.status_code, 'ticker': ret_ticker[0]}
-        logger.debug(f'     {ret_data=} {type(ret_data)=}')
-        logger.debug(f'     {ref_data=} {type(ref_data)=}')
-        self.assertEqual(ref_data, ret_data)
-        logger.debug(f'     get(query).  {r.status_code=} {ticker_code=}.')
-        ret_ticker = json.loads(r.text)
-        id = ret_ticker[0].pop('id')
+        ret_ticker = ret_ticker[0]
+        id = ret_ticker.pop('id')
 
+        self.assertEqual(ref_ticker, ret_ticker)
+        logger.debug(f'     get(query).  {r.status_code=} {ticker_code=}.')
+        # ret_ticker = json.loads(r.text)
+        # id = ret_ticker[0].pop('id')
+        print(f'=========================================')
         # DELETE
         ref_code = 204
         r = self.session.delete(DJA_URL +
