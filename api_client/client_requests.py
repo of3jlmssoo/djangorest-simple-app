@@ -62,7 +62,7 @@ class client_requests(object):
             headers=self.headers)
         while r.text != '[]':
             id = json.loads(r.text)[0].pop('id')
-            logger.debug(f'     {r.text} and {id=} will be deleted')
+            # logger.debug(f'     {r.text} and {id=} will be deleted')
             self.delete_data(id)
             r = self.session.get(
                 self.DJA_URL + self.app + '/',
@@ -71,7 +71,7 @@ class client_requests(object):
     def delete_data(self, id):
         # ref_code = 204  # No Content => deleted
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
-        logger.debug(f'     delete_data called.  {id=}')
+        # logger.debug(f'     delete_data called.  {id=}')
         r = self.session.delete(self.DJA_URL + self.app +
                                 '/' +
                                 str(id) +
