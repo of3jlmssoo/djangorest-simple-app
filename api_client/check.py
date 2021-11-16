@@ -102,6 +102,8 @@ class ApiTest4Ticker(TestCase):
         - 銘柄登録x1 vol2 = -1
         - 銘柄登録x1 accum = -1
 
+        - put
+
         - 銘柄登録x2
         - 銘柄照会(全)
         - 銘柄照会x1(#1) & 銘柄照会x1(#2)
@@ -307,11 +309,153 @@ class ApiTest4Ticker(TestCase):
         # logger.debug(f'     delete.  {r.status_code=} {id=}.')
 
         logger.debug(f'4) 銘柄登録x1 type(ticker) == int')
-        print(f'===========================================')
 
-        # - 銘柄登録x1 vol1 = -1
-        # - 銘柄登録x1 vol2 = -1
-        # - 銘柄登録x1 accum = -1
+        logger.debug(f'5) 銘柄登録x1 vol1 = -1')
+        ticker_code = 'mc'
+        ticker_vol1 = -1
+        ticker_vol2 = 3
+        ticker_accum = 100
+        ref_code = http_result.BadRequest.value
+        params = {
+            'ticker': ticker_code,
+            'vol1': ticker_vol1,
+            'vol2': ticker_vol2,
+            'accum': ticker_accum}
+        result, r = self.client_requests.post_data(params)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when post, unexpected status:{r.status_code=} {r.text}')
+            # return
+
+        logger.debug(f'     post. {r.status_code=} {r.text=}')
+        self.assertEqual(ref_code, r.status_code)
+
+        logger.debug(f'5) 銘柄登録x1 vol1 = -1')
+
+        logger.debug(f'6) 銘柄登録x1 vol2 = -1')
+        ticker_code = 'mc'
+        ticker_vol1 = 12
+        ticker_vol2 = -2
+        ticker_accum = 100
+        ref_code = http_result.BadRequest.value
+        params = {
+            'ticker': ticker_code,
+            'vol1': ticker_vol1,
+            'vol2': ticker_vol2,
+            'accum': ticker_accum}
+        result, r = self.client_requests.post_data(params)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when post, unexpected status:{r.status_code=} {r.text}')
+            # return
+
+        logger.debug(f'     post. {r.status_code=} {r.text=}')
+        self.assertEqual(ref_code, r.status_code)
+
+        logger.debug(f'6) 銘柄登録x1 vol2 = -1')
+
+        logger.debug(f'7) 銘柄登録x1 accum = -1')
+        ticker_code = 'mc'
+        ticker_vol1 = 12
+        ticker_vol2 = -3
+        ticker_accum = -100
+        ref_code = http_result.BadRequest.value
+        params = {
+            'ticker': ticker_code,
+            'vol1': ticker_vol1,
+            'vol2': ticker_vol2,
+            'accum': ticker_accum}
+        result, r = self.client_requests.post_data(params)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when post, unexpected status:{r.status_code=} {r.text}')
+            # return
+
+        logger.debug(f'     post. {r.status_code=} {r.text=}')
+        self.assertEqual(ref_code, r.status_code)
+
+        logger.debug(f'7) 銘柄登録x1 accum = -1')
+
+        logger.debug(f'8) put')
+        ticker_code = 'mc'
+        ticker_vol1 = 12
+        ticker_vol2 = 3
+        ticker_accum = 100
+        # ref_code = 201
+        ref_code = http_result.Created.value
+        params = {
+            'ticker': ticker_code,
+            'vol1': ticker_vol1,
+            'vol2': ticker_vol2,
+            'accum': ticker_accum}
+        result, r = self.client_requests.post_data(params)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when post, unexpected status:{r.status_code=} {r.text}')
+            # return
+
+        logger.debug(f'     post. {r.status_code=} {r.text=}')
+        ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
+        id = ret_ticker.pop('id')
+        ref_ticker = {
+            'ticker': ticker_code,
+            'vol1': ticker_vol1,
+            'vol2': ticker_vol2,
+            'accum': ticker_accum,
+            'owner': self.DJA_UI}
+        self.assertEqual(ref_ticker, ret_ticker)
+
+        # GET(query)
+        result, r = self.client_requests.get_data(ticker_code)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
+            # return
+        ret_ticker = json.loads(r.text)
+        ret_ticker = ret_ticker[0]
+        id = ret_ticker.pop('id')
+
+        self.assertEqual(ref_ticker, ret_ticker)
+        logger.debug(
+            f'     get(query).  {r.status_code=} {id=} {ticker_code=}.')
+
+        # PUT
+        logger.debug(f'===> {ret_ticker=}')
+        for k in ret_ticker.keys():
+            print(k)
+        # {ret_ticker[ticker]=}')
+        logger.debug(f'===> {ret_ticker=} {type(ret_ticker)=}')
+        logger.debug(f'===> {ret_ticker["ticker"]=}')
+        params = {
+            'ticker': ret_ticker['ticker'],
+            'vol1': 500,
+            # 'vol2': ret_ticker['vol2'],
+            # 'accum': ret_ticker['accum']
+        }
+        result, r = self.client_requests.put_data(params)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
+            # return
+        logger.debug(f'     {r.status_code=} {r.text=}')
+
+        # GET(query)
+        result, r = self.client_requests.get_data(ticker_code)
+        if result != expected_result.as_expected:
+            logger.debug(
+                f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
+            # return
+        ret_ticker = json.loads(r.text)
+        ret_ticker = ret_ticker[0]
+        id = ret_ticker.pop('id')
+
+        self.assertEqual(ref_ticker, ret_ticker)
+        logger.debug(
+            f'     get(query).  {r.status_code=} {id=} {ticker_code=} {r.text=}')
+
+        logger.debug(f'8) put')
+
+        print(f'===========================================')
 
         # - 銘柄登録x2
         # - 銘柄照会(全)

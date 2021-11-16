@@ -90,6 +90,16 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
+    def put_data(self, params):
+        pass
+        ref_code = http_result.Created.value  # created
+        r = self.session.put(
+            self.DJA_URL + self.app + '/',
+            data=json.dumps(params),
+            headers=self.headers)
+        result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+        return result, r
+
     def get_data(self, ticker_code):
         ref_code = http_result.OK.value
         r = self.session.get(
