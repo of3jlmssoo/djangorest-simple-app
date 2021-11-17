@@ -1,14 +1,16 @@
-from rest_framework.reverse import reverse
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from tickers.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from tickers.models import Ticker, Dividend
-from tickers.serializers import TickerSerializer, UserSerializer, DividendSerializer
 from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
+# from rest_framework import filters, generics, permissions
+from rest_framework import generics, permissions
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+from tickers.models import Dividend, Ticker
+from tickers.permissions import IsOwnerOrReadOnly
+from tickers.serializers import (DividendSerializer, TickerSerializer,
+                                 UserSerializer)
 
 
 @api_view(['GET'])

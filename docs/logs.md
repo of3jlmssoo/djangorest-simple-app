@@ -1,4 +1,5 @@
 # 配当管理
+
 ## todo
 
 ### rest
@@ -10,7 +11,7 @@
   - models.py, views.py, serializers.py
   - urls.py
 - [x] select(filtering)
-- [ ] model blankm null設定見直し
+- [ ] model blankm null 設定見直し
 - [ ] unique constrains(Ticker.ticker & Dividend.ex_date)
 - [ ] python client API(register tickers)
 - [ ] authentication
@@ -24,8 +25,6 @@ sequenceDiagram
     Alice->>John: Hello John, how are you?
     John-->>Alice: Great!
 ```
-
-
 
 - tutorial 1
 
@@ -213,3 +212,9 @@ sequenceDiagram
 
 source ./djangorest/bin/activate; cd pro*/dj*app
 cd server/divmanagement/
+
+## API Client curl
+
+curl -u admin:amincs8000 -X PUT -H "Content-Type: application/json" -d '{"vol1":123}' http://127.0.0.1:8000/tickers/198/
+curl -u admin:amincs8000 -X PUT http://127.0.0.1:8000/tickers/198/ -H "Content-Type: application/json" -d '{"vol1":123}'
+curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/tickers/198/

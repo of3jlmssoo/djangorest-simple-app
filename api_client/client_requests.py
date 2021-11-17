@@ -90,11 +90,11 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def put_data(self, params):
+    def patch_data(self, id, params):
         pass
         ref_code = http_result.Created.value  # created
-        r = self.session.put(
-            self.DJA_URL + self.app + '/',
+        r = self.session.patch(
+            self.DJA_URL + self.app + '/' + str(id) + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected

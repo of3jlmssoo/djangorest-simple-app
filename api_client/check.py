@@ -162,7 +162,7 @@ class ApiTest4Ticker(TestCase):
         ticker_vol1 = 12
         ticker_vol2 = 3
         ticker_accum = 100
-        ref_code = 400
+        # ref_code = 400
         params = {
             # 'ticker': ticker_code,
             'vol1': ticker_vol1,
@@ -181,7 +181,7 @@ class ApiTest4Ticker(TestCase):
 
         logger.debug(f'2) 銘柄登録x1 vol1, vol2, accum')
 
-        #####################################################################
+        ####################################################################
         logger.debug(f'3) 銘柄登録x1 ticker, vol1, vol2, accum')
         ticker_code = 'mc'
         ticker_vol1 = 12
@@ -419,20 +419,30 @@ class ApiTest4Ticker(TestCase):
         logger.debug(
             f'     get(query).  {r.status_code=} {id=} {ticker_code=}.')
 
-        # PUT
-        logger.debug(f'===> {ret_ticker=}')
-        for k in ret_ticker.keys():
-            print(k)
-        # {ret_ticker[ticker]=}')
-        logger.debug(f'===> {ret_ticker=} {type(ret_ticker)=}')
-        logger.debug(f'===> {ret_ticker["ticker"]=}')
-        params = {
-            'ticker': ret_ticker['ticker'],
-            'vol1': 500,
-            # 'vol2': ret_ticker['vol2'],
-            # 'accum': ret_ticker['accum']
-        }
-        result, r = self.client_requests.put_data(params)
+        # PATCH
+        # for k in ret_ticker.keys():
+        #     print(k)
+        # # {ret_ticker[ticker]=}')
+        # logger.debug(f'===> {ret_ticker=} {type(ret_ticker)=}')
+        # logger.debug(f'===> {ret_ticker["ticker"]=}')
+
+        ticker_vol1 = 500
+        ref_ticker['vol1'] = ticker_vol1
+        # ref_ticker = {
+        #     'ticker': ticker_code,
+        #     'vol1': ticker_vol1,
+        #     'vol2': ticker_vol2,
+        #     'accum': ticker_accum,
+        #     'owner': self.DJA_UI}
+
+        params['vol1'] = ticker_vol1
+        # params = {
+        #     # 'ticker': ret_ticker['ticker'],
+        #     'vol1': ticker_vol1
+        #     # 'vol2': ret_ticker['vol2'],
+        #     # 'accum': ret_ticker['accum']
+        # }
+        result, r = self.client_requests.patch_data(id, params)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -451,70 +461,16 @@ class ApiTest4Ticker(TestCase):
 
         self.assertEqual(ref_ticker, ret_ticker)
         logger.debug(
-            f'     get(query).  {r.status_code=} {id=} {ticker_code=} {r.text=}')
+            f'     get(query).  {r.status_code=}  {r.text=}')
 
         logger.debug(f'8) put')
 
         print(f'===========================================')
 
-        # - 銘柄登録x2
-        # - 銘柄照会(全)
-        # - 銘柄照会x1(#1) & 銘柄照会x1(#2)
-        # - 銘柄削除x1(#1) & 銘柄削除x1(#2)
-
-        # params = {'ticker': 'mc'}
-        # r = self.session.post(
-        #     DJA_URL + 'tickers/',
-        #     data=json.dumps(params),
-        #     headers=self.headers)
-
-        # print(f'{r.status_code=}')
-        # print(f'{r.json=}')
-        # print(f'{type(r.json)=}')
-        # print(f'{r.text=}')
-        # print(f'{type(r.text)=}')
-        # jtext = json.loads(r.text)
-        # print(f'{type(jtext)=}')
-
-        # params = {'ticker': 'mss'}
-        # r = self.session.post(
-        #     DJA_URL + 'tickers/',
-        #     data=json.dumps(params),
-        #     headers=self.headers)
-
-        # r = self.session.get(DJA_URL + 'tickers/', headers=self.headers)
-        # print(r.text)
-        # jtext = json.loads(r.text)
-        # jtext
-
-        # r = self.session.get(
-        #     DJA_URL +
-        #     'tickersname/?ticker=mc',
-        #     headers=self.headers)
-        # print(r.text)
-        # jtext = json.loads(r.text)
-        # jtext
-        # r = self.session.delete(DJA_URL +
-        #                         'tickers/' +
-        #                         str(jtext[0]['id']) +
-        #                         '/', headers=self.headers)
-        # print(f'{r.status_code=}')
-        # print(f'{r.text=}')
-
-        # r = self.session.get(
-        #     DJA_URL +
-        #     'tickersname/?ticker=mss',
-        #     headers=self.headers)
-        # print(r.text)
-        # jtext = json.loads(r.text)
-        # jtext
-
-        # r = self.session.delete(DJA_URL +
-        #                         'tickers/' +
-        #                         str(jtext[0]['id']) +
-        #                         '/', headers=self.headers)
-        # print(f'{r.status_code=}')
-        # print(f'{r.text=}')
+        # # - 銘柄登録x2
+        # # - 銘柄照会(全)
+        # # - 銘柄照会x1(#1) & 銘柄照会x1(#2)
+        # # - 銘柄削除x1(#1) & 銘柄削除x1(#2)
 
 
 test = ApiTest4Ticker()
