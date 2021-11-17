@@ -81,8 +81,7 @@ class ApiTest4Ticker(TestCase):
             logger.debug(f'     when post, unexpected status:{r.status_code=}')
             # return
         logger.debug(f'     post. {r.status_code=} {r.text=}')
-        ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
-        id = ret_ticker.pop('id')
+        id, ret_ticker = self.client_requests.pop_id_from_POST_data(r.text)
         ref_ticker = {
             'ticker': ticker_code,
             'vol1': 0,
@@ -97,11 +96,8 @@ class ApiTest4Ticker(TestCase):
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
             # return
-        # ret_ticker = json.loads(r.text)
-        # ret_ticker = ret_ticker[0]
         logger.debug(f'     GET {r.text=}')
-        ret_ticker = json.loads(r.text)[0]  # POST : {}で返される。GET : [{}]で返される
-        id = ret_ticker.pop('id')
+        id, ret_ticker = self.client_requests.pop_id_from_GET_data(r.text)
         self.assertEqual(ref_ticker, ret_ticker)
         logger.debug(
             f'     get(query).  {r.status_code=} {id=} {ticker_code=} {ret_ticker=}.')
@@ -159,8 +155,7 @@ class ApiTest4Ticker(TestCase):
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
             # return
         logger.debug(f'     post. {r.status_code=} {r.text=}')
-        ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
-        id = ret_ticker.pop('id')
+        id, ret_ticker = self.client_requests.pop_id_from_POST_data(r.text)
         ref_ticker = {
             'ticker': ticker_code,
             'vol1': ticker_vol1,
@@ -177,8 +172,7 @@ class ApiTest4Ticker(TestCase):
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
             # return
         logger.debug(f'     GET {r.text=}')
-        ret_ticker = json.loads(r.text)[0]
-        id = ret_ticker.pop('id')
+        id, ret_ticker = self.client_requests.pop_id_from_GET_data(r.text)
         self.assertEqual(ref_ticker, ret_ticker)
         logger.debug(f'     get(query).  {r.status_code=} {ticker_code=}.')
 
@@ -204,8 +198,7 @@ class ApiTest4Ticker(TestCase):
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
             # return
-        ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
-        id = ret_ticker.pop('id')
+        id, ret_ticker = self.client_requests.pop_id_from_POST_data(r.text)
         ref_ticker = {
             'ticker': str(ticker_code),  # 自動でstr化される
             'vol1': 0,
@@ -221,9 +214,7 @@ class ApiTest4Ticker(TestCase):
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
             # return
-        ret_ticker = json.loads(r.text)[0]
-        id = ret_ticker.pop('id')
-
+        id, ret_ticker = self.client_requests.pop_id_from_GET_data(r.text)
         self.assertEqual(ref_ticker, ret_ticker)
 
         # DELETE
@@ -327,8 +318,7 @@ class ApiTest4Ticker(TestCase):
             # return
 
         logger.debug(f'     post. {r.status_code=} {r.text=}')
-        ret_ticker = json.loads(r.text)  # POSTでr.textにデータがセットされる
-        id = ret_ticker.pop('id')
+        id, ret_ticker = self.client_requests.pop_id_from_POST_data(r.text)
         ref_ticker = {
             'ticker': ticker_code,
             'vol1': ticker_vol1,
@@ -343,10 +333,7 @@ class ApiTest4Ticker(TestCase):
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
             # return
-        ret_ticker = json.loads(r.text)[0]
-        # ret_ticker = ret_ticker[0]
-        id = ret_ticker.pop('id')
-
+        id, ret_ticker = self.client_requests.pop_id_from_GET_data(r.text)
         self.assertEqual(ref_ticker, ret_ticker)
         logger.debug(
             f'     get(query).  {r.status_code=} {id=} {ticker_code=}.')
@@ -368,9 +355,7 @@ class ApiTest4Ticker(TestCase):
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
             # return
-        ret_ticker = json.loads(r.text)[0]
-        id = ret_ticker.pop('id')
-
+        id, ret_ticker = self.client_requests.pop_id_from_GET_data(r.text)
         self.assertEqual(ref_ticker, ret_ticker)
         logger.debug(
             f'     get(query).  {r.status_code=}  {r.text=}')
