@@ -62,9 +62,6 @@ class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class TickerFilter(filters.FilterSet):
-    # min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
-    # max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
-    # ticker = django_filters.CharFilter(lookup_expr='iexact')
     ticker = filters.CharFilter(lookup_expr='iexact')
 
     class Meta:

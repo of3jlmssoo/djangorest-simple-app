@@ -19,7 +19,6 @@ class Ticker(models.Model):
         null=False,
         unique=True,
     )
-    # default='someerror')
     vol1 = models.IntegerField(
         validators=[
             MinValueValidator(0)],

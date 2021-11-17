@@ -62,16 +62,13 @@ class client_requests(object):
             headers=self.headers)
         while r.text != '[]':
             id = json.loads(r.text)[0].pop('id')
-            # logger.debug(f'     {r.text} and {id=} will be deleted')
             self.delete_data(id)
             r = self.session.get(
                 self.DJA_URL + self.app + '/',
                 headers=self.headers)
 
     def delete_data(self, id):
-        # ref_code = 204  # No Content => deleted
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
-        # logger.debug(f'     delete_data called.  {id=}')
         r = self.session.delete(self.DJA_URL + self.app +
                                 '/' +
                                 str(id) +
@@ -79,7 +76,6 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    # def post_data(self, ticker_code, params):
     def post_data(self, params):
         pass
         ref_code = http_result.Created.value  # created
@@ -92,7 +88,8 @@ class client_requests(object):
 
     def patch_data(self, id, params):
         pass
-        ref_code = http_result.Created.value  # created
+        # ref_code = http_result.Created.value  # created
+        ref_code = http_result.OK.value  # created
         r = self.session.patch(
             self.DJA_URL + self.app + '/' + str(id) + '/',
             data=json.dumps(params),
