@@ -66,9 +66,6 @@ class ApiTest4Ticker(TestCase):
         - patch
 
         - 銘柄登録x2
-        - 銘柄照会(全)
-        - 銘柄照会x1(#1) & 銘柄照会x1(#2)
-        - 銘柄削除x1(#1) & 銘柄削除x1(#2)
         """
         #####################################################################
         logger.debug(f'1) 銘柄登録x1 tickerのみ')
@@ -91,7 +88,7 @@ class ApiTest4Ticker(TestCase):
         self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query) with ticker code
-        result, r = self.client_requests.get_data(ticker_code)
+        result, r = self.client_requests.get_data_of_ticker(ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -109,7 +106,6 @@ class ApiTest4Ticker(TestCase):
             return
         ref_code = http_result.NoContentDeleted.value
         self.assertEqual(ref_code, r.status_code)
-        self.assertEqual(r.status_code, ref_code)
         logger.debug(f'     delete.  {r.status_code=} {id=}.')
         logger.debug(f'1) 銘柄登録x1 tickerのみ')
 
@@ -166,7 +162,7 @@ class ApiTest4Ticker(TestCase):
 
         # GET(query)
         ref_code = http_result.OK.value
-        result, r = self.client_requests.get_data(ticker_code)
+        result, r = self.client_requests.get_data_of_ticker(ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -208,7 +204,7 @@ class ApiTest4Ticker(TestCase):
         self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query)
-        result, r = self.client_requests.get_data(
+        result, r = self.client_requests.get_data_of_ticker(
             str(ticker_code))  # need to convert to string from int
         if result != expected_result.as_expected:
             logger.debug(
@@ -328,7 +324,7 @@ class ApiTest4Ticker(TestCase):
         self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query)
-        result, r = self.client_requests.get_data(ticker_code)
+        result, r = self.client_requests.get_data_of_ticker(ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -350,7 +346,7 @@ class ApiTest4Ticker(TestCase):
         logger.debug(f'     {r.status_code=} {r.text=}')
 
         # GET(query)
-        result, r = self.client_requests.get_data(ticker_code)
+        result, r = self.client_requests.get_data_of_ticker(ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -363,17 +359,82 @@ class ApiTest4Ticker(TestCase):
         logger.debug(f'8) put')
 
         #####################################################################
-        # # - 銘柄登録x2
+        logger.debug(f'9) put銘柄登録x2')
+
+        result, r = self.client_requests.get_data_of_all()
+        logger.debug(f'     {r.status_code=} {r.text=}')
+        if r.text != '[]':
+            print('---------------------------------------')
+            print('--- please delete the existing data ---')
+            print('---------------------------------------')
+            self.client_requests.delete_all_data()
+
+        tickers = ['mc', 'mss']
+
+        # POST
+        for ticker_code in tickers:
+            # ticker_code = ticker
+            params = {'ticker': ticker_code}
+            result, r = self.client_requests.post_data(params)
+            if result != expected_result.as_expected:
+                logger.debug(
+                    f'     when post, unexpected status:{r.status_code=}')
+                # return
+            logger.debug(f'     post. {r.status_code=} {r.text=}')
+            id, ret_ticker = self.client_requests.pop_id_from_POST_data(r.text)
+            ref_ticker = {
+                'ticker': ticker_code,
+                'vol1': 0,
+                'vol2': 0,
+                'accum': 0,
+                'owner': self.DJA_UI}
+            self.assertEqual(ref_ticker, ret_ticker)
+
+        # GET(query) with ticker code
+        for ticker_code in tickers:
+            result, r = self.client_requests.get_data_of_ticker(ticker_code)
+            if result != expected_result.as_expected:
+                logger.debug(
+                    f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
+                # return
+            logger.debug(f'     GET {r.text=}')
+            id, ret_ticker = self.client_requests.pop_id_from_GET_data(r.text)
+            ref_ticker = {
+                'ticker': ticker_code,
+                'vol1': 0,
+                'vol2': 0,
+                'accum': 0,
+                'owner': self.DJA_UI}
+            self.assertEqual(ref_ticker, ret_ticker)
+            logger.debug(
+                f'     get(query).  {r.status_code=} {id=} {ticker_code=} {ret_ticker=}.')
+
+        # DELETE
+        result, r = self.client_requests.get_data_of_all()
+        logger.debug(f'     before DELETE {r.text=}')
+
+        for ticker_code in tickers:
+            result, r = self.client_requests.get_data_of_ticker(ticker_code)
+            if result != expected_result.as_expected:
+                logger.debug(
+                    f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
+                # return
+            logger.debug(f'     GET {r.text=}')
+            id, ret_ticker = self.client_requests.pop_id_from_GET_data(r.text)
+            result, r = self.client_requests.delete_data(id)
+            if result != expected_result.as_expected:
+                logger.debug(
+                    f'     when get, unexpected status:{r.status_code=}')
+                return
+            ref_code = http_result.NoContentDeleted.value
+            self.assertEqual(ref_code, r.status_code)
+            logger.debug(f'     delete.  {r.status_code=} {id=}.')
+            result, r = self.client_requests.get_data_of_all()
+            logger.debug(f'     after DELETE {r.text=}')
+
+        logger.debug(f'9) put銘柄登録x2')
         print(f'===========================================')
         #####################################################################
-        # # - 銘柄照会(全)
-        print(f'===========================================')
-        #####################################################################
-        # # - 銘柄照会x1(#1) & 銘柄照会x1(#2)
-        print(f'===========================================')
-        #####################################################################
-        # # - 銘柄削除x1(#1) & 銘柄削除x1(#2)
-        print(f'===========================================')
 
 
 test = ApiTest4Ticker()

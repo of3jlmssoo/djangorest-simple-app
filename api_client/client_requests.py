@@ -97,7 +97,7 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data(self, ticker_code):
+    def get_data_of_ticker(self, ticker_code):
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
@@ -105,7 +105,15 @@ class client_requests(object):
             ticker_code,
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+        return result, r
 
+    def get_data_of_all(self):
+        ref_code = http_result.OK.value
+        r = self.session.get(
+            self.DJA_URL +
+            self.app + '/',
+            headers=self.headers)
+        result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
     def pop_id_from_POST_data(self, rtext):
@@ -115,7 +123,8 @@ class client_requests(object):
 
     def pop_id_from_GET_data(self, rtext):
         """
-        def get_data()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
+        def get_data_of_ticker
+()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
         """
         ret_ticker = json.loads(rtext)[0]
         id = ret_ticker.pop('id')
