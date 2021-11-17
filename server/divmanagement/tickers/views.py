@@ -39,7 +39,25 @@ class DividendDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
 
-# 3
+
+class DividendFilter(filters.FilterSet):
+    ticker = filters.CharFilter(lookup_expr='iexact')
+
+    class Meta:
+        model = Dividend
+        fields = ['ticker', 'ex_date']
+
+
+class DividendListAPIView(generics.ListAPIView):
+    print(f'=== DividendListAPIView called ===')
+    queryset = Dividend.objects.all()
+    serializer_class = DividendSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = DividendFilter
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class TickerList(generics.ListCreateAPIView):

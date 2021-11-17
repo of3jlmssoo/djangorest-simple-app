@@ -123,8 +123,7 @@ class client_requests(object):
 
     def pop_id_from_GET_data(self, rtext):
         """
-        def get_data_of_ticker
-()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
+        def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
         """
         ret_ticker = json.loads(rtext)[0]
         id = ret_ticker.pop('id')

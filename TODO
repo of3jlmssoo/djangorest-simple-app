@@ -1,13 +1,13 @@
 
 Todo:
-☐ ticker用テスト 
+✔ ticker用テスト @done(21-11-17 17:43)
 ☐ dividend in views.pyをリファクタリング(tickerと同様にする)
   ☐ tickerでサーチ
   ☐ ticker & date afterでサーチ
 ☐ dividend用テスト
 ☐ RESTドキュメント生成
 ☐ インテグレーション
-☐ ticker tools (query and)delete all tickers
+✔ ticker tools (query and)delete all tickers @done(21-11-17 17:44)
 ☐ dividend query specifying a ticker and date after
 ☐ ticker tools isthisregistered
 ☐ ticker tools reconcile(file and db)
