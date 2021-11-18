@@ -25,6 +25,7 @@ class DividendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dividend
         fields = [
+            'id',
             'ticker',
             'ex_date',
             'pay_date',

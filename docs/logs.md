@@ -218,3 +218,12 @@ cd server/divmanagement/
 curl -u admin:amincs8000 -X PUT -H "Content-Type: application/json" -d '{"vol1":123}' http://127.0.0.1:8000/tickers/198/
 curl -u admin:amincs8000 -X PUT http://127.0.0.1:8000/tickers/198/ -H "Content-Type: application/json" -d '{"vol1":123}'
 curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/tickers/198/
+
+self.app を使っている。
+delete_all_data
+delete_data
+post_data
+patch_data
+get_data_of_ticker 名称汎用化
+get_data_of_all
+第一引数に self.app
