@@ -36,6 +36,7 @@ logger.disabled = False
 class client_requests(object):
 
     def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
+        # def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers):
         DJA_UI = DJA_UI
         DJA_PW = DJA_PW
         self.DJA_URL = DJA_URL
@@ -45,17 +46,19 @@ class client_requests(object):
         self.session = requests.Session()
         self.session.auth = (DJA_UI, DJA_PW)
 
-        r = self.session.get(DJA_URL + self.app + '/', headers=self.headers)
-        if r.text != '[]':
-            # print(r.text)
-            # jtext = json.loads(r.text)
-            # jtext
-            print('---------------------------------------')
-            print('--- please delete the existing data ---')
-            print('---------------------------------------')
-            self.delete_all_data()
+        # r = self.session.get(DJA_URL + self.app + '/', headers=self.headers)
+        # if r.text != '[]':
+        #     # print(r.text)
+        #     # jtext = json.loads(r.text)
+        #     # jtext
+        #     print('---------------------------------------')
+        #     print('--- please delete the existing data ---')
+        #     print('---------------------------------------')
+        #     self.delete_all_data()
 
     def delete_all_data(self):
+
+
 
         r = self.session.get(
             self.DJA_URL + self.app + '/',
@@ -115,6 +118,33 @@ class client_requests(object):
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
+
+
+class ticker_requests(client_requests):
+
+    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
+
+        super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
+
+    def pop_id_from_POST_data(self, rtext):
+        ret_ticker = json.loads(rtext)
+        id = ret_ticker.pop('id')
+        return id, ret_ticker
+
+    def pop_id_from_GET_data(self, rtext):
+        """
+        def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
+        """
+        ret_ticker = json.loads(rtext)[0]
+        id = ret_ticker.pop('id')
+        return id, ret_ticker
+
+
+class dividend_requests(client_requests):
+
+    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
+
+        super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
 
     def pop_id_from_POST_data(self, rtext):
         ret_ticker = json.loads(rtext)
