@@ -39,13 +39,13 @@ logger.disabled = False
 
 class client_requests(object):
 
-    # def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
-    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers):
+    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
+        # def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers):
         DJA_UI = DJA_UI
         DJA_PW = DJA_PW
         self.DJA_URL = DJA_URL
         self.headers = headers
-        # self.app = app
+        self.app = app
 
         self.session = requests.Session()
         self.session.auth = (DJA_UI, DJA_PW)
@@ -60,65 +60,65 @@ class client_requests(object):
         #     print('---------------------------------------')
         #     self.delete_all_data()
 
-    def delete_all_data(self, app):
+    def delete_all_data(self):
 
         r = self.session.get(
             # self.DJA_URL + self.app + '/',
-            self.DJA_URL + app + '/',
+            self.DJA_URL + self.app + '/',
             headers=self.headers)
         while r.text != '[]':
             id = json.loads(r.text)[0].pop('id')
-            self.delete_data(app, id)
+            self.delete_data(id)
             r = self.session.get(
                 # self.DJA_URL + self.app + '/',
-                self.DJA_URL + app + '/',
+                self.DJA_URL + self.app + '/',
                 headers=self.headers)
 
-    def delete_data(self, app, id):
+    def delete_data(self, id):
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
-        r = self.session.delete(self.DJA_URL + app +
+        r = self.session.delete(self.DJA_URL + self.app +
                                 '/' +
                                 str(id) +
                                 '/', headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def post_data(self, app, params):
+    def post_data(self, params):
         pass
         ref_code = http_result.Created.value  # created
         r = self.session.post(
-            self.DJA_URL + app + '/',
+            self.DJA_URL + self.app + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def patch_data(self, app, id, params):
+    def patch_data(self, id, params):
         pass
         # ref_code = http_result.Created.value  # created
         ref_code = http_result.OK.value  # created
         r = self.session.patch(
-            self.DJA_URL + app + '/' + str(id) + '/',
+            self.DJA_URL + self.app + '/' + str(id) + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data_of_ticker(self, app, ticker_code):
+    def get_data_of_ticker(self, ticker_code):
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
-            app + 'name/?ticker=' +
+            self.app + 'name/?ticker=' +
             ticker_code,
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data_of_all(self, app):
+    def get_data_of_all(self):
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
-            app + '/',
+            self.app + '/',
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r

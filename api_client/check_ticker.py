@@ -46,19 +46,21 @@ class ApiTest4Ticker(TestCase):
         self.DJA_URL = os.environ['DJA_URL']
         self.content_type = {'content-type': 'application/json'}
 
-        # self.app = 'tickers'
+        self.app = 'tickers'
         self.ticker_requests = client_requests(
             self.DJA_UI,
             self.DJA_PW,
             self.DJA_URL,
-            self.content_type)
+            self.content_type,
+            self.app)
 
         self.app = 'dividends'
         self.dividend_requests = client_requests(
             self.DJA_UI,
             self.DJA_PW,
             self.DJA_URL,
-            self.content_type)
+            self.content_type,
+            self.app)
 
     def test_ticker(self):
         """
@@ -82,12 +84,12 @@ class ApiTest4Ticker(TestCase):
             self.DJA_URL + 'dividends/', headers=self.content_type)
         logger.debug(f'dividend {r.text=}')
         if r.text != '[]':
-            self.dividend_requests.delete_all_data('dividends')
+            self.dividend_requests.delete_all_data()
         r = self.dividend_requests.session.get(
             self.DJA_URL + 'tickers/', headers=self.content_type)
         logger.debug(f'dividend {r.text=}')
         if r.text != '[]':
-            self.ticker_requests.delete_all_data('tickers')
+            self.ticker_requests.delete_all_data()
 
         logger.debug('0) delete_all_data')
 
@@ -98,7 +100,7 @@ class ApiTest4Ticker(TestCase):
         ticker_code = 'mc'
         params_ticker = {'ticker': ticker_code}
         result, r = self.ticker_requests.post_data(
-            'tickers', params_ticker)
+            params_ticker)
         if result != expected_result.as_expected:
             logger.debug(f'     when post, unexpected status:{r.status_code=}')
             # return
@@ -114,7 +116,7 @@ class ApiTest4Ticker(TestCase):
 
         # GET(query) with ticker code
         result, r = self.ticker_requests.get_data_of_ticker(
-            'tickers', ticker_code)
+            ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -126,7 +128,7 @@ class ApiTest4Ticker(TestCase):
             f'     get(query).  {r.status_code=} {id=} {ticker_code=} {ret_ticker=}.')
 
         # DELETE
-        result, r = self.ticker_requests.delete_data('tickers', id)
+        result, r = self.ticker_requests.delete_data(id)
         if result != expected_result.as_expected:
             logger.debug(f'     when get, unexpected status:{r.status_code=}')
             return
@@ -146,7 +148,7 @@ class ApiTest4Ticker(TestCase):
             'vol2': ticker_vol2,
             'accum': ticker_accum}
 
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -171,7 +173,7 @@ class ApiTest4Ticker(TestCase):
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -189,7 +191,7 @@ class ApiTest4Ticker(TestCase):
         # GET(query)
         ref_code = http_result.OK.value
         result, r = self.ticker_requests.get_data_of_ticker(
-            'tickers', ticker_code)
+            ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -200,7 +202,7 @@ class ApiTest4Ticker(TestCase):
         logger.debug(f'     get(query).  {r.status_code=} {ticker_code=}.')
 
         # DELETE
-        result, r = self.ticker_requests.delete_data('tickers', id)
+        result, r = self.ticker_requests.delete_data(id)
         if result != expected_result.as_expected:
             logger.debug(f'     when get, unexpected status:{r.status_code=}')
             return
@@ -216,7 +218,7 @@ class ApiTest4Ticker(TestCase):
         ticker_code = 123
         ref_code = http_result.Created  # 自動でstr化されるのでCreated
         params_ticker = {'ticker': ticker_code}
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -232,7 +234,7 @@ class ApiTest4Ticker(TestCase):
 
         # GET(query)
         result, r = self.ticker_requests.get_data_of_ticker(
-            'tickers', str(ticker_code))  # need to convert to string from int
+            str(ticker_code))  # need to convert to string from int
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -241,7 +243,7 @@ class ApiTest4Ticker(TestCase):
         self.assertEqual(ref_ticker, ret_ticker)
 
         # DELETE
-        result, r = self.ticker_requests.delete_data('tickers', id)
+        result, r = self.ticker_requests.delete_data(id)
         if result != expected_result.as_expected:
             logger.debug(f'     when get, unexpected status:{r.status_code=}')
             return
@@ -262,7 +264,7 @@ class ApiTest4Ticker(TestCase):
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -285,7 +287,7 @@ class ApiTest4Ticker(TestCase):
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -308,7 +310,7 @@ class ApiTest4Ticker(TestCase):
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -334,7 +336,7 @@ class ApiTest4Ticker(TestCase):
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -352,7 +354,7 @@ class ApiTest4Ticker(TestCase):
 
         # GET(query)
         result, r = self.ticker_requests.get_data_of_ticker(
-            'tickers', ticker_code)
+            ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -367,7 +369,7 @@ class ApiTest4Ticker(TestCase):
         ref_ticker['vol1'] = ticker_vol1_new
         params_ticker['vol1'] = ticker_vol1_new
         result, r = self.ticker_requests.patch_data(
-            'tickers', id, params_ticker)
+            id, params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when patch, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -376,7 +378,7 @@ class ApiTest4Ticker(TestCase):
 
         # GET(query)
         result, r = self.ticker_requests.get_data_of_ticker(
-            'tickers', ticker_code)
+            ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -391,13 +393,13 @@ class ApiTest4Ticker(TestCase):
         """ ##################################################################### """
         logger.debug('9) put銘柄登録x2')
 
-        result, r = self.ticker_requests.get_data_of_all('tickers')
+        result, r = self.ticker_requests.get_data_of_all()
         logger.debug(f'     {r.status_code=} {r.text=}')
         if r.text != '[]':
             print('---------------------------------------')
             print('--- please delete the existing data ---')
             print('---------------------------------------')
-            self.ticker_requests.delete_all_data('tickers')
+            self.ticker_requests.delete_all_data()
 
         tickers = ['mc', 'mss']
 
@@ -406,7 +408,7 @@ class ApiTest4Ticker(TestCase):
             # ticker_code = ticker
             params_ticker = {'ticker': ticker_code}
             result, r = self.ticker_requests.post_data(
-                'tickers', params_ticker)
+                params_ticker)
             if result != expected_result.as_expected:
                 logger.debug(
                     f'     when post, unexpected status:{r.status_code=}')
@@ -424,7 +426,7 @@ class ApiTest4Ticker(TestCase):
         # GET(query) with ticker code
         for ticker_code in tickers:
             result, r = self.ticker_requests.get_data_of_ticker(
-                'tickers', ticker_code)
+                ticker_code)
             if result != expected_result.as_expected:
                 logger.debug(
                     f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
@@ -442,19 +444,19 @@ class ApiTest4Ticker(TestCase):
                 f'     get(query).  {r.status_code=} {id=} {ticker_code=} {ret_ticker=}.')
 
         # DELETE
-        result, r = self.ticker_requests.get_data_of_all('tickers')
+        result, r = self.ticker_requests.get_data_of_all()
         logger.debug(f'     before DELETE {r.text=}')
 
         for ticker_code in tickers:
             result, r = self.ticker_requests.get_data_of_ticker(
-                'tickers', ticker_code)
+                ticker_code)
             if result != expected_result.as_expected:
                 logger.debug(
                     f'     when get, unexpected status:{r.status_code=} {result=} {expected_result.as_expected=}')
                 # return
             logger.debug(f'     GET {r.text=}')
             id, ret_ticker = self.ticker_requests.pop_id_from_GET_data(r.text)
-            result, r = self.ticker_requests.delete_data('tickers', id)
+            result, r = self.ticker_requests.delete_data(id)
             if result != expected_result.as_expected:
                 logger.debug(
                     f'     when get, unexpected status:{r.status_code=}')
@@ -462,7 +464,7 @@ class ApiTest4Ticker(TestCase):
             ref_code = http_result.NoContentDeleted.value
             self.assertEqual(ref_code, r.status_code)
             logger.debug(f'     delete.  {r.status_code=} {id=}.')
-            result, r = self.ticker_requests.get_data_of_all('tickers')
+            result, r = self.ticker_requests.get_data_of_all()
             logger.debug(f'     after DELETE {r.text=}')
 
         logger.debug('9) put銘柄登録x2')
@@ -482,7 +484,7 @@ class ApiTest4Ticker(TestCase):
             'vol1': ticker_vol1,
             'vol2': ticker_vol2,
             'accum': ticker_accum}
-        result, r = self.ticker_requests.post_data('tickers', params_ticker)
+        result, r = self.ticker_requests.post_data(params_ticker)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
@@ -514,7 +516,7 @@ class ApiTest4Ticker(TestCase):
             'div_rat': div_rat,
             'owner': self.DJA_UI}
         result, r = self.dividend_requests.post_data(
-            'dividends', params_dividend)
+            params_dividend)
         if result != expected_result.as_expected:
             logger.debug(
                 f'     when post, unexpected status:{r.status_code=} {r.text}')
