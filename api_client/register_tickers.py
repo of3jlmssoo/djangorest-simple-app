@@ -17,9 +17,11 @@ print(r.status_code)
 
 import json
 import os
-import subprocess
 
 import requests
+
+# import subprocess
+
 
 DJA_UI = os.environ['DJA_UI']
 DJA_PW = os.environ['DJA_PW']

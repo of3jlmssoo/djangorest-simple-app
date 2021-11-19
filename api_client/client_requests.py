@@ -11,14 +11,18 @@ export DJA_URL='http://127.0.0.1:8000/'
 """
 import json
 import logging
-import os
-import subprocess
-import unittest
 
 import requests
-from django.test import TestCase
 
 from resultenum import expected_result, http_result
+
+# from django.test import TestCase
+
+
+# import os
+# import subprocess
+# import unittest
+
 
 logger = logging.getLogger(__name__)
 ch = logging.StreamHandler()
@@ -35,13 +39,13 @@ logger.disabled = False
 
 class client_requests(object):
 
-    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
-        # def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers):
+    # def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
+    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers):
         DJA_UI = DJA_UI
         DJA_PW = DJA_PW
         self.DJA_URL = DJA_URL
         self.headers = headers
-        self.app = app
+        # self.app = app
 
         self.session = requests.Session()
         self.session.auth = (DJA_UI, DJA_PW)
@@ -56,76 +60,69 @@ class client_requests(object):
         #     print('---------------------------------------')
         #     self.delete_all_data()
 
-    def delete_all_data(self):
-
-
+    def delete_all_data(self, app):
 
         r = self.session.get(
-            self.DJA_URL + self.app + '/',
+            # self.DJA_URL + self.app + '/',
+            self.DJA_URL + app + '/',
             headers=self.headers)
         while r.text != '[]':
             id = json.loads(r.text)[0].pop('id')
-            self.delete_data(id)
+            self.delete_data(app, id)
             r = self.session.get(
-                self.DJA_URL + self.app + '/',
+                # self.DJA_URL + self.app + '/',
+                self.DJA_URL + app + '/',
                 headers=self.headers)
 
-    def delete_data(self, id):
+    def delete_data(self, app, id):
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
-        r = self.session.delete(self.DJA_URL + self.app +
+        r = self.session.delete(self.DJA_URL + app +
                                 '/' +
                                 str(id) +
                                 '/', headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def post_data(self, params):
+    def post_data(self, app, params):
         pass
         ref_code = http_result.Created.value  # created
         r = self.session.post(
-            self.DJA_URL + self.app + '/',
+            self.DJA_URL + app + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def patch_data(self, id, params):
+    def patch_data(self, app, id, params):
         pass
         # ref_code = http_result.Created.value  # created
         ref_code = http_result.OK.value  # created
         r = self.session.patch(
-            self.DJA_URL + self.app + '/' + str(id) + '/',
+            self.DJA_URL + app + '/' + str(id) + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data_of_ticker(self, ticker_code):
+    def get_data_of_ticker(self, app, ticker_code):
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
-            self.app + 'name/?ticker=' +
+            app + 'name/?ticker=' +
             ticker_code,
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data_of_all(self):
+    def get_data_of_all(self, app):
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
-            self.app + '/',
+            app + '/',
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-
-class ticker_requests(client_requests):
-
-    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
-
-        super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
-
     def pop_id_from_POST_data(self, rtext):
         ret_ticker = json.loads(rtext)
         id = ret_ticker.pop('id')
@@ -140,21 +137,41 @@ class ticker_requests(client_requests):
         return id, ret_ticker
 
 
-class dividend_requests(client_requests):
+# class ticker_requests(client_requests):
 
-    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
+#     def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
 
-        super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
+#         super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
 
-    def pop_id_from_POST_data(self, rtext):
-        ret_ticker = json.loads(rtext)
-        id = ret_ticker.pop('id')
-        return id, ret_ticker
+#     def pop_id_from_POST_data(self, rtext):
+#         ret_ticker = json.loads(rtext)
+#         id = ret_ticker.pop('id')
+#         return id, ret_ticker
 
-    def pop_id_from_GET_data(self, rtext):
-        """
-        def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
-        """
-        ret_ticker = json.loads(rtext)[0]
-        id = ret_ticker.pop('id')
-        return id, ret_ticker
+#     def pop_id_from_GET_data(self, rtext):
+#         """
+#         def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
+#         """
+#         ret_ticker = json.loads(rtext)[0]
+#         id = ret_ticker.pop('id')
+#         return id, ret_ticker
+
+
+# class dividend_requests(client_requests):
+
+#     def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
+
+#         super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
+
+#     def pop_id_from_POST_data(self, rtext):
+#         ret_ticker = json.loads(rtext)
+#         id = ret_ticker.pop('id')
+#         return id, ret_ticker
+
+#     def pop_id_from_GET_data(self, rtext):
+#         """
+#         def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
+#         """
+#         ret_ticker = json.loads(rtext)[0]
+#         id = ret_ticker.pop('id')
+#         return id, ret_ticker
