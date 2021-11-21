@@ -108,7 +108,7 @@ class client_requests(object):
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
-            self.app + 'name/?ticker=' +
+            self.app + '/?ticker=' +
             ticker_code,
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
