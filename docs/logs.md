@@ -219,6 +219,31 @@ curl -u admin:amincs8000 -X PUT -H "Content-Type: application/json" -d '{"vol1":
 curl -u admin:amincs8000 -X PUT http://127.0.0.1:8000/tickers/198/ -H "Content-Type: application/json" -d '{"vol1":123}'
 curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/tickers/198/
 
+curl -u admin:amincs8000 -X POST -H "Content-Type: application/json" -d '{"ticker":"mc"}' http://127.0.0.1:8000/tickers/
+curl -u admin:amincs8000 -X POST -H "Content-Type: application/json" -d '{"ticker":"mss"}' http://127.0.0.1:8000/tickers/
+curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/tickers/
+curl -u admin:amincs8000 -X POST -H "Content-Type: application/json" -d '{"ticker":"mc", "ex_date":"2021-11-01", "pay_date":"2021-11-03", "div_val":0.789, "div_rat":3.2}' http://127.0.0.1:8000/dividends/
+curl -u admin:amincs8000 -X POST -H "Content-Type: application/json" -d '{"ticker":"mss", "ex_date":"2021-10-01", "pay_date":"2021-10-03", "div_val":0.789, "div_rat":3.2}' http://127.0.0.1:8000/dividends/
+curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/dividends/
+
+curl -u admin:amincs8000 -X DELETE http://127.0.0.1:8000/dividends/IDIDIDIDIDI/
+curl -u admin:amincs8000 -X DELETE http://127.0.0.1:8000/tickers/IDIDIDIDIDI/
+
+curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/tickers/?ticker=mc
+curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/tickers/?ticker=mss
+
+curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/dividends/?ticker=mc
+curl -u admin:amincs8000 -X GET http://127.0.0.1:8000/dividends/?ticker=mss
+
+return the record
+curl -u admin:amincs8000 -X GET "http://127.0.0.1:8000/dividends/?ticker=mc&ex_date_before=2021-11-02"
+curl -u admin:amincs8000 -X GET "http://127.0.0.1:8000/dividends/?ticker=mc&ex_date_after=2021-10-02"
+curl -u admin:amincs8000 -X GET "http://127.0.0.1:8000/dividends/?ticker=mc&ex_date_before=2021-11-02&ex_date_after=2021-10-02"
+
+return nothing
+curl -u admin:amincs8000 -X GET "http://127.0.0.1:8000/dividends/?ticker=mc&ex_date_before=2021-1-30"
+curl -u admin:amincs8000 -X GET "http://127.0.0.1:8000/dividends/?ticker=mc&ex_date_after=2021-11-02"
+
 self.app を使っている。
 delete_all_data
 delete_data
