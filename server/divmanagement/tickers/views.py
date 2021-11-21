@@ -21,9 +21,21 @@ def api_root(request, format=None):
     })
 
 
+class DividendFilter(filters.FilterSet):
+    ticker = filters.CharFilter(field_name="ticker")  # , lookup_expr='iexact')
+    ex_date = filters.DateFilter(field_name="ex_date", lookup_expr='exact')
+
+    class Meta:
+        model = Dividend
+        fields = ['ticker', 'ex_date']
+
+
 class DividendList(generics.ListCreateAPIView):
     queryset = Dividend.objects.all()
     serializer_class = DividendSerializer
+
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = DividendFilter
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -40,35 +52,38 @@ class DividendDetail(generics.RetrieveUpdateDestroyAPIView):
                           IsOwnerOrReadOnly]
 
 
-class DividendFilter(filters.FilterSet):
-    ticker = filters.CharFilter(field_name="ticker")  # , lookup_expr='iexact')
-    ex_date = filters.DateFilter(field_name="ex_date", lookup_expr='exact')
+# class DividendListAPIView(generics.ListAPIView):
+#     print(f'=== DividendListAPIView called ===')
+#     queryset = Dividend.objects.all()
+#     serializer_class = DividendSerializer
+#     filter_backends = (filters.DjangoFilterBackend,)
+#     filterset_class = DividendFilter
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
+
+
+class TickerFilter(filters.FilterSet):
+    ticker = filters.CharFilter(lookup_expr='iexact')
 
     class Meta:
-        model = Dividend
-        fields = ['ticker', 'ex_date']
-
-
-class DividendListAPIView(generics.ListAPIView):
-    print(f'=== DividendListAPIView called ===')
-    queryset = Dividend.objects.all()
-    serializer_class = DividendSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = DividendFilter
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        model = Ticker
+        fields = ['ticker']
 
 
 class TickerList(generics.ListCreateAPIView):
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
 
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TickerFilter
+
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 
 class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -80,24 +95,16 @@ class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
                           IsOwnerOrReadOnly]
 
 
-class TickerFilter(filters.FilterSet):
-    ticker = filters.CharFilter(lookup_expr='iexact')
+# class TickerListAPIView(generics.ListAPIView):
+#     print(f'=== TickerListAPIView called ===')
+#     queryset = Ticker.objects.all()
+#     serializer_class = TickerSerializer
+#     filter_backends = (filters.DjangoFilterBackend,)
+#     filterset_class = TickerFilter
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    class Meta:
-        model = Ticker
-        fields = ['ticker']
-
-
-class TickerListAPIView(generics.ListAPIView):
-    print(f'=== TickerListAPIView called ===')
-    queryset = Ticker.objects.all()
-    serializer_class = TickerSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = TickerFilter
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+#     def perform_create(self, serializer):
+#         serializer.save(owner=self.request.user)
 
 
 class UserList(generics.ListAPIView):
