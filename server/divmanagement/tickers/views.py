@@ -41,7 +41,8 @@ class DividendDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class DividendFilter(filters.FilterSet):
-    ticker = filters.CharFilter(lookup_expr='iexact')
+    ticker = filters.CharFilter(field_name="ticker")  # , lookup_expr='iexact')
+    ex_date = filters.DateFilter(field_name="ex_date", lookup_expr='exact')
 
     class Meta:
         model = Dividend

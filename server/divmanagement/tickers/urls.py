@@ -8,6 +8,7 @@ urlpatterns = format_suffix_patterns([
     path('', views.api_root),
     #     re_path(r'^tickersname/(?P<ticker>\w+)/$', views.TickerListAPIView.as_view()),
     path('tickersname/', views.TickerListAPIView.as_view()),
+    path('dividendsname/', views.DividendListAPIView.as_view()),
     path('tickers/',
          views.TickerList.as_view(),
          name='ticker-list'),
