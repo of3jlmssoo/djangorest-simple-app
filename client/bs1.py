@@ -22,6 +22,131 @@ class R(Enum):
     ERROR7 = 7
 
 
+portf = [
+    'ABB',
+    'ABBV',
+    'ADM',
+    'AVGO',
+    'BEN',
+    'BLK',
+    'BLX',
+    'BP',
+    'BUD',
+    'CAH',
+    'CAT',
+    'CCL',
+    'CFG',
+    'CME',
+    'CNP',
+    'CSCO',
+    'CVA',
+    'CVBF',
+    'CVS',
+    'DFE',
+    'DOW',
+    'DUK',
+    'DVY',
+    'ED',
+    'EMR',
+    'ETR',
+    'FAF',
+    'FCFS',
+    'FDL',
+    'FRT',
+    'FTR',
+    'GIS',
+    'GM',
+    'GSK',
+    'HCSG',
+    'HD',
+    'HDV',
+    'HRB',
+    'HSBC',
+    'HYG',
+    'IDV',
+    'IIPR',
+    'INTC',
+    'IP',
+    'ISBC',
+    'IVZ',
+    'IXC',
+    'IXG',
+    'IXP',
+    'IYR',
+    'JHG',
+    'JNJ',
+    'JNK',
+    'JPM',
+    'KHC',
+    'KMI',
+    'KTB',
+    'LEG',
+    'LQD',
+    'LUMN',
+    'LVS',
+    'MC',
+    'MDLZ',
+    'MET',
+    'MMM',
+    'MOV',
+    'MRK',
+    'MRVL',
+    'MSM',
+    'MTUM',
+    'NTR',
+    'NUS',
+    'NWN',
+    'O',
+    'PBCT',
+    'PEG',
+    'PEP',
+    'PFE',
+    'PFF',
+    'PG',
+    'PRU',
+    'QCOM',
+    'QQQ',
+    'SDIV',
+    'SGU',
+    'SIG',
+    'SJM',
+    'SPHD',
+    'SPYD',
+    'SSW',
+    'STBA',
+    'T',
+    'TER',
+    'TFSL',
+    'TGT',
+    'TNK',
+    'TROW',
+    'TRTN',
+    'TS',
+    'TSM',
+    'TX',
+    'UBSI',
+    'UL',
+    'UNM',
+    'UPS',
+    'VBK',
+    'VDE',
+    'VFC',
+    'VOD',
+    'VSS',
+    'VT',
+    'VTWO',
+    'VZ',
+    'WBK',
+    'WFC',
+    'WSBC',
+    'XLB',
+    'XLI',
+    'XLNX',
+    'XLU',
+    'XOM',
+    'XPER']
+
+
 def check_ticker(ticker: str) -> Union[str, R]:
     """ 長さチェック """
     if len(ticker) == 0:
@@ -114,7 +239,7 @@ def check_data(
 def read_html():
     # スクレイピング対象のhtmlファイルからsoupを作成
     soup = bs4.BeautifulSoup(
-        open('Dividend Calendar - Investing.com.html'),
+        open('/home/hiroshisakuma/docs/Dividend Calendar - Investing.com.html'),
         'html.parser')
 
     # for link in soup.find_all("a", "bold"):
@@ -139,16 +264,33 @@ def read_html():
         # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
 
         """ 変換 """
-        exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
-        paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
-        paydate = float(divval)
+        # print(f'        {exdate=} {paydate=} {divval=}')
 
-        tmp = yieldratio.replace('%', '').replace('-', '0')
-        print(f'1) {yieldratio} {tmp}')
-        print(f'2) {float(tmp)}')
+        # exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
+        # paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
+
+        try:
+            exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
+        except ValueError:
+            exdate = datetime.datetime.strptime('Jan 01, 2000', "%b %d, %Y")
+
+        try:
+            paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
+        except ValueError:
+            paydate = datetime.datetime.strptime('Jan 01, 2000', "%b %d, %Y")
+
+        divval = float(divval)
+
+        exdate = exdate.strftime('%Y-%m-%d')
+        paydate = paydate.strftime('%Y-%m-%d')
+
+        yieldratio = yieldratio.replace('%', '').replace('-', '0')
+        # print(f'1) {yieldratio} {tmp}')
+        # print(f'2) {float(tmp)}')
         # yieldratio = float(yieldratio.replace('%', ''))
 
-        print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
+        if ticker in portf:
+            print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
 
 
 def read_my_tickers():
@@ -162,8 +304,9 @@ if __name__ == '__main__':
     # print(check_ticker(''))
     # print(check_ticker('ab_c'))
 
-    print(check_date('Mar 20, 2021'))
-    print(check_date('Ma 20, 2021'))
-    print(check_date('Mar 20s, 2021'))
-    print(check_date('Mar 20, a2021'))
-    print(check_date('Mar 20, 21'))
+    # print(check_date('Mar 20, 2021'))
+    # print(check_date('Ma 20, 2021'))
+    # print(check_date('Mar 20s, 2021'))
+    # print(check_date('Mar 20, a2021'))
+    # print(check_date('Mar 20, 21'))
+    read_html()

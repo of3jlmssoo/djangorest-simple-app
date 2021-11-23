@@ -3,6 +3,8 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
+DEFAULT_DIR = '/'
+
 # create the root window
 root = tk.Tk()
 root.title('Tkinter File Dialog')
@@ -18,7 +20,7 @@ def select_files():
 
     filenames = fd.askopenfilenames(
         title='Open files',
-        initialdir='/',
+        initialdir=DEFAULT_DIR,
         filetypes=filetypes)
 
     showinfo(
