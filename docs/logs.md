@@ -252,3 +252,7 @@ patch_data
 get_data_of_ticker 名称汎用化
 get_data_of_all
 第一引数に self.app
+
+git filter-branch --index-filter 'git rm --cached --ignore-unmatch Dividend Calendar - Investing.com.html' HEAD
+
+
