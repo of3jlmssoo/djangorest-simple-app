@@ -255,4 +255,8 @@ get_data_of_all
 
 git filter-branch --index-filter 'git rm --cached --ignore-unmatch Dividend Calendar - Investing.com.html' HEAD
 
-
+git filter-repo --path 'client/XXX.html' --invert-paths
+git filter-repo --path 'client/XXX.zip' --invert-paths
+git filter-repo --path 'client/tickers.txt' --invert-paths
+git push master --force --all
+git push master --force --tags
