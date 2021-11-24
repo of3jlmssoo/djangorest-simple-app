@@ -1,6 +1,7 @@
 """
-1. ティッカー情報の読み込みとリストへのセット
-2. htmlファイルの読み込み。ティッカー、ex-date、配当額のセット
+refs.htmlはgitにアップロードしない。中身は
+    DIV_HTML = '配当情報のhtmlファイル名'
+    portf = ['stock1ticker', 'stock2ticker']
 """
 import csv  # モジュール"CSV"の呼び出し
 import datetime
@@ -11,6 +12,8 @@ from typing import Union
 import bs4
 import requests
 
+from refs import DIV_HTML, portf
+
 
 class R(Enum):
     ERROR1 = 1
@@ -20,131 +23,6 @@ class R(Enum):
     ERROR5 = 5
     ERROR6 = 6
     ERROR7 = 7
-
-
-portf = [
-    'ABB',
-    'ABBV',
-    'ADM',
-    'AVGO',
-    'BEN',
-    'BLK',
-    'BLX',
-    'BP',
-    'BUD',
-    'CAH',
-    'CAT',
-    'CCL',
-    'CFG',
-    'CME',
-    'CNP',
-    'CSCO',
-    'CVA',
-    'CVBF',
-    'CVS',
-    'DFE',
-    'DOW',
-    'DUK',
-    'DVY',
-    'ED',
-    'EMR',
-    'ETR',
-    'FAF',
-    'FCFS',
-    'FDL',
-    'FRT',
-    'FTR',
-    'GIS',
-    'GM',
-    'GSK',
-    'HCSG',
-    'HD',
-    'HDV',
-    'HRB',
-    'HSBC',
-    'HYG',
-    'IDV',
-    'IIPR',
-    'INTC',
-    'IP',
-    'ISBC',
-    'IVZ',
-    'IXC',
-    'IXG',
-    'IXP',
-    'IYR',
-    'JHG',
-    'JNJ',
-    'JNK',
-    'JPM',
-    'KHC',
-    'KMI',
-    'KTB',
-    'LEG',
-    'LQD',
-    'LUMN',
-    'LVS',
-    'MC',
-    'MDLZ',
-    'MET',
-    'MMM',
-    'MOV',
-    'MRK',
-    'MRVL',
-    'MSM',
-    'MTUM',
-    'NTR',
-    'NUS',
-    'NWN',
-    'O',
-    'PBCT',
-    'PEG',
-    'PEP',
-    'PFE',
-    'PFF',
-    'PG',
-    'PRU',
-    'QCOM',
-    'QQQ',
-    'SDIV',
-    'SGU',
-    'SIG',
-    'SJM',
-    'SPHD',
-    'SPYD',
-    'SSW',
-    'STBA',
-    'T',
-    'TER',
-    'TFSL',
-    'TGT',
-    'TNK',
-    'TROW',
-    'TRTN',
-    'TS',
-    'TSM',
-    'TX',
-    'UBSI',
-    'UL',
-    'UNM',
-    'UPS',
-    'VBK',
-    'VDE',
-    'VFC',
-    'VOD',
-    'VSS',
-    'VT',
-    'VTWO',
-    'VZ',
-    'WBK',
-    'WFC',
-    'WSBC',
-    'XLB',
-    'XLI',
-    'XLNX',
-    'XLU',
-    'XOM',
-    'XPER']
 
 
 def check_ticker(ticker: str) -> Union[str, R]:
@@ -239,7 +117,7 @@ def check_data(
 def read_html():
     # スクレイピング対象のhtmlファイルからsoupを作成
     soup = bs4.BeautifulSoup(
-        open('/home/hiroshisakuma/docs/Dividend Calendar - Investing.com.html'),
+        open(DIV_HTML),
         'html.parser')
 
     # for link in soup.find_all("a", "bold"):
