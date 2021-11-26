@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'dividends.apps.TickersConfig',
-    # 'dividends.apps.DividendsConfig',
+    'tickers.apps.TickersConfig',
+    # 'divmanagement.apps.TickersConfig',
     'django_filters',
 ]
 

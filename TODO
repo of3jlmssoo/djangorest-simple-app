@@ -12,5 +12,6 @@ Todo:
 ✘ dividend query specifying a ticker and date after @cancelled(21-11-21 17:25)
 ☐ ticker tools isthisregistered
 ☐ ticker tools reconcile(file and db)
+☐ INSTALLED_APPS確認(dividendsを削除する)
 
 
