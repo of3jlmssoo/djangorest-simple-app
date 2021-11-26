@@ -12,7 +12,7 @@ from typing import Union
 import bs4
 import requests
 
-from refs import DIV_HTML, portf
+from refs import DEFAULT_DIR, DEFAULT_FILE, portf
 
 
 class R(Enum):
@@ -117,7 +117,7 @@ def check_data(
 def read_html():
     # スクレイピング対象のhtmlファイルからsoupを作成
     soup = bs4.BeautifulSoup(
-        open(DIV_HTML),
+        open(DEFAULT_DIR + DEFAULT_FILE),
         'html.parser')
 
     # for link in soup.find_all("a", "bold"):
