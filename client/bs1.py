@@ -171,10 +171,10 @@ def read_html():
             print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
 
 
-def read_my_tickers():
-    with open('./tickers.txt') as f:
-        l = [s.strip() for s in f.readlines()]
-    print(l)
+# def read_my_tickers():
+#     with open('./tickers.txt') as f:
+#         l = [s.strip() for s in f.readlines()]
+#     print(l)
 
 
 if __name__ == '__main__':
@@ -188,3 +188,12 @@ if __name__ == '__main__':
     # print(check_date('Mar 20, a2021'))
     # print(check_date('Mar 20, 21'))
     read_html()
+
+
+# def read_line_generator(filepath):
+#     with open(filepath) as file:
+#         for line in file:
+#             yield line
+
+# for line in read_line_generator("./large_size_file.txt"):
+#     print(line)
