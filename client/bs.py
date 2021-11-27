@@ -46,6 +46,10 @@ def check_ticker(ticker: str) -> Union[str, R]:
 
 
 def check_date(date: str) -> Union[datetime.datetime, R]:
+    """
+    htmlファイルの日付フォーマットは"Jan 03, 2022"
+    """
+
     print(f'{date=}')
     M = [
         'Jan',
@@ -114,10 +118,13 @@ def check_data(
     pass
 
 
-def read_html():
-    # スクレイピング対象のhtmlファイルからsoupを作成
+# def read_html():
+#     soup = bs4.BeautifulSoup(
+#         open(DEFAULT_DIR + DEFAULT_FILE),
+#         'html.parser')
+def read_html(html_file):
     soup = bs4.BeautifulSoup(
-        open(DEFAULT_DIR + DEFAULT_FILE),
+        open(html_file),
         'html.parser')
 
     # for link in soup.find_all("a", "bold"):

@@ -8,10 +8,13 @@ Todo:
 ☐ dividend用テスト
 ☐ RESTドキュメント生成
 ☐ インテグレーション
+  ☐ bs1 refactoring(pass parameter, generator)
+  ☐ tk get all registered tickers
+  ☐ tk -> bs1
 ✔ ticker tools (query and)delete all tickers @done(21-11-17 17:44)
 ✘ dividend query specifying a ticker and date after @cancelled(21-11-21 17:25)
 ☐ ticker tools isthisregistered
 ☐ ticker tools reconcile(file and db)
-☐ INSTALLED_APPS確認(dividendsを削除する)
+✔ INSTALLED_APPS確認(dividendsを削除する) @done(21-11-27 08:48)
 
 

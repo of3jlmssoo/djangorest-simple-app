@@ -3,6 +3,7 @@ from tkinter import filedialog as fd
 from tkinter import messagebox, ttk
 from tkinter.messagebox import showinfo
 
+from bs import read_html
 from refs import DEFAULT_DIR, DEFAULT_FILE
 
 # DEFAULT_DIR = '/'
@@ -21,7 +22,7 @@ def select_files():
         ('All files', '*.*')
     )
 
-    filenames = fd.askopenfilename(
+    filename = fd.askopenfilename(
         title='Open files',
         initialdir=DEFAULT_DIR,
         # initialfile="'" + DEFAULT_FILE + "'",
@@ -30,30 +31,41 @@ def select_files():
 
     showinfo(
         title='Selected Files',
-        message=filenames
+        message=filename
     )
 
-    print(f'{filenames}')
-    display_result(filenames)
+    print(f'{filename}')
+    txt = prepare_result_display(filename)
+    get_and_put_content(filename, txt)
 
 
-def display_result(filenames):
-    Txt = tk.Text(root, height=5, width=200)
+def get_and_put_content(filename, txt):
+    read_html(filename)
+    txt.insert(tk.END, 'hello world')
+
+
+def prepare_result_display(filename):
+    txt = tk.Text(root, height=22, width=200)
+    # txt = tk.Text(root, width=200)
     lbl = tk.Label(root, text="配当情報")
 
-    message = filenames + 'is selected to process.'
+    message = filename + 'is selected to process.\n'
 
     exitb = tk.Button(root, text="Exit",
                       command=root.destroy)
 
-    root.geometry('1000x150+100+100')
+    root.geometry('1000x500+100+100')
 
     open_button.pack_forget()
     lbl.pack()
-    Txt.pack()
+    txt.pack()
     # exitb.pack(pady=2)
     exitb.pack()
-    Txt.insert(tk.END, message)
+    for i in range(10):
+        msg = str(i) + ' ' + message
+        txt.insert(tk.END, msg)
+
+    return txt
 
 
 open_button = ttk.Button(
