@@ -1,6 +1,7 @@
 """
 refs.htmlはgitにアップロードしない。中身は
-    DIV_HTML = '配当情報のhtmlファイル名'
+    DEFAULT_DIR = '/dir/'
+    DEFAULT_FILE = '配当情報のhtmlファイル名'
     portf = ['stock1ticker', 'stock2ticker']
 """
 import csv  # モジュール"CSV"の呼び出し
@@ -13,6 +14,8 @@ import bs4
 import requests
 
 from refs import DEFAULT_DIR, DEFAULT_FILE, portf
+
+DEFAULT_DATE = 'Jan 01, 2000'
 
 
 class R(Enum):
@@ -118,10 +121,6 @@ def check_data(
     pass
 
 
-# def read_html():
-#     soup = bs4.BeautifulSoup(
-#         open(DEFAULT_DIR + DEFAULT_FILE),
-#         'html.parser')
 def read_html(html_file):
     soup = bs4.BeautifulSoup(
         open(html_file),
@@ -157,12 +156,12 @@ def read_html(html_file):
         try:
             exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
         except ValueError:
-            exdate = datetime.datetime.strptime('Jan 01, 2000', "%b %d, %Y")
+            exdate = datetime.datetime.strptime(DEFAULT_DATE, "%b %d, %Y")
 
         try:
             paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
         except ValueError:
-            paydate = datetime.datetime.strptime('Jan 01, 2000', "%b %d, %Y")
+            paydate = datetime.datetime.strptime(DEFAULT_DATE, "%b %d, %Y")
 
         divval = float(divval)
 
@@ -170,12 +169,11 @@ def read_html(html_file):
         paydate = paydate.strftime('%Y-%m-%d')
 
         yieldratio = yieldratio.replace('%', '').replace('-', '0')
-        # print(f'1) {yieldratio} {tmp}')
-        # print(f'2) {float(tmp)}')
-        # yieldratio = float(yieldratio.replace('%', ''))
 
+        """ yield """
         if ticker in portf:
-            print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
+            # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
+            yield f'{ticker}, {exdate}, {divval}, {paydate}, {yieldratio}'
 
 
 # def read_my_tickers():
@@ -194,13 +192,16 @@ if __name__ == '__main__':
     # print(check_date('Mar 20s, 2021'))
     # print(check_date('Mar 20, a2021'))
     # print(check_date('Mar 20, 21'))
-    read_html()
 
+    # read_html()
 
-# def read_line_generator(filepath):
-#     with open(filepath) as file:
-#         for line in file:
-#             yield line
+    for line in read_html(DEFAULT_DIR + DEFAULT_FILE):
+        print(line)
 
-# for line in read_line_generator("./large_size_file.txt"):
-#     print(line)
+        # def read_line_generator(filepath):
+        #     with open(filepath) as file:
+        #         for line in file:
+        #             yield line
+
+        # for line in read_line_generator("./large_size_file.txt"):
+        #     print(line)

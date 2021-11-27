@@ -4,13 +4,15 @@ Todo:
 ✔ dividend in views.pyをリファクタリング(tickerと同様にする) @done(21-11-21 17:25)
   ✔ tickerでサーチ @done(21-11-21 17:25)
   ✔ ticker & date afterでサーチ @done(21-11-21 17:25)
-☐ 配当情報htmlとポートフォリオ情報を.gitignoreに追加。定義の別ファイル化
+✔ 配当情報htmlとポートフォリオ情報を.gitignoreに追加。定義の別ファイル化 @done(21-11-27 09:49)
 ☐ dividend用テスト
 ☐ RESTドキュメント生成
 ☐ インテグレーション
-  ☐ bs1 refactoring(pass parameter, generator)
-  ☐ tk get all registered tickers
-  ☐ tk -> bs1
+  ✔ bs1 refactoring(pass parameter, generator) @done(21-11-27 09:49)
+  ✔ tk -> bs1 @done(21-11-27 09:49)
+  ☐ new module to register tickers(CSV, API)
+  ☐ bs get all registered tickers
+  ☐ 配当情報登録
 ✔ ticker tools (query and)delete all tickers @done(21-11-17 17:44)
 ✘ dividend query specifying a ticker and date after @cancelled(21-11-21 17:25)
 ☐ ticker tools isthisregistered
