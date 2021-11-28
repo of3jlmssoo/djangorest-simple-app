@@ -114,6 +114,10 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
+    def itThisTickerExist(self, ticker_code):
+        result, r = self.get_data_of_ticker(ticker_code)
+        return 1 if r.text != '[]' else 0
+
     def get_data_of_all(self):
         ref_code = http_result.OK.value
         r = self.session.get(
