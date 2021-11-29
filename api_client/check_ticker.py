@@ -496,21 +496,50 @@ class ApiTest4Ticker(TestCase):
         """ ##################################################################### """
 
         logger.debug('11) isThisTickerExist')
-        ticker_code = 'mc'
-        params_ticker = {'ticker': ticker_code}
-        result, r = self.ticker_requests.post_data(
-            params_ticker)
+        result, r = self.ticker_requests.post_data({'ticker': 'mc'})
         if result != expected_result.as_expected:
             logger.debug(f'     when post, unexpected status:{r.status_code=}')
 
-        self.assertEqual(self.ticker_requests.itThisTickerExist('mc'), 1)
-        self.assertEqual(self.ticker_requests.itThisTickerExist('mss'), 0)
+        self.assertNotEqual(self.ticker_requests.isThisTickerExist('mc'), 0)
+        self.assertEqual(self.ticker_requests.isThisTickerExist('mss'), 0)
 
+        print(f'{self.ticker_requests.getAllData()=}')
         self.ticker_requests.delete_all_data()
 
-        self.assertEqual(self.ticker_requests.itThisTickerExist('mc'), 0)
-        self.assertEqual(self.ticker_requests.itThisTickerExist('mss'), 0)
+        self.assertEqual(self.ticker_requests.isThisTickerExist('mc'), 0)
+        self.assertEqual(self.ticker_requests.isThisTickerExist('mss'), 0)
         logger.debug('11) isThisTickerExist')
+
+    def test_new_postData_getAllData(self):
+        """ ##################################################################### """
+        logger.debug('12) postData_getAllData')
+
+        if not self.ticker_requests.postData({'ticker': 'mc'}):
+            print('12) postData_getAllData error when posting mc')
+        result = self.ticker_requests.getAllData()
+        self.assertEqual(type(result), list)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result[0]), 6)
+
+        if not self.ticker_requests.postData({'ticker': 'mss'}):
+            print('12) postData_getAllData error when posting mss')
+
+        result = self.ticker_requests.getAllData()
+        self.assertEqual(type(result), list)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result[0]), 6)
+        self.assertEqual(len(result[1]), 6)
+
+        result = self.ticker_requests.getAllData()
+        id = self.ticker_requests.getIdOfTicker("mc")
+        self.assertEqual(type(id), int)
+        if (result := self.ticker_requests.patchData(id + 100, {"vol1": 100})):
+            self.assertEqual(result["vol1"], 100)
+        else:
+            print('patch requet but failed')
+
+        self.ticker_requests.delete_all_data()
+        logger.debug('12) postData_getAllData')
 
     def test_ticker1(self):
         """ ##################################################################### """
@@ -560,5 +589,6 @@ class ApiTest4Ticker(TestCase):
 
 test = ApiTest4Ticker()
 test.test_ticker()
-test.test_ticker1()
-test.test_isThisTickerExist()
+# test.test_ticker1()
+# test.test_isThisTickerExist()
+test.test_new_postData_getAllData()

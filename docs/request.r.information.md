@@ -1,0 +1,98 @@
+output of r.**dict**
+{'\_content': b'[]',
+'\_content_consumed': True,
+'\_next': None,
+'status_code': 200,
+'headers': {'Date': 'Mon, 29 Nov 2021 05:37:45 GMT',
+'Server': 'WSGIServer/0.2 CPython/3.8.10',
+'Content-Type': 'application/json', 'Vary':
+'Accept, Cookie',
+'Allow': 'GET, POST, HEAD, OPTIONS',
+'X-Frame-Options': 'DENY',
+'Content-Length': '2',
+'X-Content-Type-Options': 'nosniff',
+'Referrer-Policy': 'same-origin'},
+'raw': <urllib3.response.HTTPResponse object at 0x7f203f25dcd0>,
+'url': 'http://127.0.0.1:8000/tickers/?ticker=mc',
+'encoding': 'utf-8',
+'history': [],
+'reason': 'OK',
+'cookies': <RequestsCookieJar[]>,
+'elapsed': datetime.timedelta(microseconds=163569),
+'request': <PreparedRequest [GET]>,
+'connection': <requests.adapters.HTTPAdapter object at 0x7f203f2c18b0>}
+
+output of dir(r)
+['__attrs__',
+'__bool__',
+'__class__',
+'__delattr__',
+'__dict__',
+'__dir__',
+'__doc__',
+'__enter__',
+'__eq__',
+'__exit__',
+'__format__',
+'__ge__',
+'__getattribute__',
+'__getstate__',
+'__gt__',
+'__hash__',
+'__init__',
+'__init_subclass__',
+'__iter__',
+'__le__',
+'__lt__',
+'__module__',
+'__ne__',
+'__new__',
+'__nonzero__',
+'__reduce__',
+'__reduce_ex__',
+'__repr__',
+'__setattr__',
+'__setstate__',
+'__sizeof__',
+'__str__',
+'__subclasshook__',
+'__weakref__',
+'_content',
+'_content_consumed',
+'_next',
+'apparent_encoding',
+'close',
+'connection',
+'content',
+'cookies',
+'elapsed',
+'encoding',
+'headers',
+'history',
+'is_permanent_redirect',
+'is_redirect',
+'iter_content',
+'iter_lines',
+'json',
+'links',
+'next',
+'ok',
+'raise_for_status',
+'raw',
+'reason',
+'request',
+'status_code',
+'text',
+'url']
+
+# print(f'{type(r)=}')
+
+# print(f'{r.**dict**=}')
+
+# print(f'{vars(r)}')
+
+# print(f'{dir(r)}')
+
+# print(f'{r.**module**=}')
+
+# print(f'{r.**doc**=}')

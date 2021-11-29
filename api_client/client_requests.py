@@ -8,9 +8,20 @@ export DJA_URL='http://127.0.0.1:8000/'
 204 No Content => deleted
 400 Bad Request
 
+2つ確認するものがある。
+1. HTTPレベル
+2. アプリレベル
+
+get_data_of_ticket  : HTTPレベルのステータスコードをチェック
+isThisTickerExist   : if HTTP = Good & アプリレベル = Good
+                        return 0
+                      else
+                        return r
+
 """
 import json
 import logging
+from typing import Union
 
 import requests
 
@@ -93,6 +104,14 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
+    def postData(self, params) -> Union[str, None]:
+        result, r = self.post_data(params)
+        """ TODO : エラーチェック強化検討。辞書のキー毎に正しいか確認するかどうか """
+        if result == expected_result.as_expected and r.text != '[]':
+            return json.loads(r.text)
+        else:
+            return None
+
     def patch_data(self, id, params):
         pass
         # ref_code = http_result.Created.value  # created
@@ -104,6 +123,19 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
+    def patchData(self, id, params) -> Union[dict, None]:
+        pass
+        result, r = self.patch_data(id, params)
+        if result != expected_result.as_expected:
+            print(f'client_request.patchData() failed. {id=} {params=}')
+            return None
+        print(f'==> {r.status_code=}')
+        patched_ticker = json.loads(r.text)
+        for k in params.keys():
+            if params[k] != patched_ticker[k]:
+                return None
+        return patched_ticker
+
     def get_data_of_ticker(self, ticker_code):
         ref_code = http_result.OK.value
         r = self.session.get(
@@ -114,9 +146,31 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def itThisTickerExist(self, ticker_code):
+    def getIdOfTicker(self, ticker_code) -> Union[int, None]:
+        if (result := self.isThisTickerExist(ticker_code)):
+            return result["id"]
+        return None
+
+    def isThisTickerExist(self, ticker_code) -> Union[str, None]:
         result, r = self.get_data_of_ticker(ticker_code)
-        return 1 if r.text != '[]' else 0
+        # print(f'{r.__sizeof__()}')
+        # print(f'{type(r.text)=}')
+        # print(f'{r.json()=}')
+        # print(f'{r.content=}')
+        if result == expected_result.as_expected and r.text != '[]':
+            # data = json.loads(r.text)[0]
+            # print(f'==> {type(data)=}')
+            return json.loads(r.text)[0]
+        else:
+            return None
+
+    def getAllData(self) -> Union[str, None]:
+        result, r = self.get_data_of_all()
+        if result == expected_result.as_expected and r.text != '[]':
+            # return r.text
+            return json.loads(r.text)
+        else:
+            return None
 
     def get_data_of_all(self):
         ref_code = http_result.OK.value
