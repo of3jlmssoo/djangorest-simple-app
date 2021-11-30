@@ -70,7 +70,7 @@ class TickerFilter(filters.FilterSet):
 
     class Meta:
         model = Ticker
-        fields = ['ticker']
+        fields = ['ticker', 'id']
 
 
 class TickerList(generics.ListCreateAPIView):

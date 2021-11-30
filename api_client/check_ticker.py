@@ -500,15 +500,31 @@ class ApiTest4Ticker(TestCase):
         if result != expected_result.as_expected:
             logger.debug(f'     when post, unexpected status:{r.status_code=}')
 
-        self.assertNotEqual(self.ticker_requests.isThisTickerExist('mc'), 0)
-        self.assertEqual(self.ticker_requests.isThisTickerExist('mss'), 0)
+        self.assertNotEqual(self.ticker_requests.isThisTickerExist('mc'), None)
+        self.assertEqual(self.ticker_requests.isThisTickerExist('mss'), None)
 
         print(f'{self.ticker_requests.getAllData()=}')
         self.ticker_requests.delete_all_data()
 
-        self.assertEqual(self.ticker_requests.isThisTickerExist('mc'), 0)
-        self.assertEqual(self.ticker_requests.isThisTickerExist('mss'), 0)
+        self.assertEqual(self.ticker_requests.isThisTickerExist('mc'), None)
+        self.assertEqual(self.ticker_requests.isThisTickerExist('mss'), None)
         logger.debug('11) isThisTickerExist')
+
+    def test_isThisIdExist(self):
+        """ ##################################################################### """
+
+        logger.debug('11-2) isThisIdExist')
+        self.ticker_requests.delete_all_data()
+        result = self.ticker_requests.postData({'ticker': 'mc'})
+        self.assertNotEqual(result, None)
+        print(f'check_ticker.test_isThisIdExist ticker posted correctly')
+        id = self.ticker_requests.getIdOfTicker('mc')
+        self.assertEqual(type(id), int)
+        print(f'check_ticker.test_isThisIdExist ticker got id')
+        result = self.ticker_requests.isThisTickerExist(id)
+        self.assertEqual(type(result), dict)
+
+        logger.debug('11-2) isThisIdExist')
 
     def test_new_postData_getAllData(self):
         """ ##################################################################### """
@@ -533,13 +549,104 @@ class ApiTest4Ticker(TestCase):
         result = self.ticker_requests.getAllData()
         id = self.ticker_requests.getIdOfTicker("mc")
         self.assertEqual(type(id), int)
-        if (result := self.ticker_requests.patchData(id + 100, {"vol1": 100})):
+        # if (result := self.ticker_requests.patchData(id + 100, {"vol1":
+        # 100})):
+        if (result := self.ticker_requests.patchData(id, {"vol1": 100})):
             self.assertEqual(result["vol1"], 100)
         else:
-            print('patch requet but failed')
+            print('patch requeted but failed')
+            print(f'{self.ticker_requests.getAllData()=}')
 
         self.ticker_requests.delete_all_data()
         logger.debug('12) postData_getAllData')
+
+    def test_not_exist(self):
+        """ ##################################################################### """
+        logger.debug('13) not exist')
+        self.ticker_requests.delete_all_data()
+
+        result = self.ticker_requests.isThisTickerExist('mc')
+        self.assertEqual(result, None)
+
+        result = self.ticker_requests.getAllData()
+        self.assertEqual(result, None)
+
+        result = self.ticker_requests.getIdOfTicker('mc')
+        self.assertEqual(result, None)
+        ###########################################
+        result = self.ticker_requests.isThisTickerExist(100)
+        self.assertEqual(result, None)
+
+        result = self.ticker_requests.getIdOfTicker(100)
+        self.assertEqual(result, None)
+
+        result = self.ticker_requests.patchData(123, {'vol1': 100})
+        self.assertEqual(result, None)
+
+        logger.debug('13) not exist')
+
+    def test_post_patch(self):
+        """ ##################################################################### """
+        logger.debug('14) post_patch')
+        self.ticker_requests.delete_all_data()
+        """ いい加減なポスト """
+        params = {'tcker': 'mc'}
+        result = self.ticker_requests.postData(params)
+        self.assertEqual(result, None)
+
+        params = {'vol1': 100}
+        result = self.ticker_requests.postData(params)
+        self.assertEqual(result, None)
+
+        """ 正しいポスト """
+        params = {'ticker': 'mc'}
+        result = self.ticker_requests.postData(params)
+        self.assertEqual(type(result), dict)
+        print(f'test_post_patch {result=}')
+
+        """ いい加減なパッチ"""
+        id = self.ticker_requests.getIdOfTicker('mc')
+        self.assertEqual(type(id), int)
+
+        # 存在しないIDを指定
+        invalid_maker = 100
+        result = self.ticker_requests.patchData(
+            id + invalid_maker, {'vol1': 123})
+        self.assertEqual(result, None)
+        # 存在しないデータキーを指定
+        result = self.ticker_requests.patchData(
+            id, {'vol3': 123})
+        self.assertEqual(result, None)
+
+        """ 正しいパッチ """
+        invalid_maker = 0
+        result = self.ticker_requests.patchData(
+            id + invalid_maker, {'vol1': 123})
+        self.assertEqual(type(result), dict)
+        print(f'check_ticker.test_post_patch {result=}')
+        logger.debug('14) post_patch')
+
+    def test_delete(self):
+        """ ##################################################################### """
+        logger.debug('15) delete')
+
+        result = self.ticker_requests.postData({'ticker': 'mc'})
+        result = self.ticker_requests.isThisTickerExist('mc')
+        self.assertEqual(result['ticker'], 'mc')
+        result = self.ticker_requests.postData({'ticker': 'mss'})
+        result = self.ticker_requests.isThisTickerExist('mss')
+        self.assertEqual(result['ticker'], 'mss')
+        self.ticker_requests.delete_all_data()
+        result = self.ticker_requests.isThisTickerExist('mc')
+        self.assertEqual(result, None)
+        result = self.ticker_requests.isThisTickerExist('mss')
+        self.assertEqual(result, None)
+
+        result = self.ticker_requests.postData({'ticker': 'mc'})
+        id = self.ticker_requests.getIdOfTicker('mc')
+        self.ticker_requests.delete_data('mc')
+
+        logger.debug('15) delete')
 
     def test_ticker1(self):
         """ ##################################################################### """
@@ -591,4 +698,8 @@ test = ApiTest4Ticker()
 test.test_ticker()
 # test.test_ticker1()
 # test.test_isThisTickerExist()
-test.test_new_postData_getAllData()
+# test.test_isThisIdExist()
+# test.test_new_postData_getAllData()
+# test.test_not_exist()
+test.test_post_patch()
+test.test_delete()

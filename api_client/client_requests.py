@@ -71,19 +71,34 @@ class client_requests(object):
         #     print('---------------------------------------')
         #     self.delete_all_data()
 
+    # def delete_all_data(self):
+
+    #     r = self.session.get(
+    #         # self.DJA_URL + self.app + '/',
+    #         self.DJA_URL + self.app + '/',
+    #         headers=self.headers)
+
+    #     print(f'---> {r.text}')
+    #     while r.text != '[]':
+    #         id = json.loads(r.text)[0].pop('id')
+    #         self.delete_data(id)
+    #         r = self.session.get(
+    #             # self.DJA_URL + self.app + '/',
+    #             self.DJA_URL + self.app + '/',
+    #             headers=self.headers)
+
     def delete_all_data(self):
+        """ objects.all.delete()でもいけそうではある """
 
         r = self.session.get(
             # self.DJA_URL + self.app + '/',
             self.DJA_URL + self.app + '/',
             headers=self.headers)
-        while r.text != '[]':
-            id = json.loads(r.text)[0].pop('id')
-            self.delete_data(id)
-            r = self.session.get(
-                # self.DJA_URL + self.app + '/',
-                self.DJA_URL + self.app + '/',
-                headers=self.headers)
+
+        data = json.loads(r.text)
+
+        for t in data:
+            self.delete_data(t["id"])
 
     def delete_data(self, id):
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
@@ -94,8 +109,14 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def post_data(self, params):
+    def deleteData(self, id):
         pass
+        """ idがidであることをチェック """
+        """ idが存在することをチェック """
+        """ delete_data(id)"""
+
+    def post_data(self, params):
+
         ref_code = http_result.Created.value  # created
         r = self.session.post(
             self.DJA_URL + self.app + '/',
@@ -104,7 +125,13 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def postData(self, params) -> Union[str, None]:
+    def postData(self, params: dict) -> Union[str, None]:
+        """ paramsのキー、値の型チェック、数値の場合の条件(+ only等)を追加する余地あり """
+        """ 必須キー(tickerの場合ticker)の指定有無確認 """
+        if not isinstance(params, dict):
+            print(f'client_request.postData error {params=}')
+            return None
+
         result, r = self.post_data(params)
         """ TODO : エラーチェック強化検討。辞書のキー毎に正しいか確認するかどうか """
         if result == expected_result.as_expected and r.text != '[]':
@@ -113,46 +140,101 @@ class client_requests(object):
             return None
 
     def patch_data(self, id, params):
+        """ paramsに存在しないキーを指定した場合、r.status_code == 200 Okで処理されてしまう"""
         pass
-        # ref_code = http_result.Created.value  # created
+
+        print(f'patch_data {params=}')
         ref_code = http_result.OK.value  # created
         r = self.session.patch(
             self.DJA_URL + self.app + '/' + str(id) + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+
+        print(f'patch_data {r.status_code=}')
         return result, r
 
-    def patchData(self, id, params) -> Union[dict, None]:
-        pass
+    def patchData(self, id: int, params: dict) -> Union[dict, None]:
+        """ paramsのキー、値の型チェック、数値の場合の条件(+ only等)を追加する余地あり """
+
+        result = self.isThisTickerExist(id)
+        if not result:
+            print(f'client_requests.patchData ticker doesnot exist {id}')
+            return None
+
+        if not isinstance(id, int) or not isinstance(params, dict):
+            print(f'client_requests.patchData error {type(id)} {type(params)}')
+            return None
+
+        valid_keys = result.keys()
+        for k in params.keys():
+            if k not in valid_keys:
+                print(f'client_requests.patchData invalid key specified {k}')
+                return None
+
         result, r = self.patch_data(id, params)
         if result != expected_result.as_expected:
-            print(f'client_request.patchData() failed. {id=} {params=}')
+            print(
+                f'client_request.patchData failed. {result=} {r.status_code=} {id=} {params=}')
+            print(f'client_request.patchData {self.getAllData()=}')
             return None
-        print(f'==> {r.status_code=}')
         patched_ticker = json.loads(r.text)
+        print(f'patchData {self.getAllData()=}')
         for k in params.keys():
             if params[k] != patched_ticker[k]:
                 return None
         return patched_ticker
 
-    def get_data_of_ticker(self, ticker_code):
+    # def get_data_of_ticker(self, ticker_code):
+    #     ref_code = http_result.OK.value
+    #     r = self.session.get(
+    #         self.DJA_URL +
+    #         self.app + '/?ticker=' +
+    #         ticker_code,
+    #         headers=self.headers)
+    #     result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+    #     return result, r
+    def get_data_of(self, key, identifier):
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
-            self.app + '/?ticker=' +
-            ticker_code,
+            self.app + '/?' + key + '=' +
+            identifier,
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
+    def get_data_of_ticker(self, ticker_information):
+        return self.get_data_of('ticker', ticker_information)
+
+    def get_data_of_id(self, ticker_information):
+        return self.get_data_of('id', str(ticker_information))
+
     def getIdOfTicker(self, ticker_code) -> Union[int, None]:
+        if not isinstance(ticker_code, str):
+            print(
+                f'client_request.getIdOfTicker error: {type(ticker_code)=} not str')
+            return None
         if (result := self.isThisTickerExist(ticker_code)):
             return result["id"]
         return None
 
-    def isThisTickerExist(self, ticker_code) -> Union[str, None]:
-        result, r = self.get_data_of_ticker(ticker_code)
+    def isThisTickerExist(
+            self, ticker_information: Union[str, int]) -> Union[dict, None]:
+        if not isinstance(
+                ticker_information,
+                str) and not isinstance(
+                ticker_information,
+                int):
+            print(
+                f'client_request.isThisTickerExist error: {type(ticker_information)=} not str and int')
+            return None
+
+        if isinstance(ticker_information, str):
+            result, r = self.get_data_of_ticker(ticker_information)
+        if isinstance(ticker_information, int):
+            result, r = self.get_data_of_id(ticker_information)
+
         # print(f'{r.__sizeof__()}')
         # print(f'{type(r.text)=}')
         # print(f'{r.json()=}')
