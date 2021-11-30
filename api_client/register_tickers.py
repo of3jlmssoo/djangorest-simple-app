@@ -19,52 +19,91 @@ import json
 import os
 
 import requests
+from client_requests import client_requests
+import csv
+import logging
 
 # import subprocess
 
 
-DJA_UI = os.environ['DJA_UI']
-DJA_PW = os.environ['DJA_PW']
-DJA_URL = os.environ['DJA_URL']
-
-s = requests.Session()
-s.auth = (DJA_UI, DJA_PW)
-r = s.get(DJA_URL)
-
-headers = {'content-type': 'application/json'}
-params = {'ticker': 'mc'}
-r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
-params = {'ticker': 'mss'}
-r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
-print(f'{r.status_code=}')
-print(f'{r.json=}')
-print(f'{type(r.json)=}')
-print(f'{r.text=}')
-print(f'{type(r.text)=}')
-jtext = json.loads(r.text)
+logger = logging.getLogger(__name__)
+ch = logging.StreamHandler()
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+logger.propagate = False
+# DEBUG INFO WARNIG ERROR CRTICAL
+logger.setLevel(logging.DEBUG)
+ch.setLevel(logging.DEBUG)
+logger.disabled = False
 
 
-r = s.get(DJA_URL + 'tickers/', headers=headers)
-print(r.text)
-jtext = json.loads(r.text)
-jtext
+class RegisterTicker(TestCase):
+
+    def __init__(self, *args, **kwargs):
+        print('ApiTest')
+        super().__init__(*args, **kwargs)
+        self.DJA_UI = os.environ['DJA_UI']
+        self.DJA_PW = os.environ['DJA_PW']
+        self.DJA_URL = os.environ['DJA_URL']
+        self.content_type = {'content-type': 'application/json'}
+
+        self.app = 'tickers'
+        self.ticker_requests = client_requests(
+            self.DJA_UI,
+            self.DJA_PW,
+            self.DJA_URL,
+            self.content_type,
+            self.app)
+
+        self.app = 'dividends'
+        self.dividend_requests = client_requests(
+            self.DJA_UI,
+            self.DJA_PW,
+            self.DJA_URL,
+            self.content_type,
+            self.app)
 
 
-r = s.get(DJA_URL + 'tickersname/?ticker=mc', headers=headers)
-print(r.text)
-jtext = json.loads(r.text)
-jtext
+# s = requests.Session()
+# s.auth = (DJA_UI, DJA_PW)
+# r = s.get(DJA_URL)
 
-r = s.get(DJA_URL + 'tickersname/?ticker=mss', headers=headers)
-print(r.text)
-jtext = json.loads(r.text)
-jtext
+# headers = {'content-type': 'application/json'}
+# params = {'ticker': 'mc'}
+# r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
+# params = {'ticker': 'mss'}
+# r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
+# print(f'{r.status_code=}')
+# print(f'{r.json=}')
+# print(f'{type(r.json)=}')
+# print(f'{r.text=}')
+# print(f'{type(r.text)=}')
+# jtext = json.loads(r.text)
 
-r = s.delete(DJA_URL + 'tickers/' + str(jtext[0]['id']) + '/', headers=headers)
-print(f'{r.status_code=}')
-print(f'{r.text=}')
+
+# r = s.get(DJA_URL + 'tickers/', headers=headers)
+# print(r.text)
+# jtext = json.loads(r.text)
+# jtext
 
 
-# class RestReq:
-#     def __init__(self) -> None:
-#         pass
+# r = s.get(DJA_URL + 'tickersname/?ticker=mc', headers=headers)
+# print(r.text)
+# jtext = json.loads(r.text)
+# jtext
+
+# r = s.get(DJA_URL + 'tickersname/?ticker=mss', headers=headers)
+# print(r.text)
+# jtext = json.loads(r.text)
+# jtext
+
+# r = s.delete(DJA_URL + 'tickers/' + str(jtext[0]['id']) + '/', headers=headers)
+# print(f'{r.status_code=}')
+# print(f'{r.text=}')
+
+
+# # class RestReq:
+# #     def __init__(self) -> None:
+# #         pass
