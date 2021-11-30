@@ -630,13 +630,14 @@ class ApiTest4Ticker(TestCase):
         """ ##################################################################### """
         logger.debug('15) delete')
 
-        result = self.ticker_requests.postData({'ticker': 'mc'})
-        result = self.ticker_requests.isThisTickerExist('mc')
-        self.assertEqual(result['ticker'], 'mc')
-        result = self.ticker_requests.postData({'ticker': 'mss'})
-        result = self.ticker_requests.isThisTickerExist('mss')
-        self.assertEqual(result['ticker'], 'mss')
+        # result = self.ticker_requests.postData({'ticker': 'mc'})
+        # result = self.ticker_requests.isThisTickerExist('mc')
+        # self.assertEqual(result['ticker'], 'mc')
+        # result = self.ticker_requests.postData({'ticker': 'mss'})
+        # result = self.ticker_requests.isThisTickerExist('mss')
+        # self.assertEqual(result['ticker'], 'mss')
         self.ticker_requests.delete_all_data()
+        self.ticker_requests.deleteAllData()
         result = self.ticker_requests.isThisTickerExist('mc')
         self.assertEqual(result, None)
         result = self.ticker_requests.isThisTickerExist('mss')
@@ -644,7 +645,9 @@ class ApiTest4Ticker(TestCase):
 
         result = self.ticker_requests.postData({'ticker': 'mc'})
         id = self.ticker_requests.getIdOfTicker('mc')
-        self.ticker_requests.delete_data('mc')
+        self.assertEqual(self.ticker_requests.deleteData('mc'), False)
+        self.assertEqual(self.ticker_requests.deleteData(id), True)
+        self.assertEqual(self.ticker_requests.deleteData(id), False)
 
         logger.debug('15) delete')
 

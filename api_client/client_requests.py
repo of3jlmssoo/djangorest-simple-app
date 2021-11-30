@@ -100,6 +100,9 @@ class client_requests(object):
         for t in data:
             self.delete_data(t["id"])
 
+    def deleteAllData(self):
+        self.delete_all_data()
+
     def delete_data(self, id):
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
         r = self.session.delete(self.DJA_URL + self.app +
@@ -109,11 +112,22 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def deleteData(self, id):
-        pass
-        """ idがidであることをチェック """
+    def deleteData(self, id) -> bool:
+        """ type(id)がintであることをチェック """
+        if not isinstance(id, int):
+            print(f'client_requests.deleteData invalid arg {id=}')
+            return False
+
         """ idが存在することをチェック """
+        result = self.isThisTickerExist(id)
+        if not result:
+            print(f'client_requests.deleteData ticker doesnot exist {id}')
+            return False
+
         """ delete_data(id)"""
+        result, r = self.delete_data(id)
+        if result:
+            return True
 
     def post_data(self, params):
 
