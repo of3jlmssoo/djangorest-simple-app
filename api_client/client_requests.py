@@ -157,7 +157,7 @@ class client_requests(object):
         """ paramsに存在しないキーを指定した場合、r.status_code == 200 Okで処理されてしまう"""
         pass
 
-        print(f'patch_data {params=}')
+        # print(f'patch_data {params=}')
         ref_code = http_result.OK.value  # created
         r = self.session.patch(
             self.DJA_URL + self.app + '/' + str(id) + '/',
@@ -165,7 +165,7 @@ class client_requests(object):
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
 
-        print(f'patch_data {r.status_code=}')
+        # print(f'patch_data {r.status_code=}')
         return result, r
 
     def patchData(self, id: int, params: dict) -> Union[dict, None]:
@@ -193,9 +193,11 @@ class client_requests(object):
             print(f'client_request.patchData {self.getAllData()=}')
             return None
         patched_ticker = json.loads(r.text)
-        print(f'patchData {self.getAllData()=}')
+        # print(f'patchData {self.getAllData()=}')
         for k in params.keys():
+            # if int(params[k]) != patched_ticker[k]:
             if params[k] != patched_ticker[k]:
+                print(f'{k=} {params[k]=} {patched_ticker[k]}')
                 return None
         return patched_ticker
 
@@ -289,43 +291,3 @@ class client_requests(object):
         ret_ticker = json.loads(rtext)[0]
         id = ret_ticker.pop('id')
         return id, ret_ticker
-
-
-# class ticker_requests(client_requests):
-
-#     def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
-
-#         super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
-
-#     def pop_id_from_POST_data(self, rtext):
-#         ret_ticker = json.loads(rtext)
-#         id = ret_ticker.pop('id')
-#         return id, ret_ticker
-
-#     def pop_id_from_GET_data(self, rtext):
-#         """
-#         def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
-#         """
-#         ret_ticker = json.loads(rtext)[0]
-#         id = ret_ticker.pop('id')
-#         return id, ret_ticker
-
-
-# class dividend_requests(client_requests):
-
-#     def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
-
-#         super().__init__(DJA_UI, DJA_PW, DJA_URL, headers, app)
-
-#     def pop_id_from_POST_data(self, rtext):
-#         ret_ticker = json.loads(rtext)
-#         id = ret_ticker.pop('id')
-#         return id, ret_ticker
-
-#     def pop_id_from_GET_data(self, rtext):
-#         """
-#         def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
-#         """
-#         ret_ticker = json.loads(rtext)[0]
-#         id = ret_ticker.pop('id')
-#         return id, ret_ticker
