@@ -15,13 +15,16 @@ print(r.text)
 print(r.status_code)
 """
 
+import csv
 import json
+import logging
 import os
+import sys
 
 import requests
+
 from client_requests import client_requests
-import csv
-import logging
+from refs import DEFAULT_DIR, PORTFOLIO_FILE1, PORTFOLIO_FILE2
 
 # import subprocess
 
@@ -39,7 +42,7 @@ ch.setLevel(logging.DEBUG)
 logger.disabled = False
 
 
-class RegisterTicker(TestCase):
+class RegisterTicker(object):
 
     def __init__(self, *args, **kwargs):
         print('ApiTest')
@@ -65,45 +68,31 @@ class RegisterTicker(TestCase):
             self.content_type,
             self.app)
 
+    def read_csv(self):
+        f_list = [DEFAULT_DIR + PORTFOLIO_FILE1, DEFAULT_DIR + PORTFOLIO_FILE2]
+        for i, csvf in enumerate(f_list):
+            """ 'ticker', 'volume'
+            """
+            with open(csvf) as f:
+                for row in csv.reader(f):
+                    # change the type of 'volume', row[1], to int from str
+                    row[1] = int(row[1])
+                    self.post_patch_ticker(i, row)
 
-# s = requests.Session()
-# s.auth = (DJA_UI, DJA_PW)
-# r = s.get(DJA_URL)
-
-# headers = {'content-type': 'application/json'}
-# params = {'ticker': 'mc'}
-# r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
-# params = {'ticker': 'mss'}
-# r = s.post(DJA_URL + 'tickers/', data=json.dumps(params), headers=headers)
-# print(f'{r.status_code=}')
-# print(f'{r.json=}')
-# print(f'{type(r.json)=}')
-# print(f'{r.text=}')
-# print(f'{type(r.text)=}')
-# jtext = json.loads(r.text)
-
-
-# r = s.get(DJA_URL + 'tickers/', headers=headers)
-# print(r.text)
-# jtext = json.loads(r.text)
-# jtext
-
-
-# r = s.get(DJA_URL + 'tickersname/?ticker=mc', headers=headers)
-# print(r.text)
-# jtext = json.loads(r.text)
-# jtext
-
-# r = s.get(DJA_URL + 'tickersname/?ticker=mss', headers=headers)
-# print(r.text)
-# jtext = json.loads(r.text)
-# jtext
-
-# r = s.delete(DJA_URL + 'tickers/' + str(jtext[0]['id']) + '/', headers=headers)
-# print(f'{r.status_code=}')
-# print(f'{r.text=}')
+    def post_patch_ticker(self, i: 0 | 1, row: list):
+        vol = 'vol1' if i == 0 else 'vol2'
+        # self.ticker_requests.postData({'ticker': row[0], vol: row[1]})
+        # print({'ticker': row[0], vol: row[1]})
+        if (resultIsExist := self.ticker_requests.isThisTickerExist(row[0])):
+            result = self.ticker_requests.patchData(
+                resultIsExist['id'], {vol: row[1]})
+        else:
+            result = self.ticker_requests.postData(
+                {"ticker": row[0], vol: row[1]})
+        if not result:
+            print(
+                f'register_tickers.post_patch_ticker error {i=} {row}. error {result=} when {"PATCH" if resultIsExist == True else "POST"}')
 
 
-# # class RestReq:
-# #     def __init__(self) -> None:
-# #         pass
+regtic = RegisterTicker()
+regtic.read_csv()
