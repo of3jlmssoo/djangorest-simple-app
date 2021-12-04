@@ -2,6 +2,7 @@
 export DJA_UI='admin'
 export DJA_PW='amincs8000'
 export DJA_URL='http://127.0.0.1:8000/'
+export PYTHONPATH='../:../api_client/:../client/'
 
 200 OK
 201 Created

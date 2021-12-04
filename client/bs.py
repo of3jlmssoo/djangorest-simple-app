@@ -13,9 +13,9 @@ from typing import Union
 # import bs4
 from bs4 import BeautifulSoup
 
-from refs import DEFAULT_DIR, DEFAULT_FILE
+# from refs import DEFAULT_DIR, DEFAULT_FILE
 
-# from refs import DEFAULT_DIR, DEFAULT_FILE, portf
+from refs import DEFAULT_DIR, DEFAULT_FILE, portf
 
 
 # import requests
@@ -192,7 +192,8 @@ class parser(object):
             yieldratio = yieldratio.replace('%', '').replace('-', '0')
 
             """ yield """
-            if ticker in self.portf:
+            # if ticker in self.portf:
+            if ticker in portf:
                 # print(f'--> {self.portf=}')
                 # if ticker in self.portf:
                 # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=},
