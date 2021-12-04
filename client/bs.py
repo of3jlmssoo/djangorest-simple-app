@@ -13,8 +13,10 @@ from typing import Union
 # import bs4
 from bs4 import BeautifulSoup
 
+from refs import DEFAULT_DIR, DEFAULT_FILE
+
 # from refs import DEFAULT_DIR, DEFAULT_FILE, portf
-from refs import portf
+
 
 # import requests
 
@@ -126,66 +128,76 @@ def check_data(
     pass
 
 
-# TODO: to class
-"""
-def __init__
-    self.portf = argument.portfolio
-"""
+class parser(object):
 
+    def __init__(self) -> None:
+        self._portf = []
 
-def read_and_filter_html(html_file):
-    soup = BeautifulSoup(
-        open(html_file),
-        'html.parser')
+    @property
+    def portf(self):
+        return self._portf
 
-    # for link in soup.find_all("a", "bold"):
-    for link in soup.find_all("td", "left noWrap"):
-        """
-        ("td", "left noWrap")以外で配当情報以外を含めずに絞り込みができない(と判断)
-        そのため、find_all("td", "left noWrap")した後にnext_を使ってフィールドを特定
-            ticker : ティッカー                 テキストで保持
-            exdate : 配当確定日(配当落ち日)     日付フォーマットに変換
-            divval : 配当額(ドル)               floatに変換
-            paydate : 配当支払日(現地)          日付フォーマットに変換
-            yieldratio : 配当率                 floatに変換
-        """
-        ticker = link.next_element.next_element.next_element.next_element.next_element
-        exdate = link.find_next_sibling("td").get_text()
-        divval = link.find_next_sibling(
-            "td").find_next_sibling("td").get_text()
-        paydate = link.find_next_sibling("td").find_next_sibling(
-            "td").find_next_sibling("td").find_next_sibling("td").get_text()
-        yieldratio = link.find_next_sibling("td").find_next_sibling("td").find_next_sibling(
-            "td").find_next_sibling("td").find_next_sibling("td").get_text()
-        # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
+    @portf.setter
+    def portf(self, val):
+        self._portf = val
 
-        """ 変換 """
-        # print(f'        {exdate=} {paydate=} {divval=}')
+    def read_and_filter_html(self, html_file):
+        soup = BeautifulSoup(
+            open(html_file),
+            'html.parser')
 
-        # exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
-        # paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
+        # for link in soup.find_all("a", "bold"):
+        for link in soup.find_all("td", "left noWrap"):
+            """
+            ("td", "left noWrap")以外で配当情報以外を含めずに絞り込みができない(と判断)
+            そのため、find_all("td", "left noWrap")した後にnext_を使ってフィールドを特定
+                ticker : ティッカー                 テキストで保持
+                exdate : 配当確定日(配当落ち日)     日付フォーマットに変換
+                divval : 配当額(ドル)               floatに変換
+                paydate : 配当支払日(現地)          日付フォーマットに変換
+                yieldratio : 配当率                 floatに変換
+            """
+            ticker = link.next_element.next_element.next_element.next_element.next_element
+            exdate = link.find_next_sibling("td").get_text()
+            divval = link.find_next_sibling(
+                "td").find_next_sibling("td").get_text()
+            paydate = link.find_next_sibling("td").find_next_sibling(
+                "td").find_next_sibling("td").find_next_sibling("td").get_text()
+            yieldratio = link.find_next_sibling("td").find_next_sibling("td").find_next_sibling(
+                "td").find_next_sibling("td").find_next_sibling("td").get_text()
+            # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=},
+            # {yieldratio=}')
 
-        try:
-            exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
-        except ValueError:
-            exdate = datetime.datetime.strptime(DEFAULT_DATE, "%b %d, %Y")
+            """ 変換 """
+            # print(f'        {exdate=} {paydate=} {divval=}')
 
-        try:
-            paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
-        except ValueError:
-            paydate = datetime.datetime.strptime(DEFAULT_DATE, "%b %d, %Y")
+            # exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
+            # paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
 
-        divval = float(divval)
+            try:
+                exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
+            except ValueError:
+                exdate = datetime.datetime.strptime(DEFAULT_DATE, "%b %d, %Y")
 
-        exdate = exdate.strftime('%Y-%m-%d')
-        paydate = paydate.strftime('%Y-%m-%d')
+            try:
+                paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
+            except ValueError:
+                paydate = datetime.datetime.strptime(DEFAULT_DATE, "%b %d, %Y")
 
-        yieldratio = yieldratio.replace('%', '').replace('-', '0')
+            divval = float(divval)
 
-        """ yield """
-        if ticker in portf:
-            # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
-            yield f'{ticker}, {exdate}, {divval}, {paydate}, {yieldratio}'
+            exdate = exdate.strftime('%Y-%m-%d')
+            paydate = paydate.strftime('%Y-%m-%d')
+
+            yieldratio = yieldratio.replace('%', '').replace('-', '0')
+
+            """ yield """
+            if ticker in self.portf:
+                # print(f'--> {self.portf=}')
+                # if ticker in self.portf:
+                # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=},
+                # {yieldratio=}')
+                yield f'{ticker}, {exdate}, {divval}, {paydate}, {yieldratio}'
 
 
 # def read_my_tickers():
@@ -199,11 +211,15 @@ if __name__ == '__main__':
     # print(check_ticker(''))
     # print(check_ticker('ab_c'))
 
-    print(check_date('Mar 20, 2021'))
+    # print(check_date('Mar 20, 2021'))
     # print(check_date('Ma 20, 2021'))
     # print(check_date('Mar 20s, 2021'))
     # print(check_date('Mar 20, a2021'))
     # print(check_date('Mar 20, 21'))
 
-    # for line in read_and_filter_html(DEFAULT_DIR + DEFAULT_FILE):
-    #     print(line)
+    psr = parser()
+    psr.portf = ['KHC', 'VOD', 'NUS', 'LUMN', 'XPER', 'BLX',
+                 'DOW', 'TFSL', 'O', 'HD', 'QCOM', 'UBSI', 'PEP', 'HRB']
+
+    for line in psr.read_and_filter_html(DEFAULT_DIR + DEFAULT_FILE):
+        print(line)

@@ -7,7 +7,7 @@ from tkinter import filedialog as fd
 from tkinter import ttk
 from tkinter.messagebox import showinfo
 
-from bs import read_and_filter_html
+from bs import parser
 from refs import DEFAULT_DIR, DEFAULT_FILE
 
 # DEFAULT_DIR = '/'
@@ -18,6 +18,8 @@ from refs import DEFAULT_DIR, DEFAULT_FILE
 class GUI4Ticker():
 
     def __init__(self, root) -> None:
+
+        self.psr = parser()
 
         self.open_button = ttk.Button(
             root,
@@ -55,14 +57,34 @@ class GUI4Ticker():
         # get_portfolio()
 
         txt = self.prepare_result_display(filename)
+        self.get_portfolio()
         self.get_and_put_content(filename, txt)
 
     """ TODO: needs to call client_requests """
     # def get_portfolio(self)
 
+    def get_portfolio(self):
+        # TODO: get portfolio information from django server by getdataall
+        self.psr.portf = [
+            'KHC',
+            'VOD',
+            'NUS',
+            'LUMN',
+            'XPER',
+            'BLX',
+            'DOW',
+            'TFSL',
+            'O',
+            'HD',
+            'QCOM',
+            'UBSI',
+            'PEP',
+            'HRB']
+
     def get_and_put_content(self, filename, txt):
 
-        for line in read_and_filter_html(filename):
+        print(f'portfolio set {self.psr.portf=}')
+        for line in self.psr.read_and_filter_html(filename):
             # TODO: POST line
             txt.insert(tk.END, line + '\n')
             root.update_idletasks()
