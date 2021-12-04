@@ -2,8 +2,9 @@
 クラス構成はhttps://python-textbok.readthedocs.io/en/1.0/Introduction_to_GUI_Programming.htmlを参考にしている。
 """
 import tkinter as tk
+# from tkinter import messagebox, ttk
 from tkinter import filedialog as fd
-from tkinter import messagebox, ttk
+from tkinter import ttk
 from tkinter.messagebox import showinfo
 
 from bs import read_and_filter_html

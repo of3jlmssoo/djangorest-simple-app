@@ -4,16 +4,20 @@ refs.htmlはgitにアップロードしない。中身は
     DEFAULT_FILE = '配当情報のhtmlファイル名'
     portf = ['stock1ticker', 'stock2ticker']
 """
-import csv  # モジュール"CSV"の呼び出し
+# import csv  # モジュール"CSV"の呼び出し
 import datetime
 import re
 from enum import Enum
 from typing import Union
 
-import bs4
-import requests
+# import bs4
+from bs4 import BeautifulSoup
 
-from refs import DEFAULT_DIR, DEFAULT_FILE, portf
+# from refs import DEFAULT_DIR, DEFAULT_FILE, portf
+from refs import portf
+
+# import requests
+
 
 DEFAULT_DATE = 'Jan 01, 2000'
 
@@ -48,7 +52,8 @@ def check_ticker(ticker: str) -> Union[str, R]:
     return ticker
 
 
-def check_date(date: str) -> Union[datetime.datetime, R]:
+def check_date(date: str) -> Union[str, R]:
+    # def check_date(date: str) -> datetime.datetime | R:
     """
     htmlファイルの日付フォーマットは"Jan 03, 2022"
     """
@@ -109,7 +114,7 @@ def check_data(
         "--"の場合"Dec 31, 2222"に置き換える
         "-"の場合"0"に置き換える
     """
-    format_error = 0
+    # format_error = 0
 
     """ ticker確認 """
 
@@ -129,7 +134,7 @@ def __init__
 
 
 def read_and_filter_html(html_file):
-    soup = bs4.BeautifulSoup(
+    soup = BeautifulSoup(
         open(html_file),
         'html.parser')
 
@@ -194,21 +199,11 @@ if __name__ == '__main__':
     # print(check_ticker(''))
     # print(check_ticker('ab_c'))
 
-    # print(check_date('Mar 20, 2021'))
+    print(check_date('Mar 20, 2021'))
     # print(check_date('Ma 20, 2021'))
     # print(check_date('Mar 20s, 2021'))
     # print(check_date('Mar 20, a2021'))
     # print(check_date('Mar 20, 21'))
 
-    # read_html()
-
-    for line in read_and_filter_html(DEFAULT_DIR + DEFAULT_FILE):
-        print(line)
-
-        # def read_line_generator(filepath):
-        #     with open(filepath) as file:
-        #         for line in file:
-        #             yield line
-
-        # for line in read_line_generator("./large_size_file.txt"):
-        #     print(line)
+    # for line in read_and_filter_html(DEFAULT_DIR + DEFAULT_FILE):
+    #     print(line)
