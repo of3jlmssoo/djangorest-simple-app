@@ -517,10 +517,9 @@ class ApiTest4Ticker(TestCase):
         self.ticker_requests.delete_all_data()
         result = self.ticker_requests.postData({'ticker': 'mc'})
         self.assertNotEqual(result, None)
-        print(f'check_ticker.test_isThisIdExist ticker posted correctly')
+        print('check_ticker.test_isThisIdExist ticker posted correctly')
         id = self.ticker_requests.getIdOfTicker('mc')
         self.assertEqual(type(id), int)
-        print(f'check_ticker.test_isThisIdExist ticker got id')
         result = self.ticker_requests.isThisTickerExist(id)
         self.assertEqual(type(result), dict)
 
@@ -696,6 +695,23 @@ class ApiTest4Ticker(TestCase):
         logger.debug(f'     delete.  {r.status_code=} {id=}.')
         logger.debug('1) 銘柄登録x1 tickerのみ')
 
+    def test_div(self):
+        """ ##################################################################### """
+        logger.debug('16) 配当関連テスト')
+        self.ticker_requests.deleteAllData()
+        self.dividend_requests.deleteAllData()
+
+        result = self.ticker_requests.postData({'ticker': 'mc'})
+        id = self.ticker_requests.getIdOfTicker('mc')
+        self.dividend_requests.postData(
+            {
+                "ticker": 'mc',
+                "ex_date": '2021-12-01',
+                "pay_date": '2021-12-01',
+                "div_val": 0.121,
+                "div_rat": 3.6
+            })
+
 
 test = ApiTest4Ticker()
 test.test_ticker()
@@ -704,5 +720,6 @@ test.test_ticker()
 # test.test_isThisIdExist()
 # test.test_new_postData_getAllData()
 # test.test_not_exist()
-test.test_post_patch()
-test.test_delete()
+# test.test_post_patch()
+# test.test_delete()
+test.test_div()
