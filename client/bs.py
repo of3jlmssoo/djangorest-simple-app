@@ -121,7 +121,14 @@ def check_data(
     pass
 
 
-def read_html(html_file):
+# TODO: to class
+"""
+def __init__
+    self.portf = argument.portfolio
+"""
+
+
+def read_and_filter_html(html_file):
     soup = bs4.BeautifulSoup(
         open(html_file),
         'html.parser')
@@ -195,7 +202,7 @@ if __name__ == '__main__':
 
     # read_html()
 
-    for line in read_html(DEFAULT_DIR + DEFAULT_FILE):
+    for line in read_and_filter_html(DEFAULT_DIR + DEFAULT_FILE):
         print(line)
 
         # def read_line_generator(filepath):

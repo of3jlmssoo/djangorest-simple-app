@@ -6,7 +6,7 @@ from tkinter import filedialog as fd
 from tkinter import messagebox, ttk
 from tkinter.messagebox import showinfo
 
-from bs import read_html
+from bs import read_and_filter_html
 from refs import DEFAULT_DIR, DEFAULT_FILE
 
 # DEFAULT_DIR = '/'
@@ -49,12 +49,18 @@ class GUI4Ticker():
         )
 
         print(f'{filename}')
+
+        """ TODO: get portfolio """
+
         txt = self.prepare_result_display(filename)
         self.get_and_put_content(filename, txt)
 
+    """ TODO: needs to call client_requests """
+    # def get_portfolio(self)
+
     def get_and_put_content(self, filename, txt):
 
-        for line in read_html(filename):
+        for line in read_and_filter_html(filename):
             txt.insert(tk.END, line + '\n')
             root.update_idletasks()
 
