@@ -51,6 +51,7 @@ class GUI4Ticker():
         print(f'{filename}')
 
         """ TODO: get portfolio """
+        # get_portfolio()
 
         txt = self.prepare_result_display(filename)
         self.get_and_put_content(filename, txt)
@@ -61,6 +62,7 @@ class GUI4Ticker():
     def get_and_put_content(self, filename, txt):
 
         for line in read_and_filter_html(filename):
+            # TODO: POST line
             txt.insert(tk.END, line + '\n')
             root.update_idletasks()
 
