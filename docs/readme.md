@@ -1,11 +1,12 @@
 # 配当管理
+
+## 全体像
+
 <img width="3000" src="./outlinechart.drawio.svg">
-##### ①配当情報  
-保存されたHTML
-ある銘柄のex-date等の配当情報が1行で
-膨大な量
 
+## モジュール構成
 
+<img width="3000" src="./modOverview.drawio.svg">
 
 ポートフォリオファイル選択
 配当ファイル選択
