@@ -69,6 +69,10 @@ class RegisterTicker(object):
             self.app)
 
     def read_csv(self):
+
+        self.dividend_requests.deleteAllData()
+        self.ticker_requests.deleteAllData()
+
         f_list = [DEFAULT_DIR + PORTFOLIO_FILE1, DEFAULT_DIR + PORTFOLIO_FILE2]
         for i, csvf in enumerate(f_list):
             """ 'ticker', 'volume'
