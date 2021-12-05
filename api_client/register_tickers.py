@@ -17,12 +17,12 @@ print(r.status_code)
 """
 
 import csv
-import json
+# import json
 import logging
 import os
-import sys
+# import sys
 
-import requests
+# import requests
 
 from client_requests import client_requests
 from refs import DEFAULT_DIR, PORTFOLIO_FILE1, PORTFOLIO_FILE2
