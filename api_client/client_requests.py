@@ -130,6 +130,9 @@ class client_requests(object):
         if result:
             return True
 
+        print('client_requests.deleteData delete_data called but error occurred.')
+        return False
+
     def post_data(self, params):
 
         ref_code = http_result.Created.value  # created
