@@ -8,21 +8,33 @@ export PYTHONPATH='../:../api_client/:../client/'
 
 
 """
+import logging
+import os
 import tkinter as tk
 # from tkinter import messagebox, ttk
 from tkinter import filedialog as fd
 from tkinter import ttk
 from tkinter.messagebox import showinfo
-import os
-import sys
+
+from api_client.client_requests import client_requests
+
 from bs import parser
 from refs import DEFAULT_DIR, DEFAULT_FILE
 
-from api_client.client_requests import client_requests
-print(sys.path)
 # DEFAULT_DIR = '/'
 
 # create the root window
+logger = logging.getLogger(__name__)
+ch = logging.StreamHandler()
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+logger.propagate = False
+# DEBUG INFO WARNIG ERROR CRTICAL
+logger.setLevel(logging.DEBUG)
+ch.setLevel(logging.DEBUG)
+logger.disabled = False
 
 
 class GUI4Ticker():
@@ -36,6 +48,14 @@ class GUI4Ticker():
 
         self.app = 'tickers'
         self.ticker_requests = client_requests(
+            self.DJA_UI,
+            self.DJA_PW,
+            self.DJA_URL,
+            self.content_type,
+            self.app)
+
+        self.app = 'dividends'
+        self.dividends_requests = client_requests(
             self.DJA_UI,
             self.DJA_PW,
             self.DJA_URL,
@@ -74,7 +94,7 @@ class GUI4Ticker():
             message=filename
         )
 
-        print(f'{filename}')
+        logger.debug(f'tk.select_files{filename=}')
 
         """ TODO: get portfolio """
         # get_portfolio()
@@ -88,14 +108,15 @@ class GUI4Ticker():
 
     def get_portfolio(self):
         # TODO: get portfolio information from django server by getdataall
-        self.ticker_requests.getAllData()
+        logger.debug(f'tk.get_portfolio. {self.ticker_requests.getAllData()=}')
         self.psr.portf = [
+            'BLX',
+
             'KHC',
             'VOD',
             'NUS',
             'LUMN',
             'XPER',
-            'BLX',
             'DOW',
             'TFSL',
             'O',
@@ -103,14 +124,31 @@ class GUI4Ticker():
             'QCOM',
             'UBSI',
             'PEP',
-            'HRB']
+            'HRB',
+            'MC'
+        ]
 
     def get_and_put_content(self, filename, txt):
+        """
+        ポートフォリオ銘柄でのフィルタリングはread_and_filter_html()に任せている
+        """
 
-        print(f'portfolio set {self.psr.portf=}')
+        logger.debug(f'tk.get_and_put_contet. portfolio == {self.psr.portf=}')
         for line in self.psr.read_and_filter_html(filename):
             # TODO: POST line
             txt.insert(tk.END, line + '\n')
+            line = line.replace(' ', '').split(',')
+            logger.debug(
+                f"tk.get_and_put_contet.  'ticker': {line[0]}, 'ex_date': {line[1]}, 'pay_date': {line[3]}, 'div_val': {line[2]}, 'div_rat': {line[4]}")
+            # yield f'{ticker}, {exdate}, {divval},
+            # {paydate}, {yieldratio}'
+            self.dividends_requests.postData({
+                'ticker': line[0],
+                'ex_date': line[1],
+                'pay_date': line[3],
+                'div_val': line[2],
+                'div_rat': line[4]
+            })
             root.update_idletasks()
 
     def prepare_result_display(self, filename):
