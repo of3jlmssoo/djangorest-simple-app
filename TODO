@@ -10,13 +10,34 @@ Todo:
 ☐ インテグレーション
   ✔ bs1 refactoring(pass parameter, generator) @done(21-11-27 09:49)
   ✔ tk -> bs1 @done(21-11-27 09:49)
-  ☐ new module to register tickers(CSV, API)
-  ☐ bs get all registered tickers
-  ☐ 配当情報登録
+  ✔ new module to register tickers(CSV, API) @done(21-12-05 21:25)
+  ✔ bs get all registered tickers @done(21-12-05 21:25)
+  ✔ 配当情報登録 @done(21-12-05 21:25)
 ✔ ticker tools (query and)delete all tickers @done(21-11-17 17:44)
 ✘ dividend query specifying a ticker and date after @cancelled(21-11-21 17:25)
-☐ ticker tools isthisregistered
+✔ ticker tools isthisregistered @done(21-12-05 21:25)
 ☐ ticker tools reconcile(file and db)
 ✔ INSTALLED_APPS確認(dividendsを削除する) @done(21-11-27 08:48)
-
+☐ tk.py見直し
+☐ bs.py見直し
+☐ txt.insert(tk.END, line + '\n')部分変更。
+☐ readme.md DB情報更新
+☐ reaeme.md クラス情報更新
+☐ check_ticker.pyコメント
+☐ check_ticker.py見直し
+☐ client_request.pyコメント
+☐ client_request.py見直し
+☐ register_tickers.pyコメント
+☐ register_tickers.py見直し
+☐ refs.pyコメント
+☐ refs.py見直し
+☐ resultenum.pyコメント
+☐ resultenum.py見直し
+☐ models.pyコメント
+☐ models.py見直し
+☐ serializers.pyコメント
+☐ serializers.py見直し
+☐ views.pyコメント
+☐ views.py見直し
+☐ djangoユニーク設定(ticker, ex-date, pay-date,)
 
