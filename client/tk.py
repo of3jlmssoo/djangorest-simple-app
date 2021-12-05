@@ -41,11 +41,13 @@ class GUI4Ticker():
 
     def __init__(self, root) -> None:
 
+        # djangoアクセスのための準備
         self.DJA_UI = os.environ['DJA_UI']
         self.DJA_PW = os.environ['DJA_PW']
         self.DJA_URL = os.environ['DJA_URL']
         self.content_type = {'content-type': 'application/json'}
 
+        # REST　API準備
         self.app = 'tickers'
         self.ticker_requests = client_requests(
             self.DJA_UI,
@@ -62,8 +64,11 @@ class GUI4Ticker():
             self.content_type,
             self.app)
 
+        # パーサー準備
         self.psr = parser()
 
+        # 初期画面作成(参照URLのまま)
+        # この先はself.select_files()に依存
         self.open_button = ttk.Button(
             root,
             text='Open Files',
@@ -76,6 +81,8 @@ class GUI4Ticker():
         root.geometry('300x150+100+100')
 
     def select_files(self):
+
+        # 参照URLの流れのまま
         filetypes = (
             # ('text files', '*.txt'),
             ('html files', '*.html'),
@@ -99,24 +106,30 @@ class GUI4Ticker():
         """ TODO: get portfolio """
         # get_portfolio()
 
+        # 次の画面を準備
         txt = self.prepare_result_display(filename)
+        # ポートフォリオ情報取得
         self.get_portfolio()
+        # self.get_and_put_content経由でパーサーを呼び出す
         self.get_and_put_content(filename, txt)
+        # 終了メッセージを表示
         txt.insert(tk.END, '   --- 今回は以上です --- ' + '\n')
 
     def get_portfolio(self):
-        # TODO: get portfolio information from django server by getdataall
+        """
+        REST経由でポートフォリオ情報を取得の上パーサーのportfにセットする
+        """
+        # DONE: get portfolio information from django server by getdataall
         logger.debug(f'tk.get_portfolio. {self.ticker_requests.getAllData()=}')
         if (result := self.ticker_requests.getAllData()):
             portf = [t['ticker'] for t in result]
         else:
-            print(f'tk.get_portfolio. No portfolio available...')
+            print('tk.get_portfolio. No portfolio available...')
 
         logger.debug(f'tk.get_portfolio. {portf=}')
         self.psr.portf = portf
         # [
         #     'BLX',
-
         #     'KHC',
         #     'VOD',
         #     'NUS',
@@ -140,13 +153,15 @@ class GUI4Ticker():
 
         logger.debug(f'tk.get_and_put_contet. portfolio == {self.psr.portf=}')
         for line in self.psr.read_and_filter_html(filename):
-            # TODO: POST line
+
+            # 画面に表示
             txt.insert(tk.END, line + '\n')
+
+            # postData
             line = line.replace(' ', '').split(',')
             logger.debug(
                 f"tk.get_and_put_contet.  'ticker': {line[0]}, 'ex_date': {line[1]}, 'pay_date': {line[3]}, 'div_val': {line[2]}, 'div_rat': {line[4]}")
-            # yield f'{ticker}, {exdate}, {divval},
-            # {paydate}, {yieldratio}'
+            # DONE: POST line
             self.dividends_requests.postData({
                 'ticker': line[0],
                 'ex_date': line[1],
@@ -154,6 +169,8 @@ class GUI4Ticker():
                 'div_val': line[2],
                 'div_rat': line[4]
             })
+
+            # 画面更新
             root.update_idletasks()
 
     def prepare_result_display(self, filename):
