@@ -133,6 +133,9 @@ def check_data(
 class parser(object):
 
     def __init__(self) -> None:
+        """
+        ポートフォリオ情報の取得、self._portfへの設定はparserクラス利用者がsetterを使って行う
+        """
         self._portf = []
 
     @property
