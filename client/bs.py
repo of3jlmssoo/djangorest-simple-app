@@ -19,9 +19,8 @@ from typing import Union
 # import bs4
 from bs4 import BeautifulSoup
 
-from refs import DEFAULT_DIR, DEFAULT_FILE, portf
-
-# from refs import DEFAULT_DIR, DEFAULT_FILE
+# from refs import DEFAULT_DIR, DEFAULT_FILE, portf
+from refs import DEFAULT_DIR, DEFAULT_FILE
 
 
 DEFAULT_DATE = 'Jan 01, 2000'
