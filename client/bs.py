@@ -195,8 +195,8 @@ class parser(object):
             yieldratio = yieldratio.replace('%', '').replace('-', '0')
 
             """ yield """
-            # if ticker in self.portf:
-            if ticker in portf:
+            if ticker in self.portf:
+                # if ticker in portf:
                 # print(f'--> {self.portf=}')
                 # if ticker in self.portf:
                 # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=},
