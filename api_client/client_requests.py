@@ -141,11 +141,22 @@ class client_requests(object):
         return result, r
 
     def postData(self, params: dict) -> Union[str, None]:
-        """ paramsのキー、値の型チェック、数値の場合の条件(+ only等)を追加する余地あり """
-        """ 必須キー(tickerの場合ticker)の指定有無確認 """
+        """ TODO: paramsのキー、値の型チェック、数値の場合の条件(+ only等)を追加する余地あり """
         if not isinstance(params, dict):
-            print(f'client_request.postData error {params=}')
+            print(f'client_request.postData not instance of dict:{params=}')
             return None
+
+        """ 必須キー(tickerの場合ticker)の指定有無確認 """
+        for reqkey in ['ticker']:  # , 'ex_date', 'div_val']:  # , 'owner']:
+            if reqkey not in params.keys():
+                print(f'client_request.postData key missing:{reqkey}')
+                return None
+
+        # if params['ticker'] == 'NTR':
+        #     print(f'============={params["ticker"]}====================')
+        #     params['ticker'] = 'ntr'
+        """ tickerは大文字に揃える """
+        params['ticker'] = params['ticker'].upper()
 
         result, r = self.post_data(params)
         """ TODO : エラーチェック強化検討。辞書のキー毎に正しいか確認するかどうか """
@@ -171,6 +182,10 @@ class client_requests(object):
 
     def patchData(self, id: int, params: dict) -> Union[dict, None]:
         """ paramsのキー、値の型チェック、数値の場合の条件(+ only等)を追加する余地あり """
+
+        """ tickerは大文字に揃える """
+        if 'ticker' in params.keys():
+            params['ticker'] = params['ticker'].upper()
 
         result = self.isThisTickerExist(id)
         if not result:
@@ -221,8 +236,11 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data_of_ticker(self, ticker_information):
-        return self.get_data_of('ticker', ticker_information)
+    def get_data_of_ticker(self, ticker_information: str):
+        if not isinstance(ticker_information, str):
+            print(
+                f'client_request.get_data_of_ticker error:{type(ticker_information)=} not str')
+        return self.get_data_of('ticker', ticker_information.upper())
 
     def get_data_of_id(self, ticker_information):
         return self.get_data_of('id', str(ticker_information))
@@ -232,7 +250,7 @@ class client_requests(object):
             print(
                 f'client_request.getIdOfTicker error: {type(ticker_code)=} not str')
             return None
-        if (result := self.isThisTickerExist(ticker_code)):
+        if (result := self.isThisTickerExist(ticker_code.upper())):
             return result["id"]
         return None
 
@@ -248,7 +266,7 @@ class client_requests(object):
             return None
 
         if isinstance(ticker_information, str):
-            result, r = self.get_data_of_ticker(ticker_information)
+            result, r = self.get_data_of_ticker(ticker_information.upper())
         if isinstance(ticker_information, int):
             result, r = self.get_data_of_id(ticker_information)
 
