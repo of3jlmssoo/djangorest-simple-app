@@ -102,31 +102,36 @@ class GUI4Ticker():
         txt = self.prepare_result_display(filename)
         self.get_portfolio()
         self.get_and_put_content(filename, txt)
-
-    """ TODO: needs to call client_requests """
-    # def get_portfolio(self)
+        txt.insert(tk.END, '   --- 今回は以上です --- ' + '\n')
 
     def get_portfolio(self):
         # TODO: get portfolio information from django server by getdataall
         logger.debug(f'tk.get_portfolio. {self.ticker_requests.getAllData()=}')
-        self.psr.portf = [
-            'BLX',
+        if (result := self.ticker_requests.getAllData()):
+            portf = [t['ticker'] for t in result]
+        else:
+            print(f'tk.get_portfolio. No portfolio available...')
 
-            'KHC',
-            'VOD',
-            'NUS',
-            'LUMN',
-            'XPER',
-            'DOW',
-            'TFSL',
-            'O',
-            'HD',
-            'QCOM',
-            'UBSI',
-            'PEP',
-            'HRB',
-            'MC'
-        ]
+        logger.debug(f'tk.get_portfolio. {portf=}')
+        self.psr.portf = portf
+        # [
+        #     'BLX',
+
+        #     'KHC',
+        #     'VOD',
+        #     'NUS',
+        #     'LUMN',
+        #     'XPER',
+        #     'DOW',
+        #     'TFSL',
+        #     'O',
+        #     'HD',
+        #     'QCOM',
+        #     'UBSI',
+        #     'PEP',
+        #     'HRB',
+        #     'MC'
+        # ]
 
     def get_and_put_content(self, filename, txt):
         """
