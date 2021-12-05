@@ -3,6 +3,12 @@ refs.htmlはgitにアップロードしない。中身は
     DEFAULT_DIR = '/dir/'
     DEFAULT_FILE = '配当情報のhtmlファイル名'
     portf = ['stock1ticker', 'stock2ticker']
+
+export DJA_UI='admin'
+export DJA_PW='amincs8000'
+export DJA_URL='http://127.0.0.1:8000/'
+export PYTHONPATH='../:../api_client/:../client/'
+
 """
 # import csv  # モジュール"CSV"の呼び出し
 import datetime
@@ -13,12 +19,9 @@ from typing import Union
 # import bs4
 from bs4 import BeautifulSoup
 
-# from refs import DEFAULT_DIR, DEFAULT_FILE
-
 from refs import DEFAULT_DIR, DEFAULT_FILE, portf
 
-
-# import requests
+# from refs import DEFAULT_DIR, DEFAULT_FILE
 
 
 DEFAULT_DATE = 'Jan 01, 2000'
