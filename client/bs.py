@@ -10,17 +10,29 @@ export DJA_URL='http://127.0.0.1:8000/'
 export PYTHONPATH='../:../api_client/:../client/'
 
 """
-# import csv  # モジュール"CSV"の呼び出し
 import datetime
+import logging
 import re
 from enum import Enum
+from logging import Logger
 from typing import Union
 
-# import bs4
 from bs4 import BeautifulSoup
 
 # from refs import DEFAULT_DIR, DEFAULT_FILE, portf
 from refs import DEFAULT_DIR, DEFAULT_FILE
+
+logger = logging.getLogger(__name__)
+ch = logging.StreamHandler()
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+logger.propagate = False
+# DEBUG INFO WARNIG ERROR CRTICAL
+logger.setLevel(logging.DEBUG)
+ch.setLevel(logging.DEBUG)
+logger.disabled = False
 
 
 DEFAULT_DATE = 'Jan 01, 2000'
@@ -57,10 +69,7 @@ def check_ticker(ticker: str) -> Union[str, R]:
 
 
 def check_date(date: str) -> Union[str, R]:
-    # def check_date(date: str) -> datetime.datetime | R:
-    """
-    htmlファイルの日付フォーマットは"Jan 03, 2022"
-    """
+    """ htmlファイルの日付フォーマットはJan 03, 2022 """
 
     print(f'{date=}')
     M = [
@@ -133,9 +142,7 @@ def check_data(
 class parser(object):
 
     def __init__(self) -> None:
-        """
-        ポートフォリオ情報の取得、self._portfへの設定はparserクラス利用者がsetterを使って行う
-        """
+        """ ポートフォリオ情報の取得、self._portfへの設定はparserクラス利用者がsetterを使って行う """
         self._portf = []
 
     @property
@@ -147,15 +154,11 @@ class parser(object):
         self._portf = val
 
     def read_and_filter_html(self, html_file):
-        soup = BeautifulSoup(
-            open(html_file),
-            'html.parser')
+        soup = BeautifulSoup(open(html_file), 'html.parser')
 
-        # for link in soup.find_all("a", "bold"):
         for link in soup.find_all("td", "left noWrap"):
-            """
-            ("td", "left noWrap")以外で配当情報以外を含めずに絞り込みができない(と判断)
-            そのため、find_all("td", "left noWrap")した後にnext_を使ってフィールドを特定
+            """ ("td", "left noWrap")以外で配当情報以外を含めずに絞り込みができない(と判断)
+                そのため、find_all("td", "left noWrap")した後にnext_を使ってフィールドを特定
                 ticker : ティッカー                 テキストで保持
                 exdate : 配当確定日(配当落ち日)     日付フォーマットに変換
                 divval : 配当額(ドル)               floatに変換
@@ -170,15 +173,9 @@ class parser(object):
                 "td").find_next_sibling("td").find_next_sibling("td").get_text()
             yieldratio = link.find_next_sibling("td").find_next_sibling("td").find_next_sibling(
                 "td").find_next_sibling("td").find_next_sibling("td").get_text()
-            # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=},
-            # {yieldratio=}')
+            logger.debug(f'bs.read_and_filter_html. {ticker=}, {exdate=}, {divval=}, {paydate=}, {yieldratio=}')
 
             """ 変換 """
-            # print(f'        {exdate=} {paydate=} {divval=}')
-
-            # exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
-            # paydate = datetime.datetime.strptime(paydate, "%b %d, %Y")
-
             try:
                 exdate = datetime.datetime.strptime(exdate, "%b %d, %Y")
             except ValueError:
@@ -198,18 +195,7 @@ class parser(object):
 
             """ yield """
             if ticker in self.portf:
-                # if ticker in portf:
-                # print(f'--> {self.portf=}')
-                # if ticker in self.portf:
-                # print(f'{ticker=}, {exdate=}, {divval=}, {paydate=},
-                # {yieldratio=}')
                 yield f'{ticker}, {exdate}, {divval}, {paydate}, {yieldratio}'
-
-
-# def read_my_tickers():
-#     with open('./tickers.txt') as f:
-#         l = [s.strip() for s in f.readlines()]
-#     print(l)
 
 
 if __name__ == '__main__':
