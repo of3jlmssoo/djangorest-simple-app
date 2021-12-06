@@ -11,7 +11,6 @@ export PYTHONPATH='../:../api_client/:../client/'
 import logging
 import os
 import tkinter as tk
-# from tkinter import messagebox, ttk
 from tkinter import filedialog as fd
 from tkinter import ttk
 from tkinter.messagebox import showinfo
@@ -21,9 +20,6 @@ from api_client.client_requests import client_requests
 from bs import parser
 from refs import DEFAULT_DIR, DEFAULT_FILE
 
-# DEFAULT_DIR = '/'
-
-# create the root window
 logger = logging.getLogger(__name__)
 ch = logging.StreamHandler()
 formatter = logging.Formatter(
@@ -69,11 +65,7 @@ class GUI4Ticker():
 
         # 初期画面作成(参照URLのまま)
         # この先はself.select_files()に依存
-        self.open_button = ttk.Button(
-            root,
-            text='Open Files',
-            command=self.select_files
-        )
+        self.open_button = ttk.Button(root, text='Open Files', command=self.select_files)
         self.open_button.pack(expand=True)
 
         root.title('Tkinter File Dialog')
@@ -92,7 +84,6 @@ class GUI4Ticker():
         filename = fd.askopenfilename(
             title='Open files',
             initialdir=DEFAULT_DIR,
-            # initialfile="'" + DEFAULT_FILE + "'",
             initialfile=DEFAULT_FILE,
             filetypes=filetypes)
 
@@ -103,9 +94,7 @@ class GUI4Ticker():
 
         logger.debug(f'tk.select_files{filename=}')
 
-        """ TODO: get portfolio """
-        # get_portfolio()
-
+        """ DONE: get portfolio """
         # 次の画面を準備
         txt = self.prepare_result_display(filename)
         # ポートフォリオ情報取得
@@ -116,9 +105,7 @@ class GUI4Ticker():
         txt.insert(tk.END, '   --- 今回は以上です --- ' + '\n')
 
     def get_portfolio(self):
-        """
-        REST経由でポートフォリオ情報を取得の上パーサーのportfにセットする
-        """
+        """ REST経由でポートフォリオ情報を取得の上パーサーのportfにセットする """
         # DONE: get portfolio information from django server by getdataall
         logger.debug(f'tk.get_portfolio. {self.ticker_requests.getAllData()=}')
         if (result := self.ticker_requests.getAllData()):
@@ -128,29 +115,10 @@ class GUI4Ticker():
 
         logger.debug(f'tk.get_portfolio. {portf=}')
         self.psr.portf = portf
-        # [
-        #     'BLX',
-        #     'KHC',
-        #     'VOD',
-        #     'NUS',
-        #     'LUMN',
-        #     'XPER',
-        #     'DOW',
-        #     'TFSL',
-        #     'O',
-        #     'HD',
-        #     'QCOM',
-        #     'UBSI',
-        #     'PEP',
-        #     'HRB',
-        #     'MC'
-        # ]
+        # ['BLX', 'KHC', 'VOD', 'NUS', 'LUMN', 'XPER', 'DOW', 'TFSL', 'O', 'HD', 'QCOM', 'UBSI', 'PEP', 'HRB', 'MC']
 
     def get_and_put_content(self, filename, txt):
-        """
-        ポートフォリオ銘柄でのフィルタリングはread_and_filter_html()に任せている
-        """
-
+        """ ポートフォリオ銘柄でのフィルタリングはread_and_filter_html()に任せている """
         logger.debug(f'tk.get_and_put_contet. portfolio == {self.psr.portf=}')
         for line in self.psr.read_and_filter_html(filename):
 
@@ -179,10 +147,7 @@ class GUI4Ticker():
         される。heightを短くするとテキストエリアの下に余白が広がることになる。
         長くするとexitボタンが犠牲になる(表示されなくなる) """
         txt = tk.Text(root, height=22, width=200)
-        # txt = tk.Text(root, width=200)
         lbl = tk.Label(root, text="配当情報")
-
-        # message = filename + 'is selected to process.\n'
 
         exitb = tk.Button(root, text="Exit",
                           command=root.destroy)
@@ -193,11 +158,8 @@ class GUI4Ticker():
         self.open_button.pack_forget()
         lbl.pack()
         txt.pack()
-        # exitb.pack(pady=2)
         exitb.pack()
-        # for i in range(10):
-        #     msg = str(i) + ' ' + message
-        #     txt.insert(tk.END, msg)
+
         """ 画面を切り替える """
         root.update_idletasks()
 
