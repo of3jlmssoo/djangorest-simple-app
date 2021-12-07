@@ -18,6 +18,7 @@ from tkinter.messagebox import showinfo
 from api_client.client_requests import client_requests
 
 from bs import parser
+from ci import ControlInterval
 from refs import DEFAULT_DIR, DEFAULT_FILE
 
 logger = logging.getLogger(__name__)
@@ -63,6 +64,10 @@ class GUI4Ticker():
         # パーサー準備
         self.psr = parser()
 
+        # 画面表示制御
+        self.ci0 = ControlInterval()
+        self.ci1 = ControlInterval()
+
         # 初期画面作成(参照URLのまま)
         # この先はself.select_files()に依存
         self.open_button = ttk.Button(root, text='Open Files', command=self.select_files)
@@ -102,7 +107,11 @@ class GUI4Ticker():
         # self.get_and_put_content経由でパーサーを呼び出す
         self.get_and_put_content(filename, txt)
         # 終了メッセージを表示
-        txt.insert(tk.END, '   --- 今回は以上です --- ' + '\n')
+        # txt.insert(tk.END, '   --- 今回は以上です --- ' + '\n')
+        for c in list('---------------   今回は以上です   ---------------'):
+            self.ci1.check_interval()
+            txt.insert(tk.END, c)
+            root.update_idletasks()
 
     def get_portfolio(self):
         """ REST経由でポートフォリオ情報を取得の上パーサーのportfにセットする """
@@ -123,6 +132,7 @@ class GUI4Ticker():
         for line in self.psr.read_and_filter_html(filename):
 
             # 画面に表示
+            self.ci0.check_interval()
             txt.insert(tk.END, line + '\n')
 
             # postData
