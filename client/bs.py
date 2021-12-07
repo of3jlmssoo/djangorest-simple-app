@@ -4,6 +4,7 @@ refs.htmlはgitにアップロードしない。中身は
     DEFAULT_FILE = '配当情報のhtmlファイル名'
     portf = ['stock1ticker', 'stock2ticker']
 
+実行時の環境変数
 export DJA_UI='admin'
 export DJA_PW='amincs8000'
 export DJA_URL='http://127.0.0.1:8000/'
@@ -146,14 +147,14 @@ class parser(object):
         self._portf = []
 
     @property
-    def portf(self):
+    def portf(self) -> list:
         return self._portf
 
     @portf.setter
-    def portf(self, val):
+    def portf(self, val: list) -> None:
         self._portf = val
 
-    def read_and_filter_html(self, html_file):
+    def read_and_filter_html(self, html_file: str):
         soup = BeautifulSoup(open(html_file), 'html.parser')
 
         for link in soup.find_all("td", "left noWrap"):
