@@ -9,28 +9,31 @@
 <img width="3000" src="./modOverview.drawio.svg">
 
 ## 機能
-入力A : 事前に登録されたポートフォリオ情報
-入力B : ある期間にex-Dateをむかえる銘柄情報(保存されたhtmlファイル)
-入力Bから入力Aの銘柄を抜出し、その銘柄の配当情報(アウトプット)を画面に表示すると共にdjangoに記録する
+
+入力 A : 事前に登録されたポートフォリオ情報
+入力 B : ある期間に ex-Date をむかえる銘柄情報(保存された html ファイル)
+入力 B から入力 A の銘柄を抜出し、その銘柄の配当情報(アウトプット)を画面に表示すると共に django に記録する
+
 ### tk.py
-- tkinterで入力Bのファイルを指定する
-- REAT APIでdjangoから入力Bのポートフォリオ情報を取得しフィルタリング
-- アウトプットをtkinterで出力すると共にREST APIでdjangoにpost
+
+- tkinter で入力 B のファイルを指定する
+- REAT API で django から入力 B のポートフォリオ情報を取得しフィルタリング
+- アウトプットを tkinter で出力すると共に REST API で django に post
 
 ### bs.py
-- Beautiful Soupで入力Bのファイルを解析
+
+- Beautiful Soup で入力 B のファイルを解析
 
 ### client_request.py
-- Python RequestsでREST API
+
+- Python Requests で REST API
 
 ## 機能要件
 
-- htmlファイルに保管された、ある期間の配当情報を抽出
+- html ファイルに保管された、ある期間の配当情報を抽出
 - 保有銘柄だった場合画面に表示
 - 画面表示をコピーできる
-- 抽出された配当情報をdjangoに記録
-
-
+- 抽出された配当情報を django に記録
 
 <!-- ## 流れ
 
@@ -77,7 +80,6 @@ user --> UC3
 
 <img width="3000" src="./modules.drawio.svg"> -->
 
-
 ## データベース
 
 ```plantuml
@@ -87,7 +89,10 @@ entity "ティッカー" as ticker {
   --
   数量1
   数量2
+  数量合計
   前年実績
+  id
+  owner
 }
 entity "配当" as dividend {
   * ティッカー [FK]
@@ -96,49 +101,77 @@ entity "配当" as dividend {
   支払日
   配当額
   配当率
+  id
+  owner
 }
 ticker -|{ dividend
 ' - --で並びが変わる
 @enduml
 ```
 
-
 ### クラス
 
-- ウィンドウ
-- 配当管理
-- パーサー
-- レストクライアント
+<!--
+- private
+# protected
+~ package private
++ public
++ -->
 
 ```plantuml
 @startuml
-class Window  {
-   -DivMgmtインスタンス
+class GUI4Ticker  {
+   +django関連
+   +rest関連
+   +rest api - tickers
+   +rest api - dividends
+   +parse関連
+   +画面表示関連
+   +select_files()
+   +get_portfolio()
+   +get_and_put_content()
+   +prepare_result_display()
 }
-class DivMgmt {
-   -Parserインスタンス
-   -RestClientインスタンス
+class ControlInterval {
+  +前回の時刻
+  +インターバル値
+  +check_interval()
 }
-class Parser {
-   -htmlファイル
-   +get_div_info()
+class client_requests {
+  +django関連
+  +rest api関連
+  +deleteAllData()
+  +deleteData()
+  +postData()
+  +patchData()
+  +getIdOfTicker()
+  +isThisTickerExist()
+  +getAllData()
+  +pop_id_from_POST_data()
+  +pop_id_from_GET_data()
 }
-class RestClient {
+class parser {
+   +ポートフォリオ
+   +read_and_filter_html()
+}
+class RegisterTicker {
+  +django関連
+  +rest api関連
+  +read_csv()
+  +post_patch_ticker()
+
 }
 
-Window - DivMgmt
-DivMgmt -- Parser
-DivMgmt -- RestClient
+GUI4Ticker - ControlInterval
+GUI4Ticker -- client_requests
+RegisterTicker - client_requests
+GUI4Ticker -- parser
 @enduml
 ```
 
-- [ ] ウィンドウインスタンスを呼び出す際、配当管理インスタンスを引数として渡す
-- [ ] ウィンドウインスタンスは、配当ファイルセット、銘柄ファイルセット、配当処理の 3 メソッドを利用
-- [ ] 配当管理はパーサーに配当ファイル名を渡して配当情報を受取る(get_div_info)
-- [ ] 配当管理はレストクライアントの record_div_info を利用する
-
 ## 起動
-djangoを起動した状態で、python tk.py
+
+django を起動した状態で、python tk.py
 
 ### 結果確認
 
@@ -158,9 +191,9 @@ MC  2021-10-20 3.0%   |  昨年実績 3.5
 
 ## 処理の流れ
 
-<img width="3000" src="./activity.drawio.svg">
+<img width="3000" src="./activity2.drawio.svg">
 
-#### GUI 呼出
+<!-- #### GUI 呼出
 
 #### ウィンドウ 1(ファイル指定)
 
@@ -180,9 +213,7 @@ MC  2021-10-20 3.0%   |  昨年実績 3.5
 
 #### ウィンドウ 2(結果表示)
 
-## 1
-
-
+## 1 -->
 
 <!-- ```plantuml
 @startuml
@@ -213,7 +244,7 @@ stop
 @enduml
 ``` -->
 
-## エラー処理
+<!-- ## エラー処理
 
 配当ファイルが存在しない
 銘柄ファイルが存在しない
@@ -221,6 +252,7 @@ stop
 銘柄情報が登録されていない
 
 ## メモ
+
 ポートフォリオファイル選択
 配当ファイル選択
 ポートフォリオファイル読込み
@@ -233,4 +265,4 @@ stop
 リコンサイル
 銘柄バッチ登録
 銘柄バックアップ
-配当情報バックアップ
+配当情報バックアップ -->

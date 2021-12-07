@@ -18,11 +18,11 @@ Todo:
 ✔ ticker tools isthisregistered @done(21-12-05 21:25)
 ☐ ticker tools reconcile(file and db)
 ✔ INSTALLED_APPS確認(dividendsを削除する) @done(21-11-27 08:48)
-☐ tk.py見直し
-☐ bs.py見直し
-☐ txt.insert(tk.END, line + '\n')部分変更。
-☐ readme.md DB情報更新
-☐ reaeme.md クラス情報更新
+✔ tk.py見直し @done(21-12-06 10:02)
+✔ bs.py見直し @done(21-12-06 18:02)
+✔ txt.insert(tk.END, line + '\n')部分変更。 @done(21-12-07 16:05)
+✔ readme.md DB情報更新 @done(21-12-07 17:52)
+✔ reaeme.md クラス情報更新 @done(21-12-07 19:28)
 ☐ check_ticker.pyコメント
 ☐ check_ticker.py見直し
 ☐ client_request.pyコメント
