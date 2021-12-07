@@ -1,9 +1,4 @@
 """
-export DJA_UI='admin'
-export DJA_PW='amincs8000'
-export DJA_URL='http://127.0.0.1:8000/'
-export PYTHONPATH='../:../api_client/:../client/'
-
 200 OK
 201 Created
 204 No Content => deleted
@@ -13,27 +8,24 @@ export PYTHONPATH='../:../api_client/:../client/'
 1. HTTPレベル
 2. アプリレベル
 
-get_data_of_ticket  : HTTPレベルのステータスコードをチェック
-isThisTickerExist   : if HTTP = Good & アプリレベル = Good
-                        return 0
-                      else
-                        return r
+delete_data()   :   Python requestsを使っているメソッド。deleteコマンドをコールしているだけ
+deleteData()    :   外部からはこちらを呼び出す。
+                    delete_data()を呼び出す。
+                    delete_data()を呼び出す前にidのチェック、isThisTickerExistなどを行っている
 
+他のメソッドも同様。ただし、pop_id_from_POST_data()とpop_id_from_GET_data()は例外
+                　
 """
 import json
 import logging
 from typing import Union
+from typing import Tuple
+
 
 import requests
+from requests.models import Response
 
 from resultenum import expected_result, http_result
-
-# from django.test import TestCase
-
-
-# import os
-# import subprocess
-# import unittest
 
 
 logger = logging.getLogger(__name__)
@@ -51,8 +43,7 @@ logger.disabled = False
 
 class client_requests(object):
 
-    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app):
-        # def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers):
+    def __init__(self, DJA_UI, DJA_PW, DJA_URL, headers, app) -> None:
         DJA_UI = DJA_UI
         DJA_PW = DJA_PW
         self.DJA_URL = DJA_URL
@@ -62,37 +53,10 @@ class client_requests(object):
         self.session = requests.Session()
         self.session.auth = (DJA_UI, DJA_PW)
 
-        # r = self.session.get(DJA_URL + self.app + '/', headers=self.headers)
-        # if r.text != '[]':
-        #     # print(r.text)
-        #     # jtext = json.loads(r.text)
-        #     # jtext
-        #     print('---------------------------------------')
-        #     print('--- please delete the existing data ---')
-        #     print('---------------------------------------')
-        #     self.delete_all_data()
-
-    # def delete_all_data(self):
-
-    #     r = self.session.get(
-    #         # self.DJA_URL + self.app + '/',
-    #         self.DJA_URL + self.app + '/',
-    #         headers=self.headers)
-
-    #     print(f'---> {r.text}')
-    #     while r.text != '[]':
-    #         id = json.loads(r.text)[0].pop('id')
-    #         self.delete_data(id)
-    #         r = self.session.get(
-    #             # self.DJA_URL + self.app + '/',
-    #             self.DJA_URL + self.app + '/',
-    #             headers=self.headers)
-
-    def delete_all_data(self):
-        """ objects.all.delete()でもいけそうではある """
+    def delete_all_data(self) -> None:
+        """ objects.all.delete()を利用するでもいけそうではある """
 
         r = self.session.get(
-            # self.DJA_URL + self.app + '/',
             self.DJA_URL + self.app + '/',
             headers=self.headers)
 
@@ -101,10 +65,11 @@ class client_requests(object):
         for t in data:
             self.delete_data(t["id"])
 
-    def deleteAllData(self):
+    def deleteAllData(self) -> None:
         self.delete_all_data()
 
-    def delete_data(self, id):
+    def delete_data(self, id: int) -> Tuple[expected_result, Response]:
+        # def delete_data(self, id: int):
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
         r = self.session.delete(self.DJA_URL + self.app +
                                 '/' +
@@ -113,7 +78,7 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def deleteData(self, id) -> bool:
+    def deleteData(self, id: int) -> bool:
         """ type(id)がintであることをチェック """
         if not isinstance(id, int):
             print(f'client_requests.deleteData invalid arg {id=}')
@@ -133,7 +98,7 @@ class client_requests(object):
         print('client_requests.deleteData delete_data called but error occurred.')
         return False
 
-    def post_data(self, params):
+    def post_data(self, params: dict) -> Tuple[expected_result, Response]:
 
         ref_code = http_result.Created.value  # created
         r = self.session.post(
@@ -168,7 +133,7 @@ class client_requests(object):
         else:
             return None
 
-    def patch_data(self, id, params):
+    def patch_data(self, id: int, params: dict) -> Tuple[expected_result, Response]:
         """ paramsに存在しないキーを指定した場合、r.status_code == 200 Okで処理されてしまう"""
         pass
 
@@ -220,16 +185,7 @@ class client_requests(object):
                 return None
         return patched_ticker
 
-    # def get_data_of_ticker(self, ticker_code):
-    #     ref_code = http_result.OK.value
-    #     r = self.session.get(
-    #         self.DJA_URL +
-    #         self.app + '/?ticker=' +
-    #         ticker_code,
-    #         headers=self.headers)
-    #     result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
-    #     return result, r
-    def get_data_of(self, key, identifier):
+    def get_data_of(self, key: str, identifier: str) -> Tuple[expected_result, Response]:
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
@@ -239,16 +195,16 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data_of_ticker(self, ticker_information: str):
+    def get_data_of_ticker(self, ticker_information: str) -> Tuple[expected_result, Response]:
         if not isinstance(ticker_information, str):
             print(
                 f'client_request.get_data_of_ticker error:{type(ticker_information)=} not str')
         return self.get_data_of('ticker', ticker_information.upper())
 
-    def get_data_of_id(self, ticker_information):
+    def get_data_of_id(self, ticker_information: int) -> Tuple[expected_result, Response]:
         return self.get_data_of('id', str(ticker_information))
 
-    def getIdOfTicker(self, ticker_code) -> Union[int, None]:
+    def getIdOfTicker(self, ticker_code: str) -> Union[int, None]:
         if not isinstance(ticker_code, str):
             print(
                 f'client_request.getIdOfTicker error: {type(ticker_code)=} not str')
@@ -257,8 +213,7 @@ class client_requests(object):
             return result["id"]
         return None
 
-    def isThisTickerExist(
-            self, ticker_information: Union[str, int]) -> Union[dict, None]:
+    def isThisTickerExist(self, ticker_information: Union[str, int]) -> Union[dict, None]:
         if not isinstance(
                 ticker_information,
                 str) and not isinstance(
@@ -292,7 +247,7 @@ class client_requests(object):
         else:
             return None
 
-    def get_data_of_all(self):
+    def get_data_of_all(self) -> Tuple[expected_result, Response]:
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
@@ -301,12 +256,12 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def pop_id_from_POST_data(self, rtext):
+    def pop_id_from_POST_data(self, rtext: str) -> Tuple[int, dict]:
         ret_ticker = json.loads(rtext)
         id = ret_ticker.pop('id')
         return id, ret_ticker
 
-    def pop_id_from_GET_data(self, rtext):
+    def pop_id_from_GET_data(self, rtext: str) -> Tuple[int, dict]:
         """
         def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
         """
