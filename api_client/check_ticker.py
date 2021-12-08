@@ -10,7 +10,7 @@ export PYTHONPATH='../:../api_client/:../client/'
 400 Bad Request
 
 """
-# import json
+import json
 import logging
 import os
 
@@ -148,7 +148,7 @@ class ApiTest4Ticker(TestCase):
 
         # GET(query)
         ref_code = http_result.OK.value
-        result, r = self.ticker_requests.get_data_of_ticker(
+        result, r = self.ticker_requests.getDataOfTicker(
             ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
@@ -191,7 +191,7 @@ class ApiTest4Ticker(TestCase):
         self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query)
-        result, r = self.ticker_requests.get_data_of_ticker(
+        result, r = self.ticker_requests.getDataOfTicker(
             str(ticker_code))  # need to convert to string from int
         if result != expected_result.as_expected:
             logger.debug(
@@ -311,7 +311,7 @@ class ApiTest4Ticker(TestCase):
         self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query)
-        result, r = self.ticker_requests.get_data_of_ticker(
+        result, r = self.ticker_requests.getDataOfTicker(
             ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
@@ -335,7 +335,7 @@ class ApiTest4Ticker(TestCase):
         logger.debug(f'     {r.status_code=} {r.text=}')
 
         # GET(query)
-        result, r = self.ticker_requests.get_data_of_ticker(
+        result, r = self.ticker_requests.getDataOfTicker(
             ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
@@ -383,7 +383,7 @@ class ApiTest4Ticker(TestCase):
 
         # GET(query) with ticker code
         for ticker_code in tickers:
-            result, r = self.ticker_requests.get_data_of_ticker(
+            result, r = self.ticker_requests.getDataOfTicker(
                 ticker_code)
             if result != expected_result.as_expected:
                 logger.debug(
@@ -406,7 +406,7 @@ class ApiTest4Ticker(TestCase):
         logger.debug(f'     before DELETE {r.text=}')
 
         for ticker_code in tickers:
-            result, r = self.ticker_requests.get_data_of_ticker(
+            result, r = self.ticker_requests.getDataOfTicker(
                 ticker_code)
             if result != expected_result.as_expected:
                 logger.debug(
@@ -674,7 +674,7 @@ class ApiTest4Ticker(TestCase):
         self.assertEqual(ref_ticker, ret_ticker)
 
         # GET(query) with ticker code
-        result, r = self.ticker_requests.get_data_of_ticker(
+        result, r = self.ticker_requests.getDataOfTicker(
             ticker_code)
         if result != expected_result.as_expected:
             logger.debug(
@@ -703,19 +703,54 @@ class ApiTest4Ticker(TestCase):
         self.dividend_requests.deleteAllData()
 
         result = self.ticker_requests.postData({'ticker': 'mc'})
-        id = self.ticker_requests.getIdOfTicker('mc')
-        self.dividend_requests.postData(
-            {
-                "ticker": 'mc',
-                "ex_date": '2021-12-01',
-                "pay_date": '2021-12-01',
-                "div_val": 0.121,
-                "div_rat": 3.6
-            })
+        # id = self.ticker_requests.getIdOfTicker('mc')
+        self.dividend_requests.postData({"ticker": 'mc', "ex_date": '2021-12-01',
+                                        "pay_date": '2021-12-01', "div_val": 0.121, "div_rat": 3.6})
+        self.dividend_requests.postData({"ticker": 'mc', "ex_date": '2021-12-12',
+                                        "pay_date": '2021-12-31', "div_val": 0.121, "div_rat": 3.6})
+
+        result = self.ticker_requests.postData({'ticker': 'mss'})
+        # id = self.ticker_requests.getIdOfTicker('mss')
+        self.dividend_requests.postData({"ticker": 'mss', "ex_date": '2020-12-01',
+                                        "pay_date": '2020-12-01', "div_val": 0.121, "div_rat": 3.6})
+
+        # print(f'{self.ticker_requests.getAllData()=}')
+        # print(f'{self.dividend_requests.getAllData()=}')
+
+        result, r = self.dividend_requests.getDataOfTicker("MC")
+        divs = json.loads(r.text)
+        self.assertEqual(2, len(divs))
+
+        result, r = self.dividend_requests.get_data_of("ticker", "MSS")
+        divs = json.loads(r.text)
+        self.assertEqual(1, len(divs))
+
+        result, r = self.dividend_requests.getDataOfTicker("MSS")
+        divs = json.loads(r.text)
+        self.assertEqual(1, len(divs))
+
+        # http: // 127.0.0.1: 8000 / dividends /?ticker = MC & ex_date_after = 2021 - 12 - 10
+        """ ?を含めずに?以降を引数として渡す。最後にスラッシュは不要"""
+        result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-01")
+        divs = json.loads(r.text)
+        self.assertEqual(2, len(divs))
+
+        result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-10")
+        divs = json.loads(r.text)
+        self.assertEqual(1, len(divs))
+
+        result, r = self.dividend_requests.queryDividend("ex_date_after=2020-01-01&ex_date_before=2021-12-31")
+        divs = json.loads(r.text)
+        self.assertEqual(3, len(divs))
+
+        result, r = self.dividend_requests.queryDividend("ex_date_after=2021-01-01&ex_date_before=2021-12-31")
+        divs = json.loads(r.text)
+        self.assertEqual(2, len(divs))
+        logger.debug('16) 配当関連テスト')
 
 
 test = ApiTest4Ticker()
-test.test_ticker()
+# test.test_ticker()
 # test.test_ticker1()
 # test.test_isThisTickerExist()
 # test.test_isThisIdExist()
