@@ -177,8 +177,7 @@ class client_requests(object):
 
         result, r = self.patch_data(id, params)
         if result != expected_result.as_expected:
-            print(
-                f'client_request.patchData failed. {result=} {r.status_code=} {id=} {params=}')
+            print(f'client_request.patchData failed. {result=} {r.status_code=} {id=} {params=}')
             print(f'client_request.patchData {self.getAllData()=}')
             return None
         patched_ticker = json.loads(r.text)
@@ -201,8 +200,7 @@ class client_requests(object):
 
     def getDataOfTicker(self, ticker_information: str) -> Tuple[expected_result, Response]:
         if not isinstance(ticker_information, str):
-            print(
-                f'client_request.getDataOfTicker error:{type(ticker_information)=} not str')
+            print(f'client_request.getDataOfTicker error:{type(ticker_information)=} not str')
         return self.get_data_of('ticker', ticker_information.upper())
 
     def getDataOfId(self, ticker_information: int) -> Tuple[expected_result, Response]:
@@ -210,8 +208,7 @@ class client_requests(object):
 
     def getIdOfTicker(self, ticker_code: str) -> Union[int, None]:
         if not isinstance(ticker_code, str):
-            print(
-                f'client_request.getIdOfTicker error: {type(ticker_code)=} not str')
+            print(f'client_request.getIdOfTicker error: {type(ticker_code)=} not str')
             return None
         if (result := self.isThisTickerExist(ticker_code.upper())):
             return result["id"]
@@ -219,8 +216,7 @@ class client_requests(object):
         print(f'client_requests.getIdOfTicker {ticker_code=} exist?')
         return None
 
-    def queryDividend(self, query_str: str) -> Tuple[expected_result, Response]:
-        pass
+    def queryDividend(self, query_str: str) -> Union[Tuple[expected_result, Response], None]:
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
@@ -231,15 +227,11 @@ class client_requests(object):
             return result, r
         else:
             print(f'client_requests.queryDividend error after the query {query_str=}')
+            return None
 
     def isThisTickerExist(self, ticker_information: Union[str, int]) -> Union[dict, None]:
-        if not isinstance(
-                ticker_information,
-                str) and not isinstance(
-                ticker_information,
-                int):
-            print(
-                f'client_request.isThisTickerExist error: {type(ticker_information)=} not str and int')
+        if not isinstance(ticker_information, str) and not isinstance(ticker_information, int):
+            print(f'client_request.isThisTickerExist error: {type(ticker_information)=} not str and int')
             return None
 
         if isinstance(ticker_information, str):
@@ -262,10 +254,9 @@ class client_requests(object):
     def getAllData(self) -> Union[str, None]:
         result, r = self.get_data_of_all()
         if result == expected_result.as_expected and r.text != '[]':
-            # return r.text
             return json.loads(r.text)
         else:
-            print(f'client_requests.getAllData error after get_data_of_all')
+            print('client_requests.getAllData error after get_data_of_all')
             return None
 
     def get_data_of_all(self) -> Tuple[expected_result, Response]:
@@ -285,8 +276,7 @@ class client_requests(object):
         return id, ret_ticker
 
     def pop_id_from_GET_data(self, rtext: str) -> Union[Tuple[int, dict], None]:
-        """
-        def getDataOfTicker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
+        """ def getDataOfTicker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
         """
         ret_ticker = json.loads(rtext)[0]
         if not isinstance(ret_ticker, dict):
