@@ -8,13 +8,27 @@
 1. HTTPレベル
 2. アプリレベル
 
+メソッド説明
 delete_data()   :   Python requestsを使っているメソッド。deleteコマンドをコールしているだけ
 deleteData()    :   外部からはこちらを呼び出す。
                     delete_data()を呼び出す。
                     delete_data()を呼び出す前にidのチェック、isThisTickerExistなどを行っている
 
-他のメソッドも同様。ただし、pop_id_from_POST_data()とpop_id_from_GET_data()は例外
-                　
+
+メソッド一覧
+外部から呼出を想定したメソッド      内部使用のメソッド
+deleteAllData()                     delete_all_data()
+deleteData()                        delete_data()
+postData()                          post_data()
+patchData()                         patch_data()
+getDataOfTicker(),getDataOfId()     get_data_of()
+getIdOfTicker()
+queryDividend()
+isThisTickerExist()
+getAllData()                        get_data_of_all()
+pop_id_from_POST_data()
+pop_id_from_GET_data()
+
 """
 import json
 import logging
