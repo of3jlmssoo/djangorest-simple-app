@@ -22,7 +22,8 @@ def api_root(request, format=None):
 
 
 class DividendFilter(filters.FilterSet):
-    ticker = filters.CharFilter(field_name="ticker")  # , lookup_expr='iexact')
+    # ticker = filters.CharFilter(field_name="ticker")  # , lookup_expr='iexact')
+    ticker = filters.CharFilter(field_name='ticker__ticker', lookup_expr='iexact')
     # ex_date = filters.DateFilter(field_name="ex_date", lookup_expr='exact')
     ex_date = filters.DateFromToRangeFilter()
 
@@ -90,7 +91,8 @@ class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
 
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permisyions.IsAuthenticatedOrReadOnly]
+
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
 
