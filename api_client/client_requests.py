@@ -1,10 +1,11 @@
 """
+想定しているHTTPコード
 200 OK
 201 Created
 204 No Content => deleted
 400 Bad Request
 
-2つ確認するものがある。
+REST APIコール後2つのレベルで確認を行っている
 1. HTTPレベル
 2. アプリレベル
 
@@ -13,7 +14,6 @@ delete_data()   :   Python requestsを使っているメソッド。deleteコマ
 deleteData()    :   外部からはこちらを呼び出す。
                     delete_data()を呼び出す。
                     delete_data()を呼び出す前にidのチェック、isThisTickerExistなどを行っている
-
 
 メソッド一覧
 外部から呼出を想定したメソッド      内部使用のメソッド
@@ -66,7 +66,6 @@ class client_requests(object):
 
     def delete_all_data(self) -> None:
         """ objects.all.delete()を利用するでもいけそうではある """
-
         r = self.session.get(
             self.DJA_URL + self.app + '/',
             headers=self.headers)
@@ -77,15 +76,14 @@ class client_requests(object):
             self.delete_data(t["id"])
 
     def deleteAllData(self) -> None:
+        """ tickerで1インスタンス、dividendで1インスタンスを想定しているため、両方消す場合は
+        まずdivdendをdeleteAllData()して、次にtickerをdeleteAllData()する """
         self.delete_all_data()
 
     def delete_data(self, id: int) -> Tuple[expected_result, Response]:
-        # def delete_data(self, id: int):
         ref_code = http_result.NoContentDeleted.value  # No Content => deleted
         r = self.session.delete(self.DJA_URL + self.app +
-                                '/' +
-                                str(id) +
-                                '/', headers=self.headers)
+                                '/' + str(id) + '/', headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
@@ -138,25 +136,21 @@ class client_requests(object):
         params['ticker'] = params['ticker'].upper()
 
         result, r = self.post_data(params)
-        """ TODO : エラーチェック強化検討。辞書のキー毎に正しいか確認するかどうか """
+        """ TODO : エラーチェック強化検討。辞書のキー毎に正しいか確認する(かどうか考える) """
         if result == expected_result.as_expected and r.text != '[]':
             return json.loads(r.text)
         else:
+            print(f'client_request.postData error result is not as expected.')
             return None
 
     def patch_data(self, id: int, params: dict) -> Tuple[expected_result, Response]:
         """ paramsに存在しないキーを指定した場合、r.status_code == 200 Okで処理されてしまう"""
-        pass
-
-        # print(f'patch_data {params=}')
         ref_code = http_result.OK.value  # created
         r = self.session.patch(
             self.DJA_URL + self.app + '/' + str(id) + '/',
             data=json.dumps(params),
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
-
-        # print(f'patch_data {r.status_code=}')
         return result, r
 
     def patchData(self, id: int, params: dict) -> Union[dict, None]:
@@ -172,7 +166,7 @@ class client_requests(object):
             return None
 
         if not isinstance(id, int) or not isinstance(params, dict):
-            print(f'client_requests.patchData error {type(id)} {type(params)}')
+            print(f'client_requests.patchData type error {type(id)} {type(params)}')
             return None
 
         valid_keys = result.keys()
@@ -188,11 +182,10 @@ class client_requests(object):
             print(f'client_request.patchData {self.getAllData()=}')
             return None
         patched_ticker = json.loads(r.text)
-        # print(f'patchData {self.getAllData()=}')
         for k in params.keys():
-            # if int(params[k]) != patched_ticker[k]:
             if params[k] != patched_ticker[k]:
-                print(f'{k=} {params[k]=} {patched_ticker[k]}')
+                print(
+                    f'client_requests.patchData error invalid keys after patch_data {k=} {params[k]=} {patched_ticker[k]}')
                 return None
         return patched_ticker
 
@@ -222,6 +215,8 @@ class client_requests(object):
             return None
         if (result := self.isThisTickerExist(ticker_code.upper())):
             return result["id"]
+
+        print(f'client_requests.getIdOfTicker {ticker_code=} exist?')
         return None
 
     def queryDividend(self, query_str: str) -> Tuple[expected_result, Response]:
@@ -232,7 +227,10 @@ class client_requests(object):
             self.app + '/?' + query_str,
             headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
-        return result, r
+        if result:
+            return result, r
+        else:
+            print(f'client_requests.queryDividend error after the query {query_str=}')
 
     def isThisTickerExist(self, ticker_information: Union[str, int]) -> Union[dict, None]:
         if not isinstance(
@@ -258,6 +256,7 @@ class client_requests(object):
             # print(f'==> {type(data)=}')
             return json.loads(r.text)[0]
         else:
+            print(f'client_requests.isThisTickerExist error after getDataOf {ticker_information=} ')
             return None
 
     def getAllData(self) -> Union[str, None]:
@@ -266,6 +265,7 @@ class client_requests(object):
             # return r.text
             return json.loads(r.text)
         else:
+            print(f'client_requests.getAllData error after get_data_of_all')
             return None
 
     def get_data_of_all(self) -> Tuple[expected_result, Response]:
@@ -277,15 +277,19 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def pop_id_from_POST_data(self, rtext: str) -> Tuple[int, dict]:
+    def pop_id_from_POST_data(self, rtext: str) -> Union[Tuple[int, dict], None]:
         ret_ticker = json.loads(rtext)
+        if not isinstance(ret_ticker, dict):
+            return None
         id = ret_ticker.pop('id')
         return id, ret_ticker
 
-    def pop_id_from_GET_data(self, rtext: str) -> Tuple[int, dict]:
+    def pop_id_from_GET_data(self, rtext: str) -> Union[Tuple[int, dict], None]:
         """
         def getDataOfTicker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
         """
         ret_ticker = json.loads(rtext)[0]
+        if not isinstance(ret_ticker, dict):
+            return None
         id = ret_ticker.pop('id')
         return id, ret_ticker
