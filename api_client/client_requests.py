@@ -18,15 +18,12 @@ deleteData()    :   外部からはこちらを呼び出す。
 """
 import json
 import logging
-from typing import Union
-from typing import Tuple
-
+from typing import Tuple, Union
 
 import requests
 from requests.models import Response
 
 from resultenum import expected_result, http_result
-
 
 logger = logging.getLogger(__name__)
 ch = logging.StreamHandler()
@@ -195,13 +192,13 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def get_data_of_ticker(self, ticker_information: str) -> Tuple[expected_result, Response]:
+    def getDataOfTicker(self, ticker_information: str) -> Tuple[expected_result, Response]:
         if not isinstance(ticker_information, str):
             print(
-                f'client_request.get_data_of_ticker error:{type(ticker_information)=} not str')
+                f'client_request.getDataOfTicker error:{type(ticker_information)=} not str')
         return self.get_data_of('ticker', ticker_information.upper())
 
-    def get_data_of_id(self, ticker_information: int) -> Tuple[expected_result, Response]:
+    def getDataOfId(self, ticker_information: int) -> Tuple[expected_result, Response]:
         return self.get_data_of('id', str(ticker_information))
 
     def getIdOfTicker(self, ticker_code: str) -> Union[int, None]:
@@ -212,6 +209,16 @@ class client_requests(object):
         if (result := self.isThisTickerExist(ticker_code.upper())):
             return result["id"]
         return None
+
+    def queryDividend(self, query_str: str) -> Tuple[expected_result, Response]:
+        pass
+        ref_code = http_result.OK.value
+        r = self.session.get(
+            self.DJA_URL +
+            self.app + '/?' + query_str,
+            headers=self.headers)
+        result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+        return result, r
 
     def isThisTickerExist(self, ticker_information: Union[str, int]) -> Union[dict, None]:
         if not isinstance(
@@ -224,9 +231,9 @@ class client_requests(object):
             return None
 
         if isinstance(ticker_information, str):
-            result, r = self.get_data_of_ticker(ticker_information.upper())
+            result, r = self.getDataOfTicker(ticker_information.upper())
         if isinstance(ticker_information, int):
-            result, r = self.get_data_of_id(ticker_information)
+            result, r = self.getDataOfId(ticker_information)
 
         # print(f'{r.__sizeof__()}')
         # print(f'{type(r.text)=}')
@@ -263,7 +270,7 @@ class client_requests(object):
 
     def pop_id_from_GET_data(self, rtext: str) -> Tuple[int, dict]:
         """
-        def get_data_of_ticker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
+        def getDataOfTicker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
         """
         ret_ticker = json.loads(rtext)[0]
         id = ret_ticker.pop('id')
