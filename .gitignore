@@ -153,4 +153,5 @@ cython_debug/
 
 'Dividend Calendar - Investing.*'
 refs.py
+.gitignore
 # End of https://www.toptal.com/developers/gitignore/api/django
