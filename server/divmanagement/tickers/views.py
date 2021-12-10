@@ -22,9 +22,7 @@ def api_root(request, format=None):
 
 
 class DividendFilter(filters.FilterSet):
-    # ticker = filters.CharFilter(field_name="ticker")  # , lookup_expr='iexact')
     ticker = filters.CharFilter(field_name='ticker__ticker', lookup_expr='iexact')
-    # ex_date = filters.DateFilter(field_name="ex_date", lookup_expr='exact')
     ex_date = filters.DateFromToRangeFilter()
 
     class Meta:
@@ -49,21 +47,8 @@ class DividendDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Dividend.objects.all()
     serializer_class = DividendSerializer
 
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
-
-
-# class DividendListAPIView(generics.ListAPIView):
-#     print(f'=== DividendListAPIView called ===')
-#     queryset = Dividend.objects.all()
-#     serializer_class = DividendSerializer
-#     filter_backends = (filters.DjangoFilterBackend,)
-#     filterset_class = DividendFilter
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-#     def perform_create(self, serializer):
-#         serializer.save(owner=self.request.user)
 
 
 class TickerFilter(filters.FilterSet):
@@ -91,22 +76,8 @@ class TickerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ticker.objects.all()
     serializer_class = TickerSerializer
 
-    # permission_classes = [permisyions.IsAuthenticatedOrReadOnly]
-
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
-
-
-# class TickerListAPIView(generics.ListAPIView):
-#     print(f'=== TickerListAPIView called ===')
-#     queryset = Ticker.objects.all()
-#     serializer_class = TickerSerializer
-#     filter_backends = (filters.DjangoFilterBackend,)
-#     filterset_class = TickerFilter
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-#     def perform_create(self, serializer):
-#         serializer.save(owner=self.request.user)
 
 
 class UserList(generics.ListAPIView):
