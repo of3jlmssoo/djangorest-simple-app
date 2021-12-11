@@ -72,6 +72,7 @@ class client_requests(object):
 
         data = json.loads(r.text)
 
+        # print(f'client_requests.delete_all_data() will delete {data} ')
         for t in data:
             self.delete_data(t["id"])
 
@@ -85,6 +86,7 @@ class client_requests(object):
         r = self.session.delete(self.DJA_URL + self.app +
                                 '/' + str(id) + '/', headers=self.headers)
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+        # print(f'client_request.delete_data {id=}')
         return result, r
 
     def deleteData(self, id: int) -> bool:
@@ -135,12 +137,16 @@ class client_requests(object):
         """ tickerは大文字に揃える """
         params['ticker'] = params['ticker'].upper()
 
+        if self.app == 'tickers' and self.isThisTickerExist(params['ticker']):
+            print(f'client_requests.postData posted {params["ticker"]} but already exists. {self.app=}')
+            return None
+
         result, r = self.post_data(params)
         """ TODO : エラーチェック強化検討。辞書のキー毎に正しいか確認する(かどうか考える) """
         if result == expected_result.as_expected and r.text != '[]':
             return json.loads(r.text)
         else:
-            print(f'client_request.postData error result is not as expected.')
+            print(f'client_request.postData error result is not as expected. {r.text=}')
             return None
 
     def patch_data(self, id: int, params: dict) -> Tuple[expected_result, Response]:
@@ -216,18 +222,28 @@ class client_requests(object):
         print(f'client_requests.getIdOfTicker {ticker_code=} exist?')
         return None
 
-    def queryDividend(self, query_str: str) -> Union[Tuple[expected_result, Response], None]:
+    def free_query(self, query_str: str):
+        pass
+
+    def queryDividend(self, query_str: str) -> Tuple[expected_result, Response]:
         ref_code = http_result.OK.value
         r = self.session.get(
             self.DJA_URL +
             self.app + '/?' + query_str,
             headers=self.headers)
-        result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
-        if result:
-            return result, r
+        # result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
+        # if result:
+        #     return result, r
+        # else:
+        #     print(f'client_requests.queryDividend error after the query {query_str=}')
+        #     return None, None
+
+        if r.status_code == ref_code:
+            result = expected_result.as_expected
         else:
             print(f'client_requests.queryDividend error after the query {query_str=}')
-            return None
+            result = expected_result.not_expected
+        return result, r
 
     def isThisTickerExist(self, ticker_information: Union[str, int]) -> Union[dict, None]:
         if not isinstance(ticker_information, str) and not isinstance(ticker_information, int):
@@ -248,7 +264,6 @@ class client_requests(object):
             # print(f'==> {type(data)=}')
             return json.loads(r.text)[0]
         else:
-            print(f'client_requests.isThisTickerExist error after getDataOf {ticker_information=} ')
             return None
 
     def getAllData(self) -> Union[str, None]:
@@ -268,18 +283,18 @@ class client_requests(object):
         result = expected_result.as_expected if r.status_code == ref_code else expected_result.not_expected
         return result, r
 
-    def pop_id_from_POST_data(self, rtext: str) -> Union[Tuple[int, dict], None]:
+    def pop_id_from_POST_data(self, rtext: str) -> Union[Tuple[int, dict], Tuple[None, None]]:
         ret_ticker = json.loads(rtext)
         if not isinstance(ret_ticker, dict):
-            return None
+            return None, None
         id = ret_ticker.pop('id')
         return id, ret_ticker
 
-    def pop_id_from_GET_data(self, rtext: str) -> Union[Tuple[int, dict], None]:
+    def pop_id_from_GET_data(self, rtext: str) -> Union[Tuple[int, dict], Tuple[None, None]]:
         """ def getDataOfTicker ()はticker_codeを指定している。モデルでTickerのtickerはunique=Trueなので複数返されることはない
         """
         ret_ticker = json.loads(rtext)[0]
         if not isinstance(ret_ticker, dict):
-            return None
+            return None, None
         id = ret_ticker.pop('id')
         return id, ret_ticker
