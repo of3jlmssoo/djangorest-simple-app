@@ -22,12 +22,13 @@ def api_root(request, format=None):
 
 
 class DividendFilter(filters.FilterSet):
-    ticker = filters.CharFilter(field_name='ticker__ticker', lookup_expr='iexact')
-    ex_date = filters.DateFromToRangeFilter()
+    # ticker = filters.CharFilter(field_name='ticker__ticker', lookup_expr='iexact')
+    # ex_date = filters.DateFromToRangeFilter()
 
     class Meta:
         model = Dividend
-        fields = ['ticker', 'ex_date']
+        # fields = ['ticker', 'ex_date']
+        fields = ('ticker', 'ex_date')
 
 
 class DividendList(generics.ListCreateAPIView):
@@ -35,7 +36,14 @@ class DividendList(generics.ListCreateAPIView):
     serializer_class = DividendSerializer
 
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = DividendFilter
+    # filterset_class = DividendFilter
+    # filterset_fields = ('ticker', 'ex_date')
+    search_fields = ['ticker__ticker', 'ex_date']
+
+    filterset_fields = {
+        'ticker__ticker': ['exact'],
+        'ex_date': ['gte', 'lte', 'exact', 'gt', 'lt']
+    }
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 

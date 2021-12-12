@@ -5,7 +5,7 @@ Todo:
   ✔ tickerでサーチ @done(21-11-21 17:25)
   ✔ ticker & date afterでサーチ @done(21-11-21 17:25)
 ✔ 配当情報htmlとポートフォリオ情報を.gitignoreに追加。定義の別ファイル化 @done(21-11-27 09:49)
-☐ dividend用テスト
+✔ dividend用テスト @done(21-12-08 16:53)
 ☐ RESTドキュメント生成
 ☐ インテグレーション
   ✔ bs1 refactoring(pass parameter, generator) @done(21-11-27 09:49)
@@ -25,19 +25,21 @@ Todo:
 ✔ reaeme.md クラス情報更新 @done(21-12-07 19:28)
 ☐ check_ticker.pyコメント
 ☐ check_ticker.py見直し
-☐ client_request.pyコメント
-☐ client_request.py見直し
-☐ register_tickers.pyコメント
-☐ register_tickers.py見直し
-☐ refs.pyコメント
-☐ refs.py見直し
+✔ client_request.pyコメント @done(21-12-08 17:14)
+✔ client_request.py見直し @done(21-12-08 17:20)
+✔ register_tickers.pyコメント @done(21-12-10 10:52)
+✔ register_tickers.py見直し @done(21-12-10 10:53)
+✔ refs.pyコメント @done(21-12-10 11:02)
+✔ refs.py見直し @done(21-12-10 11:02)
 ☐ resultenum.pyコメント
 ☐ resultenum.py見直し
 ☐ models.pyコメント
 ☐ models.py見直し
 ☐ serializers.pyコメント
 ☐ serializers.py見直し
-☐ views.pyコメント
-☐ views.py見直し
+✔ views.pyコメント @done(21-12-10 10:57)
+✔ views.py見直し @done(21-12-10 10:57)
 ☐ djangoユニーク設定(ticker, ex-date, pay-date,)
+☐ 認証変更
+
 

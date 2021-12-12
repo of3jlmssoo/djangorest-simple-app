@@ -717,10 +717,11 @@ class ApiTest4Ticker(TestCase):
     def test_div(self):
         """ ##################################################################### """
         logger.debug('16) 配当関連テスト')
-        self.ticker_requests.deleteAllData()
         self.dividend_requests.deleteAllData()
+        self.ticker_requests.deleteAllData()
 
         result = self.ticker_requests.postData({'ticker': 'mc'})
+        print('mc registered')
         # id = self.ticker_requests.getIdOfTicker('mc')
         self.dividend_requests.postData({"ticker": 'mc', "ex_date": '2021-12-01',
                                         "pay_date": '2021-12-01', "div_val": 0.121, "div_rat": 3.6})
@@ -728,6 +729,7 @@ class ApiTest4Ticker(TestCase):
                                         "pay_date": '2021-12-31', "div_val": 0.121, "div_rat": 3.6})
 
         result = self.ticker_requests.postData({'ticker': 'mss'})
+        print('mss registered')
         # id = self.ticker_requests.getIdOfTicker('mss')
         self.dividend_requests.postData({"ticker": 'mss', "ex_date": '2020-12-01',
                                         "pay_date": '2020-12-01', "div_val": 0.121, "div_rat": 3.6})
@@ -735,40 +737,75 @@ class ApiTest4Ticker(TestCase):
         # print(f'{self.ticker_requests.getAllData()=}')
         # print(f'{self.dividend_requests.getAllData()=}')
 
-        result, r = self.dividend_requests.getDataOfTicker("MC")
-        divs = json.loads(r.text)
-        self.assertEqual(2, len(divs))
+        print('data loaded\n')
+        # result, r = self.dividend_requests.getDataOfTicker("MC")
+        # divs = json.loads(r.text)
+        # self.assertEqual(2, len(divs))
 
-        result, r = self.dividend_requests.get_data_of("ticker", "MSS")
-        divs = json.loads(r.text)
-        self.assertEqual(1, len(divs))
+        # result, r = self.dividend_requests.get_data_of("ticker", "MSS")
+        # divs = json.loads(r.text)
+        # self.assertEqual(1, len(divs))
 
-        result, r = self.dividend_requests.getDataOfTicker("MSS")
-        divs = json.loads(r.text)
-        self.assertEqual(1, len(divs))
+        # result, r = self.dividend_requests.getDataOfTicker("MSS")
+        # divs = json.loads(r.text)
+        # self.assertEqual(1, len(divs))
 
-        # http: // 127.0.0.1: 8000 / dividends /?ticker = MC & ex_date_after = 2021 - 12 - 10
-        """ ?を含めずに?以降を引数として渡す。最後にスラッシュは不要"""
-        result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-01")
-        divs = json.loads(r.text)
-        self.assertEqual(2, len(divs))
+        # # http: // 127.0.0.1: 8000 / dividends /?ticker = MC & ex_date_after = 2021 - 12 - 10
+        # """ ?を含めずに?以降を引数として渡す。最後にスラッシュは不要"""
+        # result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-01")
+        # divs = json.loads(r.text)
+        # self.assertEqual(2, len(divs))
 
-        result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-10")
-        divs = json.loads(r.text)
-        self.assertEqual(1, len(divs))
+        # result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-10")
+        # divs = json.loads(r.text)
+        # self.assertEqual(1, len(divs))
 
-        result, r = self.dividend_requests.queryDividend("ex_date_after=2020-01-01&ex_date_before=2021-12-31")
-        divs = json.loads(r.text)
-        self.assertEqual(3, len(divs))
+        # result, r = self.dividend_requests.queryDividend("ex_date_after=2020-01-01&ex_date_before=2021-12-31")
+        # divs = json.loads(r.text)
+        # self.assertEqual(3, len(divs))
 
-        result, r = self.dividend_requests.queryDividend("ex_date_after=2021-01-01&ex_date_before=2021-12-31")
-        divs = json.loads(r.text)
-        self.assertEqual(2, len(divs))
+        # q_str = "ex_date_after=2021-01-01&ex_date_before=2021-12-31"
+        # print(f'\n{q_str=}')
+        # result, r = self.dividend_requests.queryDividend(q_str)
+        # divs = json.loads(r.text)
+        # self.assertEqual(3, len(divs))
 
-        result, r = self.dividend_requests.queryDividend("ex_date_after=2020-12-01&ex_date_before=2020-12-01")
+        # # # 2020-12-01 2021-12-01 2021-12-12
+        # # q_str = "ex_date_gt=2020-12-01&ex_date_lt=2020-12-01"
+        # # print(f'\n{q_str=}')
+        # # result, r = self.dividend_requests.queryDividend(q_str)
+        # # divs = json.loads(r.text)
+        # # print(f'{divs=}')
+        # # self.assertEqual(1, len(divs))
+
+        # q_str = "ex_date=2020-12-01"
+        # print(f'\n{q_str=}')
+        # result, r = self.dividend_requests.queryDividend(q_str)
+        # divs = json.loads(r.text)
+        # print(f'{divs=}')
+        # self.assertEqual(1, len(divs))
+
+        # 2020-12-01 2021-12-01 2021-12-12
+        qstrs = [
+            ["ex_date=2020-12-01", 1],
+            ["ex_date=2021-12-01", 1],
+            ["ex_date=2021-12-12", 1],
+            ["ex_date__gte=2020-12-01&ex_date__lte=2021-12-01", 2],
+            # ["ex_date__gte=2020-12-01&ex_date__lte=2021-12-12", 2],
+            ["ex_date__gte=2021-12-01&ex_date__lte=2021-12-12", 2],
+            ["ex_date__gte=2020-12-01&ex_date__lte=2021-12-12", 3]
+        ]
+
+        for q in qstrs:
+            print(f'\nquery string = {q[0]}')
+            result, r = self.dividend_requests.queryDividend(q[0])
+            divs = json.loads(r.text)
+            # print(f'{divs=}')
+            self.assertEqual(q[1], len(divs))
+
+        result, r = self.dividend_requests.queryDividend('ticker__ticker=MC')
         divs = json.loads(r.text)
         print(f'{divs=}')
-        self.assertEqual(2, len(divs))
 
         logger.debug('16) 配当関連テスト')
 
