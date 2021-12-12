@@ -17,18 +17,28 @@
 入力 B から入力 A の銘柄を抜出し、その銘柄の配当情報(アウトプット)を画面に表示すると共に django に記録する
 
 ### tk.py
-
 - tkinter で入力 B のファイルを指定する
 - REAT API で django から入力 B のポートフォリオ情報を取得しフィルタリング
 - アウトプットを tkinter で出力すると共に REST API で django に post
 
 ### bs.py
-
 - Beautiful Soup で入力 B のファイルを解析
 
 ### client_request.py
-
 - Python Requests で REST API
+
+### check_ticker.py
+- REST APIテストプログラム
+### register_ticker
+- tickerとvol(vol1/vol2)を登録
+  
+### resultenum.py
+- 列挙値
+
+### refs.py/refs.md
+- 定数定義。アップロードせず。refs.mdに定義だけを記載
+### ci.py
+tkinterで画面に表示(行単位)の間隔を調整
 
 ## 機能要件
 

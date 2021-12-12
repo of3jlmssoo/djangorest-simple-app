@@ -1,5 +1,7 @@
 """
 まずデータをDELETEしてその上で、2つあるポートフォリオファイルの銘柄情報をPOST/PATCHで登録
+CSVファイルのフォーマットは、ticker,vol
+CSVファイルは2つ。1つのvolはvol1へ、もう1つのvolはvol2へ登録する
 
 export DJA_UI='admin'
 export DJA_PW='amincs8000'

@@ -5,9 +5,9 @@ Todo:
   ✔ tickerでサーチ @done(21-11-21 17:25)
   ✔ ticker & date afterでサーチ @done(21-11-21 17:25)
 ✔ 配当情報htmlとポートフォリオ情報を.gitignoreに追加。定義の別ファイル化 @done(21-11-27 09:49)
-✔ dividend用テスト @done(21-12-08 16:53)
+✔ dividend用テスト @done(21-12-12 22:04)
 ☐ RESTドキュメント生成
-☐ インテグレーション
+✔ インテグレーション @done(21-12-12 22:10)
   ✔ bs1 refactoring(pass parameter, generator) @done(21-11-27 09:49)
   ✔ tk -> bs1 @done(21-11-27 09:49)
   ✔ new module to register tickers(CSV, API) @done(21-12-05 21:25)
@@ -23,16 +23,16 @@ Todo:
 ✔ txt.insert(tk.END, line + '\n')部分変更。 @done(21-12-07 16:05)
 ✔ readme.md DB情報更新 @done(21-12-07 17:52)
 ✔ reaeme.md クラス情報更新 @done(21-12-07 19:28)
-☐ check_ticker.pyコメント
-☐ check_ticker.py見直し
+✘ check_ticker.pyコメント @cancelled(21-12-12 22:39)
+✘ check_ticker.py見直し @cancelled(21-12-12 22:39)
 ✔ client_request.pyコメント @done(21-12-08 17:14)
 ✔ client_request.py見直し @done(21-12-08 17:20)
 ✔ register_tickers.pyコメント @done(21-12-10 10:52)
 ✔ register_tickers.py見直し @done(21-12-10 10:53)
 ✔ refs.pyコメント @done(21-12-10 11:02)
 ✔ refs.py見直し @done(21-12-10 11:02)
-☐ resultenum.pyコメント
-☐ resultenum.py見直し
+✔ resultenum.pyコメント @done(21-12-12 22:39)
+✔ resultenum.py見直し @done(21-12-12 22:39)
 ☐ models.pyコメント
 ☐ models.py見直し
 ☐ serializers.pyコメント
