@@ -73,7 +73,14 @@ class ApiTest4Ticker(TestCase):
         - 銘柄登録x1 vol1 = -1(エラー)
         - 銘柄登録x1 vol2 = -1(エラー)
         - 銘柄登録x1 accum = -1(エラー)
-
+)
+test.test_ticker1()
+test.test_isThisTickerExist()
+test.test_isThisIdExist()
+test.test_new_postData_getAllData()
+test.test_not_exist()
+test.test_post_patch()
+test.test_delete(
         - patch
 
         - 銘柄登録x2
@@ -737,54 +744,7 @@ class ApiTest4Ticker(TestCase):
         # print(f'{self.ticker_requests.getAllData()=}')
         # print(f'{self.dividend_requests.getAllData()=}')
 
-        print('data loaded\n')
-        # result, r = self.dividend_requests.getDataOfTicker("MC")
-        # divs = json.loads(r.text)
-        # self.assertEqual(2, len(divs))
-
-        # result, r = self.dividend_requests.get_data_of("ticker", "MSS")
-        # divs = json.loads(r.text)
-        # self.assertEqual(1, len(divs))
-
-        # result, r = self.dividend_requests.getDataOfTicker("MSS")
-        # divs = json.loads(r.text)
-        # self.assertEqual(1, len(divs))
-
-        # # http: // 127.0.0.1: 8000 / dividends /?ticker = MC & ex_date_after = 2021 - 12 - 10
-        # """ ?を含めずに?以降を引数として渡す。最後にスラッシュは不要"""
-        # result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-01")
-        # divs = json.loads(r.text)
-        # self.assertEqual(2, len(divs))
-
-        # result, r = self.dividend_requests.queryDividend("ticker=MC&ex_date_after=2021-12-10")
-        # divs = json.loads(r.text)
-        # self.assertEqual(1, len(divs))
-
-        # result, r = self.dividend_requests.queryDividend("ex_date_after=2020-01-01&ex_date_before=2021-12-31")
-        # divs = json.loads(r.text)
-        # self.assertEqual(3, len(divs))
-
-        # q_str = "ex_date_after=2021-01-01&ex_date_before=2021-12-31"
-        # print(f'\n{q_str=}')
-        # result, r = self.dividend_requests.queryDividend(q_str)
-        # divs = json.loads(r.text)
-        # self.assertEqual(3, len(divs))
-
-        # # # 2020-12-01 2021-12-01 2021-12-12
-        # # q_str = "ex_date_gt=2020-12-01&ex_date_lt=2020-12-01"
-        # # print(f'\n{q_str=}')
-        # # result, r = self.dividend_requests.queryDividend(q_str)
-        # # divs = json.loads(r.text)
-        # # print(f'{divs=}')
-        # # self.assertEqual(1, len(divs))
-
-        # q_str = "ex_date=2020-12-01"
-        # print(f'\n{q_str=}')
-        # result, r = self.dividend_requests.queryDividend(q_str)
-        # divs = json.loads(r.text)
-        # print(f'{divs=}')
-        # self.assertEqual(1, len(divs))
-
+        print('data loaded')
         # 2020-12-01 2021-12-01 2021-12-12
         qstrs = [
             ["ex_date=2020-12-01", 1],
@@ -797,7 +757,7 @@ class ApiTest4Ticker(TestCase):
         ]
 
         for q in qstrs:
-            print(f'\nquery string = {q[0]}')
+            print(f'query string = {q[0]}')
             result, r = self.dividend_requests.queryDividend(q[0])
             divs = json.loads(r.text)
             # print(f'{divs=}')
@@ -805,8 +765,20 @@ class ApiTest4Ticker(TestCase):
 
         result, r = self.dividend_requests.queryDividend('ticker__ticker=MC')
         divs = json.loads(r.text)
-        print(f'{divs=}')
+        self.assertEqual(2, len(divs))
 
+        result, r = self.dividend_requests.queryDividend('ticker__ticker=MSS')
+        divs = json.loads(r.text)
+        self.assertEqual(1, len(divs))
+
+        """ 以下は上で実行済みのpostData()と同じ内容
+        UniqueTogetherValidator前は問題なくポストされる。
+
+        UniqueTogetherValidato ticker, ex_date, div_val
+        """
+        result = self.dividend_requests.postData({"ticker": 'mc', "ex_date": '2021-12-01',
+                                                  "pay_date": '2021-12-01', "div_val": 0.121, "div_rat": 3.6})
+        self.assertEqual(result, None)
         logger.debug('16) 配当関連テスト')
 
 
