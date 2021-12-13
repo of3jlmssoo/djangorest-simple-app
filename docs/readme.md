@@ -17,28 +17,38 @@
 入力 B から入力 A の銘柄を抜出し、その銘柄の配当情報(アウトプット)を画面に表示すると共に django に記録する
 
 ### tk.py
+
 - tkinter で入力 B のファイルを指定する
 - REAT API で django から入力 B のポートフォリオ情報を取得しフィルタリング
 - アウトプットを tkinter で出力すると共に REST API で django に post
 
 ### bs.py
+
 - Beautiful Soup で入力 B のファイルを解析
 
 ### client_request.py
+
 - Python Requests で REST API
 
 ### check_ticker.py
-- REST APIテストプログラム
+
+- REST API テストプログラム
+
 ### register_ticker
-- tickerとvol(vol1/vol2)を登録
-  
+
+- ticker と vol(vol1/vol2)を登録
+
 ### resultenum.py
+
 - 列挙値
 
 ### refs.py/refs.md
-- 定数定義。アップロードせず。refs.mdに定義だけを記載
+
+- 定数定義。アップロードせず。refs.md に定義だけを記載
+
 ### ci.py
-tkinterで画面に表示(行単位)の間隔を調整
+
+tkinter で画面に表示(行単位)の間隔を調整
 
 ## 機能要件
 
@@ -70,21 +80,7 @@ tkinterで画面に表示(行単位)の間隔を調整
 
 ## ユースケース
 
-```plantuml
-@startuml
-left to right direction
-actor "ユーザー" as user
-rectangle {
-usecase "銘柄ファイル登録(事前)" as UC1
-usecase "htmlファイル指定" as UC2
-usecase "結果確認" as UC3
-
-}
-user --> UC1
-user --> UC2
-user --> UC3
-@enduml
-```
+<img width="20%" src="./usecase.drawio.svg">
 
 <!-- ### モジュール
 
@@ -94,116 +90,33 @@ user --> UC3
 
 ## データベース
 
-```plantuml
-@startuml
-entity "ティッカー" as ticker {
-  * ティッカー [PK]
-  --
-  数量1
-  数量2
-  数量合計
-  前年実績
-  id
-  owner
-}
-entity "配当" as dividend {
-  * ティッカー [FK]
-  --
-  確定日
-  支払日
-  配当額
-  配当率
-  id
-  owner
-}
-ticker -|{ dividend
-' - --で並びが変わる
-@enduml
-```
+<img width="50%" src="./database.drawio.svg">
 
 ### クラス
 
-<!--
-- private
-# protected
-~ package private
-+ public
-+ -->
-
-```plantuml
-@startuml
-class GUI4Ticker  {
-   +django関連
-   +rest関連
-   +rest api - tickers
-   +rest api - dividends
-   +parse関連
-   +画面表示関連
-   +select_files()
-   +get_portfolio()
-   +get_and_put_content()
-   +prepare_result_display()
-}
-class ControlInterval {
-  +前回の時刻
-  +インターバル値
-  +check_interval()
-}
-class client_requests {
-  +django関連
-  +rest api関連
-  +deleteAllData()
-  +deleteData()
-  +postData()
-  +patchData()
-  +getIdOfTicker()
-  +isThisTickerExist()
-  +getAllData()
-  +pop_id_from_POST_data()
-  +pop_id_from_GET_data()
-}
-class parser {
-   +ポートフォリオ
-   +read_and_filter_html()
-}
-class RegisterTicker {
-  +django関連
-  +rest api関連
-  +read_csv()
-  +post_patch_ticker()
-
-}
-
-GUI4Ticker - ControlInterval
-GUI4Ticker -- client_requests
-RegisterTicker - client_requests
-GUI4Ticker -- parser
-@enduml
-```
+<img width="50%" src="./class.drawio.svg">
 
 ## 起動
+
+### ticker 登録
+
+csv ファイルを準備の上で、python register_tickers.py
+
+### 配当情報登録
 
 django を起動した状態で、python tk.py
 
 ### 結果確認
 
-1. 結果確認イメージ@1st ステージ
+- 結果確認イメージ
 
 ```
-MSS 2021-10-18 3.1%
-MC  2021-10-20 3.0%
-```
-
-2. 結果確認イメージ@2nd ステージ
-
-```
-MSS 2021-10-18 3.1%   |  昨年実績 10.2
-MC  2021-10-20 3.0%   |  昨年実績 3.5
+NTR, 2021-12-30, 2.2833, 2022-01-14, 2.65
 ```
 
 ## 処理の流れ
 
-<img width="3000" src="./activity2.drawio.svg">
+<img width="70%" src="./activity2.drawio.svg">
 
 <!-- #### GUI 呼出
 
@@ -278,3 +191,11 @@ stop
 銘柄バッチ登録
 銘柄バックアップ
 配当情報バックアップ -->
+
+<!--
+source ./djangorest/bin/activate; cd pro*/dj*app
+export DJA_UI='admin'
+export DJA_PW='amincs8000'
+export DJA_URL='http://127.0.0.1:8000/'
+export PYTHONPATH='../:../api_client/:../client/'
+-->
