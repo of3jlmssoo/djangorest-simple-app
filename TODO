@@ -33,13 +33,13 @@ Todo:
 ✔ refs.py見直し @done(21-12-10 11:02)
 ✔ resultenum.pyコメント @done(21-12-12 22:39)
 ✔ resultenum.py見直し @done(21-12-12 22:39)
-☐ models.pyコメント
-☐ models.py見直し
-☐ serializers.pyコメント
-☐ serializers.py見直し
+✘ models.pyコメント @cancelled(21-12-13 10:58)
+✘ models.py見直し @cancelled(21-12-13 10:58)
+✘ serializers.pyコメント @cancelled(21-12-13 10:58)
+✘ serializers.py見直し @cancelled(21-12-13 10:58)
 ✔ views.pyコメント @done(21-12-10 10:57)
 ✔ views.py見直し @done(21-12-10 10:57)
-☐ djangoユニーク設定(ticker, ex-date, pay-date,)
+✔ djangoユニーク設定(ticker, ex-date, pay-date,) @done(21-12-13 10:55)
 ☐ 認証変更
 
 
