@@ -104,6 +104,10 @@ csv ファイルを準備の上で、python register_tickers.py
 
 ### 配当情報登録
 
+source ./djangorest/bin/activate; cd pro*/dj*app
+cd server/divmanagement/
+python manage.py runserver
+
 django を起動した状態で、python tk.py
 
 ### 結果確認
@@ -112,6 +116,12 @@ django を起動した状態で、python tk.py
 
 ```
 NTR, 2021-12-30, 2.2833, 2022-01-14, 2.65
+```
+
+あるいは、
+
+```
+http://127.0.0.1:8000/dividends/?ticker__ticker=MSM
 ```
 
 ## 処理の流れ
