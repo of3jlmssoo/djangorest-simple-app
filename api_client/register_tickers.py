@@ -69,8 +69,8 @@ class RegisterTicker(object):
     def read_csv(self) -> None:
         """ Return Noneのままで良いか？ """
 
-        self.dividend_requests.deleteAllData()
-        self.ticker_requests.deleteAllData()
+        # self.dividend_requests.deleteAllData()
+        # self.ticker_requests.deleteAllData()
 
         f_list = [DEFAULT_DIR + PORTFOLIO_FILE1, DEFAULT_DIR + PORTFOLIO_FILE2]
         for i, csvf in enumerate(f_list):
@@ -78,8 +78,9 @@ class RegisterTicker(object):
             with open(csvf) as f:
                 for row in csv.reader(f):
                     # change the type of 'volume', row[1], to int from str
-                    row[1] = int(row[1])
-                    self.post_patch_ticker(i, row)
+                    if row[1] != "":
+                        row[1] = int(row[1])
+                        self.post_patch_ticker(i, row)
 
     def post_patch_ticker(self, i: 0 | 1, row: list) -> None:
         """ Return Noneのままで良いか？
