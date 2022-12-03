@@ -1,5 +1,5 @@
 """
-まずデータをDELETEしてその上で、2つあるポートフォリオファイルの銘柄情報をPOST/PATCHで登録
+2つあるポートフォリオファイルの銘柄情報をPOST/PATCHで登録
 CSVファイルのフォーマットは、ticker,vol
 CSVファイルは2つ。1つのvolはvol1へ、もう1つのvolはvol2へ登録する
 
@@ -23,6 +23,8 @@ import os
 
 from client_requests import client_requests
 from refs import DEFAULT_DIR, PORTFOLIO_FILE1, PORTFOLIO_FILE2
+
+# $HOME/projects/djangorest-simple-app/api_client/refs.py
 
 logger = logging.getLogger(__name__)
 ch = logging.StreamHandler()

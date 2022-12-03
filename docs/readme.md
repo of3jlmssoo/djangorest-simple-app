@@ -102,6 +102,8 @@ tkinter で画面に表示(行単位)の間隔を調整
 
 csv ファイルを準備の上で、python register_tickers.py
 
+csv ファイルは$HOME/projects/djangorest-simple-app/api_client/refs.py の情報に従って然るべきファイルに記載する。
+
 ### 配当情報登録
 
 source ./djangorest/bin/activate; cd pro*/dj*app
@@ -109,6 +111,9 @@ cd server/divmanagement/
 python manage.py runserver
 
 django を起動した状態で、python tk.py
+
+docs/port1.csv 編集
+djangorest-simple-app/api_client/register_tickers.py 実行
 
 ### 結果確認
 
